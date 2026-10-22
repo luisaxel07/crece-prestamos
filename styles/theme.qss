@@ -1,0 +1,26 @@
+QDialog, QWidget { font-family: "Open Sans", "Segoe UI"; color: #001F3F; }
+QLabel, QScrollArea, QScrollArea > QWidget > QWidget { background: transparent; }
+QScrollArea { border: none; }
+QFrame#glassCard { background: transparent; }
+QLabel#heading { color: #003366; font-family: "Montserrat", "Segoe UI"; font-size: 25px; font-weight: 700; }
+QLabel#subtitle, QLabel#note { color: #666666; }
+QLabel#error { color: #003366; background: rgba(255,255,255,190); border-left: 3px solid #00A651; border-radius: 6px; padding: 9px; }
+QLineEdit { background: #FFFFFF; color: #001F3F; border: 1px solid rgba(0,51,102,38); border-radius: 12px; padding: 0 12px; selection-background-color: #006633; selection-color: #FFFFFF; }
+QLineEdit:focus { border: 2px solid #00A651; }
+QLineEdit#authField { min-height: 60px; max-height: 60px; background: #FFFFFF; border: 1px solid rgba(0,51,102,38); border-radius: 12px; padding: 0 12px; }
+QLineEdit#authField:focus { border: 2px solid #00A651; }
+QPushButton { min-height: 40px; border-radius: 8px; padding: 0 8px; }
+QPushButton#primary { background: qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #006633,stop:1 #00A651); color: #FFFFFF; border: 1px solid #006633; border-radius: 30px; font-size: 19px; font-weight: 700; min-height: 60px; }
+QPushButton#primary:hover { border: 2px solid #FFFFFF; }
+QPushButton#primary:pressed { background: #006633; }
+QPushButton#primary:disabled { background: #666666; color: #FFFFFF; }
+QPushButton#link { background: transparent; color: #006633; border: none; font-weight: 600; font-size: 12px; }
+QPushButton#link:hover { color: #003366; text-decoration: underline; }
+QPushButton:focus, QCheckBox:focus { outline: none; border: 2px solid #00A651; }
+QCheckBox { spacing: 7px; font-size: 12px; background: transparent; }
+QCheckBox::indicator { width: 17px; height: 17px; border: 1px solid #666666; border-radius: 4px; background: #FFFFFF; }
+QCheckBox::indicator:checked { background: #006633; border: 1px solid #006633; image: url(__ASSETS__/check.svg); }
+QProgressBar { border: none; background: rgba(0,51,102,20); border-radius: 2px; max-height: 3px; }
+QProgressBar::chunk { background: #00A651; }
+QScrollBar:vertical { width: 7px; background: transparent; }
+QScrollBar::handle:vertical { background: #666666; border-radius: 3px; min-height: 25px; }

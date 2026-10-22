@@ -1,0 +1,37 @@
+QMainWindow#workspace, QDialog { background: #001F3F; }
+QWidget { color: #FFFFFF; }
+QLabel { background: transparent; }
+QScrollArea#workspaceScroll, QScrollArea#workspaceScroll > QWidget > QWidget { background: transparent; border: none; }
+QFrame#workspaceSidebar { background: rgba(0,31,63,245); border-right: 1px solid rgba(255,255,255,35); }
+QFrame#workspaceHeader { background: rgba(0,31,63,245); border-bottom-color: rgba(255,255,255,35); }
+QLabel#workspaceTitle, QLabel#surfaceTitle, QLabel#metricValue, QLabel#workspaceIdentity, QLabel#activityTitle { color: #FFFFFF; }
+QLabel#workspaceSubtitle, QLabel#workspaceBreadcrumb, QLabel#workspaceRole, QLabel#metricLabel, QLabel#metricDescription, QLabel#workspaceCount, QLabel#workspaceEmpty, QLabel#activityDetail { color: rgba(255,255,255,205); }
+QLabel#workspaceEyebrow { color: #B0E3CA; }
+QFrame#workspaceSurface, QFrame#metricSurface { background: qlineargradient(x1:0,y1:0,x2:1,y2:1,stop:0 rgba(0,51,102,235),stop:1 rgba(0,31,63,240)); border: 1px solid rgba(255,255,255,45); }
+QFrame#metricSurface { border-top: 2px solid #00A651; }
+QPushButton#workspaceSecondary { background: rgba(0,51,102,220); color: #FFFFFF; border-color: rgba(255,255,255,70); }
+QPushButton#workspaceSecondary:hover { background: #003366; border-color: #00A651; }
+QLineEdit, QDateEdit, QComboBox, QLineEdit#workspaceSearch, QComboBox#workspaceFilter, QLineEdit#simulationInput, QDateEdit#simulationInput, QLineEdit#authField { background: #001F3F; color: #FFFFFF; border: 1px solid rgba(255,255,255,65); }
+QLineEdit:focus, QDateEdit:focus, QComboBox:focus, QLineEdit#workspaceSearch:focus, QLineEdit#simulationInput:focus, QDateEdit#simulationInput:focus, QLineEdit#authField:focus { border: 2px solid #00A651; background: #001F3F; }
+QLineEdit#simulationInput, QDateEdit#simulationInput { padding: 10px 12px; min-height: 20px; border-radius: 8px; font-size: 13px; }
+QDateEdit#simulationInput::drop-down { width: 26px; border: none; }
+QComboBox::down-arrow, QComboBox#workspaceFilter::down-arrow, QDateEdit#simulationInput::down-arrow { image: url(__ASSETS__/chevron-light.svg); width: 12px; height: 12px; }
+QComboBox QAbstractItemView, QCalendarWidget QAbstractItemView { background: #001F3F; color: #FFFFFF; selection-background-color: #006633; selection-color: #FFFFFF; }
+QComboBox#appearancePicker { background: #003366; color: #FFFFFF; border: 1px solid rgba(255,255,255,65); border-radius: 8px; padding: 7px 24px 7px 10px; min-height: 22px; min-width: 68px; font-size: 11px; }
+QComboBox#appearancePicker::drop-down { border: none; width: 22px; }
+QComboBox#appearancePicker::down-arrow { image: url(__ASSETS__/chevron-light.svg); width: 12px; height: 12px; }
+QComboBox#appearancePicker:focus { border: 2px solid #00A651; }
+QTableWidget#workspaceTable { background: rgba(0,31,63,245); alternate-background-color: rgba(0,51,102,180); color: #FFFFFF; selection-color: #FFFFFF; selection-background-color: #006633; }
+QTableWidget#workspaceTable::item { border-bottom-color: rgba(255,255,255,30); }
+QTableWidget#workspaceTable::item:hover { background: rgba(255,255,255,18); }
+QTableWidget#workspaceTable QHeaderView::section { background: #003366; color: rgba(255,255,255,205); border-bottom-color: rgba(255,255,255,45); }
+QLabel#activityTitle { font-size: 12px; font-weight: 700; border: none; }
+QLabel#activityDetail { font-size: 11px; border: none; }
+QLabel#heading { color: #FFFFFF; }
+QLabel#subtitle, QLabel#note { color: rgba(255,255,255,205); }
+QLabel#sceneText { color: #FFFFFF; }
+QLabel#authLogo { background: rgba(255,255,255,245); border-radius: 18px; }
+QPushButton#link { color: #B0E3CA; }
+QPushButton#link:hover { color: #FFFFFF; }
+QLabel#error { color: #FFFFFF; background: #003366; }
+QLabel#workspaceAvatar { color: #FFFFFF; background: #006633; }

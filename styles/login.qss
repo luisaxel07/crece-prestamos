@@ -1,0 +1,6 @@
+/* Solo se aplica al contenido del panel de LoginWindow. */
+QLabel#authLogo { background: transparent; border: none; }
+QLineEdit#authField { background: __FIELD_BACKGROUND__; color: __TEXT__; border: 1px solid __BORDER__; border-radius: 13px; min-height: 60px; max-height: 60px; padding: 0 12px; font-size: 14px; }
+QLineEdit#authField:focus { border: 2px solid #00A651; }
+QPushButton#primary { font-size: 17px; }
+QLabel#error { color: __TEXT__; background: __FIELD_BACKGROUND__; border-left: 3px solid #00A651; }

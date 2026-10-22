@@ -1,0 +1,24 @@
+QMainWindow#workspace { background: #EBF9F1; }
+QScrollArea#workspaceScroll, QScrollArea#workspaceScroll > QWidget > QWidget { background: transparent; border: none; }
+QFrame#workspaceSidebar { background: rgba(224,245,234,245); border-right: 1px solid rgba(0,102,51,40); }
+QLabel#sidebarCaption { color: #006633; }
+QPushButton#workspaceNav { color: #003366; }
+QPushButton#workspaceNav:hover { background: rgba(0,166,81,28); color: #003366; }
+QPushButton#workspaceNav:checked { background: rgba(0,166,81,40); color: #003366; border-color: rgba(0,102,51,70); }
+QFrame#workspaceHeader { background: rgba(235,249,241,245); }
+QFrame#workspaceSurface, QFrame#metricSurface { background: qlineargradient(x1:0,y1:0,x2:1,y2:1,stop:0 rgba(255,255,255,238),stop:1 rgba(224,245,234,238)); border-color: rgba(0,102,51,45); }
+QTableWidget#workspaceTable { background: rgba(235,249,241,245); alternate-background-color: rgba(0,166,81,13); }
+QTableWidget#workspaceTable QHeaderView::section { background: #E0F5EA; }
+QLabel#activityTitle { color: #003366; font-size: 12px; font-weight: 700; border: none; }
+QLabel#activityDetail { color: #666666; font-size: 11px; border: none; }
+QComboBox#appearancePicker { background: #EBF9F1; color: #003366; border: 1px solid rgba(0,102,51,70); border-radius: 8px; padding: 7px 24px 7px 10px; min-height: 22px; min-width: 68px; font-size: 11px; }
+QComboBox#appearancePicker::drop-down { border: none; width: 22px; }
+QComboBox#appearancePicker::down-arrow { image: url(__ASSETS__/chevron.svg); width: 12px; height: 12px; }
+QComboBox#appearancePicker:focus { border: 2px solid #00A651; }
+QComboBox QAbstractItemView { background: #EBF9F1; color: #003366; selection-background-color: #006633; selection-color: #FFFFFF; }
+QLineEdit#simulationInput, QDateEdit#simulationInput { background: #FFFFFF; color: #001F3F; border: 1px solid rgba(0,51,102,40); border-radius: 8px; padding: 10px 12px; min-height: 20px; font-size: 13px; }
+QLineEdit#simulationInput:focus, QDateEdit#simulationInput:focus { border: 1px solid #00A651; }
+QDateEdit#simulationInput::drop-down { width: 26px; border: none; }
+QDateEdit#simulationInput::down-arrow { image: url(__ASSETS__/chevron.svg); width: 12px; height: 12px; }
+QLabel#sceneText { color: #003366; }
+QLabel#authLogo { background: rgba(255,255,255,235); border-radius: 18px; }
