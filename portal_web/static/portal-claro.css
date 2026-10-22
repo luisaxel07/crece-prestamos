@@ -1,0 +1,30 @@
+/* Verde institucional mezclado con blanco; misma oficina a mediodía. */
+:root {
+  --fondo: color-mix(in srgb,var(--brand-green) 12%,white);
+  --superficie: rgba(255,255,255,.86);
+  --borde: rgba(0,102,51,.18);
+  --sombra-suave: 7px 10px 25px rgba(0,51,102,.10), inset 1px 1px 0 rgba(255,255,255,.85);
+  --sombra-interior: inset 2px 2px 6px rgba(0,102,51,.06), inset -1px -1px 0 white;
+}
+.escena-portal { position: fixed; z-index: 0; inset: 0; pointer-events: none; background: var(--brand-white) url('./images/fondo_portal_mediodia.png') center/cover no-repeat; }
+.escena-portal::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg,rgba(224,245,234,.91),rgba(224,245,234,.70) 55%,rgba(255,255,255,.28)); }
+.contenedor, .pie { position: relative; z-index: 1; }
+.contenedor { padding-top: 38px; }
+.barra-superior { background: rgba(235,249,241,.94); backdrop-filter: blur(18px); border-color: rgba(0,102,51,.15); }
+h1 { font-size: clamp(28px,2.8vw,36px); }
+.metrica, .panel { background: linear-gradient(135deg,rgba(255,255,255,.92),rgba(224,245,234,.91)); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-color: var(--borde); }
+.metrica-destacada { background: linear-gradient(125deg,rgba(0,166,81,.22),rgba(255,255,255,.94)); }
+.metrica:nth-child(2) { background: linear-gradient(125deg,rgba(0,51,102,.12),rgba(235,249,241,.94)); }
+.metrica:nth-child(3) { background: rgba(235,249,241,.94); }
+.proxima-cuota { background: linear-gradient(125deg,rgba(0,166,81,.22),rgba(255,255,255,.94)); }
+.ayuda { background: rgba(224,245,234,.96); }
+.boton-secundario, select { background-color: rgba(255,255,255,.86); }
+.dialogo-pago { background: #EBF9F1; }
+th { background: rgba(0,166,81,.10); }
+.aviso { background: rgba(224,245,234,.96); }
+@media(max-width:760px) {
+  .contenedor { padding-top: 28px; }
+  .escena-portal { background-position: 62% center; }
+  .escena-portal::after { background: rgba(224,245,234,.85); }
+  .navegacion-movil { background: rgba(235,249,241,.97); backdrop-filter: blur(18px); }
+}

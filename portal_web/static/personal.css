@@ -1,0 +1,29 @@
+/* Extensión del portal: utiliza sus fotografías, paleta y modos claro/oscuro. */
+.portal-personal .contenedor,.portal-personal .barra-interior {width:min(1560px,calc(100% - 48px))}
+.area-trabajo {display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;align-items:start}
+.menu-personal {position:sticky;top:122px;padding:22px 14px}
+.menu-personal>.etiqueta {padding:0 12px}
+.menu-personal nav {display:grid;gap:4px;margin-top:18px}
+.menu-personal nav>a {display:flex;align-items:center;gap:12px;padding:12px;border-radius:9px;color:inherit;font-size:12px}
+.menu-personal nav>a:hover,.menu-personal a[aria-current] {background:rgba(0,166,81,.18);box-shadow:inset 3px 0 0 var(--brand-green)}
+.menu-personal nav>.etiqueta {padding:16px 12px 6px;font-size:9px}
+.menu-personal small {display:block;padding:22px 12px 0;font-size:10px;opacity:.75}
+.gestion-contenido {min-width:0}.gestion-contenido h1{font-size:clamp(24px,2.3vw,32px)}
+.metricas-personal {grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.metricas-personal .metrica {padding:20px 16px}.metricas-personal strong {font-size:clamp(21px,1.8vw,28px)}
+.acciones-personal,.acciones-fila {display:flex;flex-wrap:wrap;gap:10px;align-items:center}.acciones-personal{margin:18px 0}.acciones-fila{gap:6px}.acciones-fila a{font-size:11px}
+.datos-ficha {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:0}.datos-ficha dt{font-size:11px;opacity:.75}.datos-ficha dd{margin:4px 0 0;overflow-wrap:anywhere;white-space:pre-wrap}
+.filtro-personal{margin:22px 0}.filtro-personal>label{display:block;font-size:12px;margin-bottom:8px}.filtro-personal>div{display:flex;gap:12px}.filtro-personal input{flex:1;min-width:0}
+.campos-personal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.campo-personal{display:grid;gap:8px;align-content:start}.campo-amplio{grid-column:1/-1}.campo-personal label{font-size:12px}
+.portal-personal input,.portal-personal textarea,.portal-personal select {width:100%;min-height:46px;border:1px solid var(--borde);border-radius:9px;padding:12px 14px;background:var(--superficie);color:inherit;font:inherit}.portal-personal textarea{resize:vertical}.portal-personal input::placeholder{color:inherit;opacity:.7}.portal-personal select option{color:var(--brand-blue);background:var(--brand-white)}
+.formulario-personal{max-width:900px;margin-bottom:24px}.formulario-personal .aviso{margin:0 0 24px}.formulario-personal .boton-principal{margin-top:12px}.estado-guardado{margin-left:14px}.tabla-personal{padding:20px;margin-top:20px}.tabla-personal table{width:100%;border-collapse:collapse}.tabla-desplazable{overflow-x:auto}.tabla-personal td,.tabla-personal th{padding:14px 12px;font-size:12px;vertical-align:middle}.tabla-personal th{text-align:left;white-space:nowrap}.tabla-personal .importe{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.paginacion{display:flex;gap:20px;align-items:center;justify-content:center;margin-top:20px}
+@media(max-width:1250px){.area-trabajo{grid-template-columns:190px minmax(0,1fr);gap:20px}.metricas-personal{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:850px){.area-trabajo{display:block}.menu-personal{position:static;margin-bottom:24px;padding:14px}.menu-personal nav{display:flex;flex-wrap:wrap;margin:8px 0 0;gap:4px}.menu-personal nav>a{padding:9px}.menu-personal nav>.etiqueta,.menu-personal small,.menu-personal .icono{display:none}.portal-personal .contenedor,.portal-personal .barra-interior{width:calc(100% - 32px)}.datos-ficha{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-personal .marca{flex-basis:185px}.portal-personal .cuenta{gap:8px}.portal-personal .identidad{display:none}}
+@media(max-width:600px){.campos-personal{grid-template-columns:1fr}.campo-amplio{grid-column:auto}.portal-personal .encabezado-pagina{align-items:start;flex-direction:column}.metricas-personal{gap:10px}.metricas-personal .metrica{padding:16px 12px}.metricas-personal strong{font-size:20px}.filtro-personal>div{flex-wrap:wrap}.filtro-personal input{flex-basis:100%}.tabla-personal{padding:14px}.portal-personal .marca{flex-basis:160px;padding:18px 12px;margin-left:-12px}.portal-personal .cuenta .boton-salir{padding:8px}.portal-personal .cuenta .boton-salir span{display:none}.portal-personal .barra-interior{gap:6px}.portal-personal .marca svg{width:160px}.datos-ficha{grid-template-columns:1fr}.portal-personal .boton-principal,.portal-personal .boton-secundario{min-height:44px}}
+
+.portal-personal .boton-principal{background:linear-gradient(110deg,var(--brand-dark-green),var(--brand-green));color:var(--brand-white)}
+.portal-personal .boton-principal:hover{background:var(--brand-dark-green)}
+@media(max-width:760px){.tabla-personal td{padding:8px 0}.portal-personal{padding-bottom:0}}
+
+.campo-personal small{font-size:11px;line-height:1.5}.campo-personal .error-campo:empty{display:none}.campo-personal [aria-invalid="true"]{outline:2px solid var(--brand-green);outline-offset:2px}.error-campo{font-weight:700}
+
+.comprobante-revision{margin-bottom:26px;padding-bottom:14px;border-bottom:1px solid var(--borde)}.comprobante-revision img{display:block;max-width:100%;max-height:420px;object-fit:contain;border:1px solid var(--borde);border-radius:10px}.comprobante-revision p{font-size:12px}

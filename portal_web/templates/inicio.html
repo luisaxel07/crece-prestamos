@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from 'partials/ui.html' import icono, estado %}
+{% block titulo %}Mi resumen | CRECE+ PRÉSTAMOS{% endblock %}
+{% block contenido %}
+<section class="encabezado-pagina">
+  <div><span class="etiqueta">MI CUENTA</span><h1>Hola, {{ resumen.nombre.split(' ')[0] or 'Cliente' }}.</h1><p>Tu información financiera, en un solo lugar.</p></div>
+  <a class="boton-secundario" href="{{ url_for('cuotas') }}">Ver mis cuotas {{ icono('flecha') }}</a>
+</section>
+<section class="metricas" aria-label="Resumen de tu cuenta">
+  <article class="metrica metrica-destacada"><div class="metrica-titulo"><span>Saldo pendiente</span>{{ icono('pagos') }}</div><strong>{{ resumen.saldo|moneda }}</strong><small>De tus créditos activos</small></article>
+  <article class="metrica"><div class="metrica-titulo"><span>Cuotas por atender</span>{{ icono('calendario') }}</div><strong>{{ resumen.pendientes }}</strong><small>Pendientes, parciales o vencidas</small></article>
+  <article class="metrica"><div class="metrica-titulo"><span>Mis préstamos</span>{{ icono('prestamos') }}</div><strong>{{ prestamos|length }}</strong><small>Créditos registrados en tu cuenta</small></article>
+</section>
+<section class="cuadricula-inicio">
+  <article class="panel">
+    <div class="titulo-panel"><div><span class="etiqueta">TU CALENDARIO</span><h2>Próximas cuotas</h2></div><a class="enlace" href="{{ url_for('cuotas') }}">Ver todas {{ icono('flecha') }}</a></div>
+    {% if proximas %}
+    <ol class="lista-cuotas">
+      {% for cuota in proximas %}
+      <li class="fila-cuota"><span class="numero-cuota" aria-hidden="true">{{ icono('calendario') }}</span><div class="cuota-descripcion"><strong>Cuota {{ cuota.numero_cuota }}</strong><span>Préstamo #{{ cuota.prestamo_id }} · {{ cuota.fecha_vencimiento|fecha }}</span></div><div class="cuota-importe"><strong>{{ cuota.saldo|moneda }}</strong>{{ estado(cuota.estado) }}</div></li>
+      {% endfor %}
+    </ol>
+    {% else %}<div class="vacio">No tienes cuotas pendientes por atender.</div>{% endif %}
+  </article>
+  <aside class="columna-apoyo">
+    {% if proximas %}{% set proxima = proximas[0] %}
+    <article class="panel proxima-cuota"><div class="titulo-panel"><span class="etiqueta">PRÓXIMO COMPROMISO</span>{{ icono('calendario') }}</div><h2>{{ proxima.fecha_vencimiento|fecha }}</h2><strong class="proxima-importe">{{ proxima.saldo|moneda }}</strong><p>Cuota {{ proxima.numero_cuota }} · Préstamo #{{ proxima.prestamo_id }}</p><a class="boton-principal" href="{{ url_for('cuotas', prestamo=proxima.prestamo_id, cuota=proxima.id) }}#plan-cuotas">Revisar cuota {{ icono('flecha') }}</a></article>
+    {% endif %}
+    <article class="panel ayuda"><h2>¿Ya realizaste tu pago?</h2><p>Informa el monto y la referencia de la operación para que el equipo pueda verificarla.</p><a class="enlace" href="{{ url_for('cuotas') }}#plan-cuotas">Informar un pago {{ icono('flecha') }}</a><small>El aviso queda en revisión hasta su confirmación.</small></article>
+  </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% from 'partials/ui.html' import icono, estado %}
+{% block titulo %}{{ titulo|default('Área de trabajo') }} | CRECE+ PRÉSTAMOS{% endblock %}
+{% block clase_cuerpo %}portal-personal{% endblock %}
+{% block recursos_extra %}<link rel="stylesheet" href="{{ url_for('static',filename='personal.css') }}"><script type="module" src="{{ url_for('static',filename='personal.js') }}"></script>{% endblock %}
+{% block contenido %}
+<div class="area-trabajo">
+<aside class="panel menu-personal"><span class="etiqueta">ÁREA DE TRABAJO</span><nav aria-label="Gestión financiera">
+{% for ruta,nombre,simbolo in [('inicio','Resumen','inicio'),('clientes','Clientes','persona'),('prestamos','Préstamos','prestamos'),('cobros','Cobros','pagos'),('pagos','Pagos y solicitudes','escudo'),('simulador','Simulador','calendario'),('reportes','Reportes','prestamos')] %}
+<a href="{{ url_for('personal.'+ruta) }}" {% if request.endpoint == 'personal.'+ruta %}aria-current="page"{% endif %}>{{ icono(simbolo) }}{{ nombre }}</a>{% endfor %}
+{% if rol_portal=='ADMINISTRADOR' %}<span class="etiqueta">ADMINISTRACIÓN</span>{% for ruta,nombre in [('empleados','Empleados'),('usuarios','Cuentas y permisos')] %}<a href="{{ url_for('personal.'+ruta) }}" {% if request.endpoint == 'personal.'+ruta %}aria-current="page"{% endif %}>{{ icono('persona') }}{{ nombre }}</a>{% endfor %}{% endif %}
+</nav><small>Tu operación continúa en web y escritorio.</small></aside>
+<section class="gestion-contenido" aria-label="{{ titulo|default('Resumen') }}">{% block gestion %}{% endblock %}</section>
+</div>{% endblock %}

@@ -1,0 +1,53 @@
+{% from 'partials/ui.html' import icono %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#003366">
+  <title>{% block titulo %}Mi cuenta | CRECE+ PRÉSTAMOS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='portal.css') }}">
+  <link rel="stylesheet" data-theme-sheet="light" href="{{ url_for('static', filename='portal-claro.css') }}" disabled>
+  <link rel="stylesheet" data-theme-sheet="dark" href="{{ url_for('static', filename='portal-nocturno.css') }}">
+  <script src="{{ url_for('static', filename='appearance.js') }}"></script>
+  <script src="{{ url_for('static', filename='portal.js') }}" defer></script>
+  {% block recursos_extra %}{% endblock %}
+</head>
+<body class="{% block clase_cuerpo %}{% endblock %}">
+  <div class="escena-portal" aria-hidden="true"></div>
+  <a class="saltar" href="#contenido">Ir al contenido</a>
+  {% if usuario_portal %}
+  <header class="barra-superior">
+    <div class="barra-interior">
+      <a class="marca" href="{{ inicio_usuario }}" aria-label="CRECE+ PRÉSTAMOS · Inicio">
+        <svg viewBox="135 602 3881 1207" role="img" aria-label="CRECE+ PRÉSTAMOS"><image href="{{ url_for('logo_horizontal_oscuro') }}" data-logo-light="{{ url_for('logo_horizontal') }}" data-logo-dark="{{ url_for('logo_horizontal_oscuro') }}" width="4200" height="2550"/></svg>
+      </a>
+      {% if rol_portal == 'CLIENTE' %}<nav class="navegacion-escritorio" aria-label="Navegación principal">
+        {% for ruta, texto in [('inicio','Inicio'),('prestamos','Mis préstamos'),('cuotas','Cuotas y pagos')] %}
+        <a href="{{ url_for(ruta) }}" {% if request.endpoint == ruta %}aria-current="page"{% endif %}>{{ texto }}</a>
+        {% endfor %}
+      </nav>{% endif %}
+      <div class="cuenta">
+        <button type="button" class="boton-salir cambiar-tema" data-theme-toggle aria-label="Usar tema claro"><svg class="icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span data-theme-label>Claro</span></button>
+        <div class="identidad"><span>{{ 'Administración' if rol_portal == 'ADMINISTRADOR' else 'Equipo de trabajo' if rol_portal == 'EMPLEADO' else 'Portal del cliente' }}</span><strong title="{{ usuario_portal }}">{{ usuario_portal }}</strong></div>
+        <form method="post" action="{{ url_for('cerrar_sesion') }}"><input type="hidden" name="token_csrf" value="{{ token_csrf }}"><button class="boton-salir" type="submit" aria-label="Cerrar sesión">{{ icono('salir') }}<span>Salir</span></button></form>
+      </div>
+    </div>
+  </header>
+  {% if rol_portal == 'CLIENTE' %}<nav class="navegacion-movil" aria-label="Navegación móvil">
+    {% for ruta, texto, simbolo in [('inicio','Inicio','inicio'),('prestamos','Préstamos','prestamos'),('cuotas','Cuotas y pagos','pagos')] %}
+    <a href="{{ url_for(ruta) }}" {% if request.endpoint == ruta %}aria-current="page"{% endif %}>{{ icono(simbolo) }}<span>{{ texto }}</span></a>
+    {% endfor %}
+  </nav>{% endif %}
+  {% endif %}
+  <main id="contenido" class="contenedor {% block clase_principal %}{% endblock %}">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% for categoria, mensaje in mensajes %}<div class="alerta alerta-{{ categoria }}" role="alert">{{ mensaje }}</div>{% endfor %}
+    {% endwith %}
+    {% block contenido %}{% endblock %}
+  </main>
+  <footer class="pie"><span>CRECE+ PRÉSTAMOS · Crecemos contigo.</span><span>{{ icono('escudo') }}Tu información, clara y protegida.</span></footer>
+</body>
+</html>

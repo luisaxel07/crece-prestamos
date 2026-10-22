@@ -1,0 +1,84 @@
+/* Identidad azul noche y verde institucional sobre fotografía independiente. */
+:root {
+  --fondo: var(--brand-night);
+  --superficie: rgba(0,51,102,.8);
+  --borde: rgba(255,255,255,.17);
+  --sombra-suave: 9px 12px 28px rgba(0,15,31,.26), inset 1px 1px 0 rgba(255,255,255,.05);
+  --sombra-interior: inset 3px 3px 8px rgba(0,15,31,.25), inset -1px -1px 0 rgba(255,255,255,.06);
+}
+body { background: var(--brand-night); color: var(--brand-white); }
+.escena-portal { position: fixed; z-index: 0; inset: 0; pointer-events: none; background: var(--brand-night) url('./images/fondo_portal_premium.png') center/cover no-repeat; }
+.escena-portal::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg,rgba(0,31,63,.83),rgba(0,31,63,.50) 55%,rgba(0,51,102,.35)); }
+.contenedor, .pie { position: relative; z-index: 1; }
+.contenedor { padding-top: 38px; }
+.barra-superior { background: rgba(0,31,63,.9); border-bottom-color: rgba(255,255,255,.13); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.navegacion-escritorio a { color: rgba(255,255,255,.77); }
+.navegacion-escritorio a:hover { color: white; background: rgba(255,255,255,.08); }
+.navegacion-escritorio a[aria-current=page] { background: rgba(0,102,51,.76); color: white; box-shadow: inset 0 0 0 1px rgba(0,166,81,.55); }
+.identidad, .identidad strong { color: rgba(255,255,255,.82); }
+.identidad>span { color: rgba(255,255,255,.62); }
+.boton-salir { color: white; background: rgba(0,51,102,.34); }
+.boton-salir:hover { background: rgba(0,51,102,.8); }
+h1, h2, h3 { color: var(--brand-white); }
+h1 { font-size: clamp(28px,2.8vw,36px); }
+.etiqueta { color: white; color: color-mix(in srgb,var(--brand-green) 32%,var(--brand-white)); }
+.encabezado-pagina p, .contador, .metrica-titulo, .metrica small,
+.cuota-descripcion>span, .proxima-cuota p, .ayuda p, .ayuda small,
+.capital>span, .capital small, .datos-prestamo dt, .saldo-prestamo span,
+.nota-pagina, .filtros label, .titulo-panel p, .detalle-celda, .sin-accion,
+.pie, .vacio { color: rgba(255,255,255,.78); }
+.metrica>strong, .cuota-descripcion strong, .cuota-importe>strong,
+.proxima-importe, .capital>strong, .datos-prestamo dd, .saldo-prestamo strong { color: var(--brand-white); }
+.metrica, .panel {
+  background: linear-gradient(135deg,rgba(0,51,102,.80),rgba(0,31,63,.84));
+  border-color: rgba(255,255,255,.18);
+  box-shadow: var(--sombra-suave);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.metrica-destacada { background: linear-gradient(130deg,rgba(0,102,51,.94),rgba(0,51,102,.87)); border-top-color: var(--brand-green); }
+.metrica:nth-child(2) { background: linear-gradient(130deg,rgba(0,51,102,.94),rgba(0,31,63,.88)); }
+.metrica:nth-child(3) { background: linear-gradient(130deg,rgba(0,31,63,.88),rgba(0,102,51,.65)); }
+.metrica-titulo .icono, .titulo-panel .icono { color: rgba(255,255,255,.85); }
+.numero-cuota { background: rgba(0,31,63,.45); border-color: rgba(255,255,255,.12); color: white; }
+.proxima-cuota { background: linear-gradient(145deg,rgba(0,102,51,.90),rgba(0,31,63,.88)); border-color: rgba(0,166,81,.5); }
+.ayuda { background: rgba(0,31,63,.86); }
+.boton-principal { background: linear-gradient(110deg,var(--brand-dark-green),rgba(0,102,51,.96)); border-color: rgba(0,166,81,.75); box-shadow: 0 6px 17px rgba(0,15,31,.24), inset 0 1px 0 rgba(255,255,255,.09); }
+.boton-principal:hover { background: var(--brand-dark-green); border-color: white; }
+.boton-secundario { color: white; background: rgba(0,51,102,.76); border-color: rgba(255,255,255,.25); box-shadow: var(--sombra-suave); }
+.boton-secundario:hover { color: white; background: rgba(0,51,102,.96); border-color: rgba(255,255,255,.65); }
+.enlace, .boton-texto { color: white; color: color-mix(in srgb,var(--brand-green) 32%,var(--brand-white)); }
+.enlace-accion { color: white; background: rgba(0,102,51,.65); border-color: rgba(0,166,81,.55); }
+.enlace-accion:hover { background: var(--brand-dark-green); }
+.estado { color: white; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.13); }
+.estado-activo, .estado-pagada, .estado-confirmado { color: white; background: rgba(0,102,51,.8); border-color: rgba(0,166,81,.6); }
+.estado-vencida, .estado-mora, .estado-rechazado { color: white; border-color: rgba(255,255,255,.55); background: rgba(0,31,63,.7); }
+.aviso { color: rgba(255,255,255,.9); background: rgba(0,31,63,.78); border-color: rgba(0,166,81,.38); backdrop-filter: blur(14px); }
+select { color: white; background-color: rgba(0,31,63,.8); border-color: rgba(255,255,255,.24); background-image: url('./auth/assets/chevron-light.svg'); }
+select option { background: var(--brand-night); color: white; }
+th { color: rgba(255,255,255,.8); background: rgba(0,31,63,.64); }
+th, td, .fila-cuota, .saldo-prestamo { border-color: rgba(255,255,255,.13); }
+tbody tr:nth-child(even) { background: rgba(0,31,63,.12); }
+tbody tr:hover { background: rgba(255,255,255,.05); }
+tr.cuota-seleccionada { background: rgba(0,102,51,.45); }
+.dialogo-pago { color: white; background: rgba(0,31,63,.97); border-color: rgba(255,255,255,.24); box-shadow: 0 25px 80px rgba(0,15,31,.58); }
+.dialogo-pago::backdrop { background: rgba(0,15,31,.7); }
+.dialogo-pago p, .dialogo-pago small { color: rgba(255,255,255,.78); }
+.dialogo-pago label { color: white; }
+.dialogo-pago input:not([type=hidden]) { color: white; background: rgba(0,51,102,.58); border-color: rgba(255,255,255,.25); }
+.dialogo-pago input::placeholder { color: rgba(255,255,255,.55); }
+.cerrar-dialogo { color: white; }
+.cerrar-dialogo:hover { background: rgba(255,255,255,.1); }
+.alerta { color: white; background: rgba(0,31,63,.95); border-color: rgba(255,255,255,.22); border-left-color: var(--brand-green); }
+.saltar:focus { color: white; background: var(--brand-night); }
+@media(max-width:760px) {
+  h1 { font-size: 28px; }
+  .contenedor { padding-top: 28px; }
+  .escena-portal { background-position: 62% center; }
+  .escena-portal::after { background: linear-gradient(170deg,rgba(0,31,63,.62),rgba(0,31,63,.8)); }
+  .navegacion-movil { color: white; background: rgba(0,31,63,.97); border-top-color: rgba(255,255,255,.17); backdrop-filter: blur(18px); }
+  .navegacion-movil a { color: rgba(255,255,255,.72); }
+  .navegacion-movil a[aria-current=page] { color: white; background: rgba(0,102,51,.85); }
+  td::before { color: rgba(255,255,255,.7); }
+  tbody tr { border-top-color: rgba(255,255,255,.16); }
+}

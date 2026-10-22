@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% from 'partials/ui.html' import icono, estado %}
+{% block titulo %}Cuotas y pagos | CRECE+ PRÉSTAMOS{% endblock %}
+{% block contenido %}
+<section class="encabezado-pagina"><div><span class="etiqueta">MI CALENDARIO</span><h1>Cuotas y pagos</h1><p>Consulta tus vencimientos y da seguimiento a los pagos que has informado.</p></div></section>
+<p class="aviso">{{ icono('info') }}<span>Informa un pago solo después de realizarlo por el canal autorizado. El equipo lo verificará antes de confirmarlo.</span></p>
+<section class="panel tabla-panel" id="plan-cuotas" aria-labelledby="titulo-cuotas">
+  <div class="titulo-panel"><h2 id="titulo-cuotas">Mi plan de cuotas</h2><span class="contador" id="conteoCuotas" aria-live="polite">{{ cuotas|length }} cuotas</span></div>
+  <div class="filtros" hidden id="filtrosCuotas">
+    <div><label for="filtroPrestamo">Préstamo</label><select id="filtroPrestamo"><option value="">Todos los préstamos</option>{% for id in cuotas|map(attribute='prestamo_id')|unique|sort %}<option value="{{ id }}">Préstamo #{{ id }}</option>{% endfor %}</select></div>
+    <div><label for="filtroEstado">Mostrar</label><select id="filtroEstado"><option value="">Todas las cuotas</option><option value="pendientes">Por pagar</option><option value="PAGADA">Pagadas</option></select></div>
+    <button type="button" class="boton-texto" id="limpiarFiltros">Limpiar filtros</button>
+  </div>
+  <div class="tabla-responsive"><table id="tablaCuotas"><caption class="solo-lector">Calendario de cuotas ordenado por fecha de vencimiento, de la más próxima a la más lejana.</caption><thead><tr><th scope="col">Préstamo / cuota</th><th scope="col">Vencimiento</th><th scope="col" class="numero">Tasa mensual</th><th scope="col" class="numero">Programada</th><th scope="col" class="numero">Saldo</th><th scope="col">Estado</th><th scope="col"><span class="solo-lector">Acción</span></th></tr></thead><tbody>
+  {% for cuota in cuotas %}
+    <tr data-prestamo="{{ cuota.prestamo_id }}" data-estado="{{ cuota.estado }}" data-id="{{ cuota.id }}">
+      <td data-etiqueta="Préstamo / cuota"><strong>#{{ cuota.prestamo_id }}</strong><span class="detalle-celda">Cuota {{ cuota.numero_cuota }}</span></td>
+      <td data-etiqueta="Vencimiento">{{ cuota.fecha_vencimiento|fecha }}</td>
+      <td data-etiqueta="Tasa mensual" class="numero">{% if cuota.tasa_mensual is defined %}{{ cuota.tasa_mensual|porcentaje }}{% else %}—{% endif %}</td>
+      <td data-etiqueta="Programada" class="numero">{{ cuota.cuota_programada|moneda }}</td>
+      <td data-etiqueta="Saldo" class="numero"><strong>{{ cuota.saldo|moneda }}</strong></td>
+      <td data-etiqueta="Estado">{{ estado(cuota.estado) }}</td>
+      <td data-etiqueta="Acción">{% if cuota.estado != 'PAGADA' and cuota.saldo > 0 %}<button class="enlace-accion" type="button" data-cuota="{{ cuota.id }}" data-saldo="{{ cuota.saldo }}" data-nombre="Cuota {{ cuota.numero_cuota }} · Préstamo #{{ cuota.prestamo_id }}" aria-label="Informar pago de cuota {{ cuota.numero_cuota }}, préstamo {{ cuota.prestamo_id }}">Informar pago {{ icono('flecha') }}</button>{% else %}<span class="sin-accion">Sin saldo pendiente</span>{% endif %}</td>
+    </tr>
+  {% else %}<tr><td colspan="7" class="vacio">No tienes cuotas para mostrar.</td></tr>{% endfor %}
+  </tbody></table></div>
+  <p id="sinCoincidencias" class="vacio" hidden>No hay cuotas que coincidan con estos filtros.</p>
+</section>
+<section class="panel tabla-panel" aria-labelledby="titulo-historial">
+  <div class="titulo-panel"><div><h2 id="titulo-historial">Pagos informados</h2><p>Consulta el estado de cada aviso enviado.</p></div><span class="contador">{{ solicitudes|length }} {{ 'aviso' if solicitudes|length == 1 else 'avisos' }}</span></div>
+  <div class="tabla-responsive"><table><caption class="solo-lector">Historial de pagos informados para revisión.</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Cuota</th><th scope="col" class="numero">Monto</th><th scope="col">Referencia</th><th scope="col">Comprobante</th><th scope="col">Estado</th></tr></thead><tbody>
+  {% for solicitud in solicitudes %}<tr><td data-etiqueta="Fecha">{{ solicitud.fecha_pago.strftime('%d/%m/%Y %H:%M') }}</td><td data-etiqueta="Cuota">{{ solicitud.numero_cuota }} · Préstamo #{{ solicitud.prestamo_id }}</td><td data-etiqueta="Monto" class="numero">{{ solicitud.monto|moneda }}</td><td data-etiqueta="Referencia" class="referencia">{{ solicitud.referencia or 'Sin referencia' }}</td><td data-etiqueta="Comprobante">{% if solicitud.tiene_comprobante %}<a class="enlace" href="{{ url_for('comprobante_cliente',pago_id=solicitud.id) }}" target="_blank" rel="noopener">Ver comprobante ↗</a>{% else %}Sin adjunto{% endif %}</td><td data-etiqueta="Estado">{{ estado(solicitud.estado) }}</td></tr>{% else %}<tr><td colspan="6" class="vacio">Aún no has informado pagos. Cuando envíes un aviso, podrás seguir su estado aquí.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+<dialog id="dialogoPago" class="dialogo-pago" aria-labelledby="nombreCuota" aria-describedby="ayudaPago">
+  <form method="post" action="{{ url_for('crear_solicitud_pago') }}" id="formularioPago" enctype="multipart/form-data">
+    <input type="hidden" name="token_csrf" value="{{ token_csrf }}"><input type="hidden" name="cuota_id" id="cuotaId">
+    <button type="button" class="cerrar-dialogo" data-cerrar-dialogo aria-label="Cerrar formulario">{{ icono('cerrar') }}</button>
+    <span class="etiqueta">INFORMAR PAGO REALIZADO</span><h2 id="nombreCuota">Detalle del pago</h2><p id="ayudaPago">Informa una operación que ya realizaste. El aviso quedará en revisión hasta que el equipo lo confirme.</p>
+    <label for="monto">Monto pagado (C$)</label><input id="monto" name="monto" type="number" inputmode="decimal" min="0.01" step="0.01" required aria-describedby="saldoDisponible"><small id="saldoDisponible"></small>
+    <label for="referencia">Referencia o número de comprobante</label><input id="referencia" name="referencia" maxlength="100" required placeholder="Ej.: Transferencia 001245" autocomplete="off">
+    <label for="comprobante">Foto del comprobante o recibo de transferencia</label><input id="comprobante" name="comprobante" type="file" accept="image/jpeg,image/png,image/webp" required aria-describedby="ayudaComprobante errorComprobante"><small id="ayudaComprobante">JPG, PNG o WebP, hasta 5 MB. La foto debe mostrar el monto y los datos de la operación.</small><p id="errorComprobante" role="alert"></p><img id="vistaComprobante" class="vista-comprobante" alt="Vista previa del comprobante seleccionado" hidden>
+    <div class="acciones-dialogo"><button class="boton-secundario" type="button" data-cerrar-dialogo>Cancelar</button><button class="boton-principal" type="submit">Enviar para revisión {{ icono('flecha') }}</button></div>
+  </form>
+</dialog>
+{% endblock %}

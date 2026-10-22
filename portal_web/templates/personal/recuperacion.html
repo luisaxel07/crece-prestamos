@@ -1,0 +1,20 @@
+{% extends 'personal/base.html' %}
+{% block gestion %}
+<header class="encabezado-pagina"><div><span class="etiqueta">CUENTAS Y PERMISOS</span><h1>Recuperar acceso</h1></div><a class="boton-secundario" href="{{ url_for('personal.usuarios') }}">Volver a cuentas</a></header>
+<section class="panel formulario-personal">
+{% if resultado %}
+<h2>Código para {{ resultado.usuario }}</h2>
+<p class="aviso">Se muestra una sola vez. Entrégalo por un canal privado únicamente al titular cuya identidad verificaste. No es una contraseña.</p>
+<label for="codigo-temporal">Código de recuperación</label><input id="codigo-temporal" readonly value="{{ resultado.codigo }}" autocomplete="off" spellcheck="false" style="width:100%;font-family:monospace;font-size:1rem;padding:16px;box-sizing:border-box">
+<p>Vence hoy a las <strong>{{ resultado.vence_en.strftime('%H:%M:%S') }}</strong> (hora del servidor). Un nuevo código invalida el anterior.</p>
+<p>El titular debe abrir <a href="{{ url_for('recuperar') }}">Recuperar acceso</a>, escribir su usuario y este código, y elegir su nueva contraseña. También puede hacerlo desde el login de escritorio.</p>
+{% else %}
+<h2>Cuenta: {{ cuenta.nombre_usuario }}</h2><p class="aviso">Comprueba personalmente la identidad contra el expediente por un canal autorizado. No basta con conocer el correo o la cédula. El código será válido durante 15 minutos y solo se podrá utilizar una vez.</p>
+{% if error %}<p class="alerta alerta-error" role="alert">{{ error }}</p>{% endif %}
+<form method="post"><input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+<div class="campo-personal"><label for="motivo">Constancia de verificación</label><textarea id="motivo" name="motivo" required minlength="10" maxlength="250" rows="3" placeholder="Ej.: Identidad contrastada presencialmente con el expediente"></textarea><small>No incluyas contraseñas ni números de documentos.</small></div>
+<p><label><input type="checkbox" name="identidad" value="SI" required> Verifiqué la identidad del titular antes de emitir este código.</label></p>
+<div class="campo-personal"><label for="clave-admin">Tu contraseña de administrador</label><input id="clave-admin" name="clave_admin" type="password" required maxlength="128" autocomplete="current-password"></div>
+<p><button class="boton-principal" type="submit">Emitir código temporal</button></p></form>
+{% endif %}</section>
+{% endblock %}

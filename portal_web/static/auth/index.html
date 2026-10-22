@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content"><meta name="theme-color" content="#001F3F"><meta name="referrer" content="same-origin"><title>Iniciar sesión | CRECE+ PRÉSTAMOS</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="auth.css"><script src="config.js"></script><script type="module" src="auth.js"></script><link rel="stylesheet" href="appearance.css"><script src="../appearance.js"></script><link rel="stylesheet" href="login.css"></head>
+<body data-page="login" class="login-minimal"><button type="button" class="appearance-toggle" data-theme-toggle aria-label="Usar tema claro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span data-theme-label>Claro</span></button><a class="skip" href="#auth-form">Ir al formulario</a><div class="scene" aria-hidden="true"></div>
+<main class="layout"><aside class="side-brand" aria-label="Nuestros valores"><div class="side-logo"><img src="assets/logo-oscuro.png" alt="CRECE+ PRÉSTAMOS" width="250" height="152"></div><ul class="benefits"><li><span class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6Z"/><path d="m8 12 3 3 5-6"/></svg></span><div><strong>Confianza</strong><p>Tu respaldo en cada paso.</p></div></li><li><span class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7Z"/><path d="M14 2v6h5M8 12h8M8 16h6"/></svg></span><div><strong>Transparencia</strong><p>Información clara y segura.</p></div></li><li><span class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-4m6 4v-8m6 8V8M3 11l7-6 5 2 6-5m-5 0h5v5"/></svg></span><div><strong>Impulso</strong><p>Crecemos contigo.</p></div></li></ul></aside>
+    <section class="login-card" aria-label="Iniciar sesión">
+      <div class="card-brand">
+        <img src="assets/logo-vertical.png" alt="CRECE+ PRÉSTAMOS" width="144" height="155">
+        <svg viewBox="135 602 3881 1207" role="img" aria-label="CRECE+ PRÉSTAMOS"><image href="assets/logo-oscuro.png" width="4200" height="2550"/></svg>
+      </div>
+      <form id="auth-form" aria-label="Credenciales de acceso" novalidate>
+        <div class="field">
+          <label class="sr-only" for="username">Usuario o correo electrónico</label>
+          <div class="field-shell">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 6 9 7 9-7"/></svg>
+            <input id="username" name="username" type="text"  placeholder="Usuario o correo electrónico" autocomplete="username" maxlength="254" spellcheck="false" autocapitalize="none" required aria-describedby="username-error">
+          </div>
+          <p id="username-error" class="field-error" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label class="sr-only" for="password">Contraseña</label>
+          <div class="field-shell">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4M12 14v3"/></svg>
+            <input id="password" name="password" type="password" placeholder="Contraseña" autocomplete="current-password" maxlength="128" required aria-describedby="password-error">
+            <button class="reveal" type="button" aria-label="Mostrar contraseña" aria-controls="password" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <p id="password-error" class="field-error" aria-live="polite"></p>
+        </div>
+        <div id="feedback" class="feedback" role="status" aria-live="polite" tabindex="-1"></div>
+        <button class="primary" type="submit"><span>Iniciar sesión</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+      </form>
+      <nav class="ayuda-acceso" aria-label="Ayuda de acceso"><a href="recuperar.html">¿Olvidaste tu contraseña?</a><a href="registro.html">Solicita tu acceso</a></nav>
+    </section>
+<aside class="editorial" aria-label="Nuestro compromiso"><span class="eyebrow">CONTIGO, HACIA ADELANTE</span><blockquote>Grandes metas comienzan con un buen respaldo.</blockquote><span class="rule"></span></aside>
+<svg class="decorations" viewBox="0 0 1536 1024" preserveAspectRatio="none" aria-hidden="true"><path class="blue" d="M0 160C140 280 360 160 490 380"/><path class="green" d="M850 1024C1100 870 1370 980 1536 780"/></svg><div class="corner" aria-hidden="true"><span class="corner-mark"><img src="assets/logo-vertical.png" alt=""></span><i></i><i></i><i></i><i></i></div><footer class="footer">CRECE+ PRÉSTAMOS · Crecemos contigo.</footer></main><noscript><p class="feedback">Activa JavaScript para utilizar el acceso seguro.</p></noscript></body></html>

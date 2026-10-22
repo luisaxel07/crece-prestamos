@@ -1,0 +1,6 @@
+{% extends 'personal/base.html' %}
+{% block gestion %}<header class="encabezado-pagina"><div><span class="etiqueta">PANEL FINANCIERO</span><h1>Tu cartera, bajo control.</h1><p>Información actualizada de la operación de CRECE+ PRÉSTAMOS.</p></div><a class="boton-principal" href="{{ url_for('personal.prestamo_form') }}">+ Emitir préstamo</a></header>
+<div class="metricas metricas-personal">
+{% for nombre,valor,detalle in [('Cartera activa',resumen.cartera_activa|moneda,'Saldo pendiente de recuperar'),('Cuotas pendientes',resumen.cuotas_pendientes,'Cuotas por atender'),('Pagos por verificar',resumen.pagos_por_verificar,'Solicitudes del portal'),('Índice de mora',resumen.indice_mora|porcentaje,'Cuotas vencidas')] %}<article class="metrica"><span class="metrica-titulo">{{ nombre }}</span><strong>{{ valor }}</strong><small>{{ detalle }}</small></article>{% endfor %}</div>
+<section class="panel"><div class="titulo-panel"><h2>Actividad reciente</h2><a class="enlace" href="{{ url_for('personal.reportes') }}">Ver reportes →</a></div><ul class="lista-cuotas">{% for a in actividad %}<li class="fila-cuota"><div class="cuota-descripcion"><strong>{{ a.tipo }}</strong><span>{{ a.detalle }}</span></div><span class="contador">{{ a.fecha|fecha }}</span></li>{% else %}<li class="vacio">Todavía no hay operaciones registradas.</li>{% endfor %}</ul></section>
+{% endblock %}

@@ -1,0 +1,25 @@
+.appearance-toggle { position: fixed; top: 16px; right: 20px; z-index: 10; display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 8px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.35); background: var(--brand-night); color: white; box-shadow: 0 4px 16px rgba(0,31,63,.16); }
+.appearance-toggle svg { width: 20px; height: 20px; }
+.side-logo { background: var(--brand-night); border-radius: 16px; }
+html[data-theme=light] { background: #E0F5EA; color-scheme: light; }
+html[data-theme=light] .scene { background-image: url('../images/fondo_portal_mediodia.png'); }
+html[data-theme=light] .scene::after { background: linear-gradient(110deg,rgba(224,245,234,.88),rgba(224,245,234,.45) 55%,rgba(255,255,255,.35)); }
+html[data-theme=light] .side-brand, html[data-theme=light] .benefits p, html[data-theme=light] .editorial, html[data-theme=light] .footer { color: var(--brand-blue); }
+html[data-theme=light] .benefit-icon { color: white; background: var(--brand-dark-green); }
+html[data-theme=light] .login-card { background: rgba(235,249,241,.88); border-color: rgba(255,255,255,.85); }
+html[data-theme=dark] { color-scheme: dark; }
+html[data-theme=dark] .scene { background-image: url('../images/fondo_portal_premium.png'); }
+html[data-theme=dark] .scene::after { background: linear-gradient(110deg,rgba(0,31,63,.85),rgba(0,31,63,.45) 55%,rgba(0,31,63,.5)); }
+html[data-theme=dark] .login-card { color: white; background: rgba(0,31,63,.90); border-color: rgba(255,255,255,.3); }
+html[data-theme=dark] .card-brand { background: rgba(255,255,255,.97); border-radius: 18px; margin-bottom: 22px; padding: 15px 30px; }
+html[data-theme=dark] .card-heading h1 { color: white; }
+html[data-theme=dark] .card-heading p, html[data-theme=dark] .register-link, html[data-theme=dark] .security-note, html[data-theme=dark] .hint { color: rgba(255,255,255,.8); }
+html[data-theme=dark] a { color: #B0E3CA; }
+html[data-theme=dark] a:hover { color: white; }
+html[data-theme=dark] .field-shell { background: var(--brand-night); border-color: rgba(255,255,255,.35); }
+html[data-theme=dark] .field input, html[data-theme=dark] .field-shell>.icon, html[data-theme=dark] .reveal { color: white; }
+html[data-theme=dark] .field input::placeholder { color: rgba(255,255,255,.65); }
+html[data-theme=dark] .feedback { color: white; background: var(--brand-blue); }
+html[data-theme=dark] .feedback[data-kind=error], html[data-theme=dark] .field-error { color: white; border-color: var(--brand-green); }
+html[data-theme=dark] .register-link { border-color: rgba(255,255,255,.17); }
+@media(max-width:760px) { .appearance-toggle { top: 9px; right: 4%; min-height: 40px; } .layout { padding-top: 66px; } }

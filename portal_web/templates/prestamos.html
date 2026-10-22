@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from 'partials/ui.html' import icono, estado %}
+{% block titulo %}Mis préstamos | CRECE+ PRÉSTAMOS{% endblock %}
+{% block contenido %}
+<section class="encabezado-pagina"><div><span class="etiqueta">MI CARTERA</span><h1>Mis préstamos</h1><p>Consulta las condiciones y el saldo de cada crédito.</p></div><span class="contador">{{ prestamos|length }} {{ 'préstamo' if prestamos|length == 1 else 'préstamos' }}</span></section>
+<section class="tarjetas-prestamo" aria-label="Tus préstamos">
+{% for prestamo in prestamos %}
+  <article class="panel prestamo">
+    <div class="prestamo-cabecera"><h2>Préstamo #{{ prestamo.id }}</h2>{{ estado(prestamo.estado) }}</div>
+    <div class="prestamo-detalle">
+      <div class="capital"><span>Monto desembolsado</span><strong>{{ prestamo.monto_principal|moneda }}</strong><small>Desembolso: {{ prestamo.fecha_desembolso|fecha }}</small></div>
+      <dl class="datos-prestamo"><div><dt>Cuota mensual</dt><dd>{{ prestamo.cuota_mensual|moneda }}</dd></div><div><dt>Tasa mensual nominal</dt><dd>{{ (prestamo.tasa_interes_anual / 12)|porcentaje }}</dd><small>Equivalente nominal anual: {{ prestamo.tasa_interes_anual|porcentaje }}</small></div><div><dt>Plazo</dt><dd>{{ prestamo.plazo_meses }} meses</dd></div></dl>
+    </div>
+    <div class="saldo-prestamo"><div><span>Saldo pendiente</span><strong>{{ prestamo.saldo_pendiente|moneda }}</strong></div><a class="boton-secundario" href="{{ url_for('cuotas', prestamo=prestamo.id) }}#plan-cuotas">Ver plan de cuotas {{ icono('flecha') }}</a></div>
+  </article>
+{% else %}<div class="panel vacio">Aún no hay préstamos vinculados a tu cuenta.</div>{% endfor %}
+</section>
+<p class="nota-pagina">{{ icono('info') }}El saldo corresponde a las cuotas pendientes de cada préstamo.</p>
+{% endblock %}
