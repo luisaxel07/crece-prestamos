@@ -1,0 +1,76 @@
+{
+  "nombres": {
+    "placeholder": "María José",
+    "ayuda": "Solo letras y espacios; se permiten tildes y ñ.",
+    "pattern": "[\\p{L}]+(?: [\\p{L}]+)*",
+    "maxlength": 80
+  },
+  "apellidos": {
+    "placeholder": "Pérez López",
+    "ayuda": "Solo letras y espacios; se permiten tildes y ñ.",
+    "pattern": "[\\p{L}]+(?: [\\p{L}]+)*",
+    "maxlength": 80
+  },
+  "name": {
+    "placeholder": "María José Pérez López",
+    "ayuda": "Solo letras y espacios; se permiten tildes y ñ.",
+    "pattern": "[\\p{L}]+(?: [\\p{L}]+)*",
+    "maxlength": 120
+  },
+  "cedula": {
+    "placeholder": "001-150890-0001A",
+    "ayuda": "Formato: 000-DDMMAA-0000A. Fecha de nacimiento válida y una letra final de A a Z.",
+    "pattern": "[0-9]{3}-[0-9]{6}-[0-9]{4}[A-Z]",
+    "maxlength": 16
+  },
+  "telefono": {
+    "placeholder": "88888888",
+    "ayuda": "De 8 a 15 dígitos, sin letras, espacios ni signos.",
+    "pattern": "[0-9]{8,15}",
+    "maxlength": 15
+  },
+  "correo": {
+    "placeholder": "nombre@correo.com",
+    "ayuda": "Correo electrónico válido, sin espacios. Puede quedar vacío si es opcional.",
+    "maxlength": 160
+  },
+  "cargo": {
+    "placeholder": "Asesor de crédito",
+    "ayuda": "Solo letras y espacios; se permiten tildes y ñ.",
+    "pattern": "[\\p{L}]+(?: [\\p{L}]+)*",
+    "maxlength": 80
+  },
+  "direccion": {
+    "placeholder": "Barrio Centro, casa 12",
+    "ayuda": "Dirección de residencia. Campo opcional, hasta 255 caracteres.",
+    "maxlength": 255
+  },
+  "nombre_usuario": {
+    "placeholder": "asesor.crece",
+    "ayuda": "Entre 4 y 60 caracteres. No es el nombre de la persona.",
+    "maxlength": 60
+  },
+  "contrasena": {
+    "placeholder": "Mínimo 10 caracteres",
+    "ayuda": "De 10 a 128 caracteres; al editar puede dejarse vacía para conservarla.",
+    "maxlength": 128
+  },
+  "monto": {
+    "placeholder": "10000.00",
+    "pattern": "[0-9]{1,12}(?:\\.[0-9]{1,2})?",
+    "ayuda": "Importe numérico positivo, sin símbolos de moneda; hasta 2 decimales.",
+    "maxlength": 15
+  },
+  "tasa": {
+    "placeholder": "2.0000",
+    "pattern": "[0-9]{1,2}(?:\\.[0-9]{1,4})?",
+    "ayuda": "Porcentaje mensual numérico, sin el símbolo %; hasta 4 decimales.",
+    "maxlength": 7
+  },
+  "meses": {
+    "placeholder": "12",
+    "pattern": "[0-9]{1,3}",
+    "ayuda": "Número entero de meses, de 1 a 600.",
+    "maxlength": 3
+  }
+}

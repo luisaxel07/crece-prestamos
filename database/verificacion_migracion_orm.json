@@ -1,0 +1,25 @@
+{
+  "migracion": "APLICADA",
+  "historial_sin_cambios": true,
+  "verificacion": {
+    "prestamos": {
+      "registros": 1,
+      "sha256": "3ee531c63f9e125e3e9fb7fa4760f4f2d7d4d5c9a062b0f783ae005b1bed45f8"
+    },
+    "cuotas": {
+      "registros": 12,
+      "sha256": "a81bc6b9d9a2dbd086d3fb8d858413a03b3bb50d28f635a9dd6fca28262301e6"
+    },
+    "pagos": {
+      "registros": 3,
+      "sha256": "3458b52aa5d6667d5786b4d8c7ab788b63a44e78b99127061c824b99d1479649"
+    }
+  },
+  "lectura_real": {
+    "reporte_orm": true,
+    "totales_cuadran": true,
+    "empleados": 0,
+    "clientes": 3,
+    "pagos": 3
+  }
+}

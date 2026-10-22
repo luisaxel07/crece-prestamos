@@ -1,0 +1,40 @@
+{
+  "migracion": "RECUPERACION_ASISTIDA",
+  "historial_sin_cambios": true,
+  "antes": {
+    "clientes": {
+      "registros": 3,
+      "sha256": "fd27b6815e33eeee3cab8e90b650168eaa4ec96fffd7eda11cac41747f126737"
+    },
+    "prestamos": {
+      "registros": 1,
+      "sha256": "1fa0ede54c6e643c3d7a5f1d9c806798a545531a2a1c24ee65a153689ebd06c2"
+    },
+    "cuotas": {
+      "registros": 12,
+      "sha256": "0af8c509ed3823495d7eff95f4ddbe5089a87b12266927def300a886c2324243"
+    },
+    "pagos": {
+      "registros": 3,
+      "sha256": "b004addab56a1f03500f7c4222edfcff112a46088666b24f3bbae00f8553fa66"
+    }
+  },
+  "despues": {
+    "clientes": {
+      "registros": 3,
+      "sha256": "fd27b6815e33eeee3cab8e90b650168eaa4ec96fffd7eda11cac41747f126737"
+    },
+    "prestamos": {
+      "registros": 1,
+      "sha256": "1fa0ede54c6e643c3d7a5f1d9c806798a545531a2a1c24ee65a153689ebd06c2"
+    },
+    "cuotas": {
+      "registros": 12,
+      "sha256": "0af8c509ed3823495d7eff95f4ddbe5089a87b12266927def300a886c2324243"
+    },
+    "pagos": {
+      "registros": 3,
+      "sha256": "b004addab56a1f03500f7c4222edfcff112a46088666b24f3bbae00f8553fa66"
+    }
+  }
+}
