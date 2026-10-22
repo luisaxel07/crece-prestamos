@@ -1,0 +1,1712 @@
+[
+  {
+    "file": "Guia_Practica_Sesion_19_PAE.pdf",
+    "pages": 7,
+    "intro": "UNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN\nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA\nCarrera de Ingeniería en Sistemas de Información / Ingeniería de Sistemas\nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 19\nUnidad II: Acceso a Bases de Datos | Actualización de Registros desde la Interfaz Gráfica (Operación UPDATE)\nComponente Curricular:Programación de Aplicaciones\nde Escritorio Año / Semestre: 2026 / Ciclo IV (Régimen Semestral)\nDocente Titular: Ing. Edilberto Lacayo MolinaFrecuencia / Modalidad:6 Horas Semanales / Presencial\n(Práctica de Laboratorio)\nResultado de Aprendizaje:\nEl estudia",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "avanzados  (QTableWidget),  permitiendo  visualizar  colecciones  de  registros  en  tiempo  real.  No  obstante,  en  los  sistemas",
+          "En esta Sesión N° 19 completaremos la \"U\" del ciclo CRUD (Update). Aprenderemos a capturar la fila seleccionada por el usuario",
+          "parametrizadas mediante el identificador primario (ID), asegurando transacciones atómicas con  commit() y  rollback() para",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS",
+          "DEFINICIÓN FORMAL:",
+          "DEFINICIÓN FORMAL:",
+          "ejecución bajo un bloque transaccional atómico cerrado por commit() en caso de éxito o rollback() ante excepciones."
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "DEFINICIÓN FORMAL:",
+          "Es el acoplamiento controlado entre las señales de interfaz de PySide6 (como la señal itemClicked de un QTableWidget) y",
+          "los  slots  que  extraen  las  cadenas  de  texto  de  las  celdas  para  escribirlas  dinámicamente  en  los  controles  de  entrada",
+          "QTableWidget.",
+          "asentamiento con commit() y recarga del QTableWidget.",
+          "QTableWidget, QTableWidgetItem, QHeaderView)",
+          "'''Configura los controles visuales, layouts y eventos de la ventana.'''"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "self.tabla_productos = QTableWidget()",
+          "self.tabla_productos.setSelectionBehavior(QTableWidget.SelectRows)",
+          "self.tabla_productos.setSelectionMode(QTableWidget.SingleSelection)",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "# Ejecución transaccional segura de la sentencia UPDATE",
+          "QTableWidget, QTableWidgetItem, QHeaderView)"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "# Panel Derecho: QTableWidget",
+          "self.tabla_productos = QTableWidget()",
+          "self.tabla_productos.setSelectionBehavior(QTableWidget.SelectRows)",
+          "self.tabla_productos.setSelectionMode(QTableWidget.SingleSelection)",
+          "'''Extrae y renderiza los registros de MySQL en el QTableWidget.'''",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "Diseño de la Interfaz: Construir una ventana con un QTableWidget que liste los artículos de inventario (ID, Código,",
+          "el QTableWidget.",
+          "2 Mapea y precarga adecuadamente los datos en los controles"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Guia_Practica_Sesion_20_PAE.pdf",
+    "pages": 7,
+    "intro": "UNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN\nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA\nCarrera de Ingeniería en Sistemas de Información / Ingeniería de Sistemas\nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 20\nUnidad II: Acceso a Bases de Datos | Eliminación de Registros desde la Interfaz Gráfica (Operación DELETE)\nComponente Curricular:Programación de Aplicaciones\nde Escritorio Año / Semestre: 2026 / Ciclo IV (Régimen Semestral)\nDocente Titular: Ing. Edilberto Lacayo MolinaFrecuencia / Modalidad:6 Horas Semanales / Presencial\n(Práctica de Laboratorio)\nResultado de Aprendizaje:\nEl estudiant",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "En esta Sesión N° 20 abordaremos la \"D\" del acrónimo CRUD (Delete) mediante la sentencia SQL DELETE FROM. Al tratarse de",
+          "QTableWidget,  interceptar  la  acción  mediante  un  cuadro  de  diálogo  modal  de  confirmación  (QMessageBox.question),  y",
+          "ejecutar la eliminación física parametrizada por identificador único (ID) bajo estricto control transaccional tanto en SQLite (con DB",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS",
+          "DEFINICIÓN FORMAL:",
+          "DEFINICIÓN FORMAL:",
+          "toda eliminación en aplicaciones transaccionales delimite estrictamente su alcance mediante la Llave Primaria (Primary Key):"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "DEFINICIÓN FORMAL:",
+          "QTableWidget.",
+          "QTableWidget, QTableWidgetItem, QHeaderView)",
+          "'''Configura los controles visuales, botones y la tabla interactiva.'''"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "self.tabla_productos = QTableWidget()",
+          "self.tabla_productos.setSelectionBehavior(QTableWidget.SelectRows)",
+          "self.tabla_productos.setSelectionMode(QTableWidget.SingleSelection)",
+          "'''Carga los registros activos desde SQLite hacia el componente QTableWidget.'''",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "'''Restablece el estado de los controles y deselecciona la cuadrícula.'''",
+          "QTableWidget, QTableWidgetItem, QHeaderView)"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "# Grilla QTableWidget",
+          "self.tabla_productos = QTableWidget()",
+          "self.tabla_productos.setSelectionBehavior(QTableWidget.SelectRows)",
+          "self.tabla_productos.setSelectionMode(QTableWidget.SingleSelection)",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "Diseño de la Interfaz: Construir una ventana con un QTableWidget que liste los artículos de inventario (ID, Código,",
+          "DELETE RESTRICT), capturar la excepción y mostrar un mensaje claro con QMessageBox.critical informando que",
+          "QTableWidget."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Guia_Practica_Sesion_21_PAE.pdf",
+    "pages": 9,
+    "intro": "UNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN\nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA\nCarrera de Ingeniería en Sistemas de Información / Ingeniería de Sistemas\nGUÍA PRÁCTICA INTEGRADORA - SESIÓN N° 21\nUnidad II: Acceso a Bases de Datos | Integración del Ciclo CRUD Completo (Primer Parcial)\nComponente Curricular:Programación de Aplicaciones\nde Escritorio Año / Semestre: 2026 / Ciclo IV (Régimen Semestral)\nDocente Titular: Ing. Edilberto Lacayo MolinaFrecuencia / Modalidad:6 Horas Semanales / Presencial\nEvaluada (Examen Parcial)\nResultado de Aprendizaje:\nEl estudiante demuestra el nivel",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "Unidad II: Acceso a Bases de Datos | Integración del Ciclo CRUD Completo (Primer Parcial)",
+          "el ciclo CRUD completo (SQLite y MySQL).",
+          "Práctica del Primer Parcial: CRUD Completo. El desarrollo de software profesional demanda que una aplicación de escritorio",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS",
+          "2.1. El Ciclo de Vida CRUD y la Persistencia Empresarial",
+          "DEFINICIÓN FORMAL:",
+          "CRUD  es  el  acrónimo  que  define  las  cuatro  operaciones  fundamentales  de  almacenamiento  persistente  en  sistemas",
+          "totalidad de interacciones transaccionales que un sistema de software puede ejercer sobre el estado de las entidades de un",
+          "se estampa el sello de cancelación definitiva (Delete). El ciclo CRUD es la gestión completa de ese libro legal de la empresa."
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "2.3. Integridad Transaccional y Propiedades ACID en el CRUD",
+          "DEFINICIÓN FORMAL:",
+          "En el procesamiento de transacciones de bases de datos, las operaciones de modificación masiva o individual deben satisfacer",
+          "3. MATRIZ ARQUITECTÓNICA DEL CICLO CRUD EN PYSIDE6",
+          "Carga celdas en QTableWidget.",
+          "4. SECCIÓN 1: EJERCICIO GUIADO PASO A PASO - CRUD COMPLETO CON SQLITE",
+          "# Aplicación de escritorio con PySide6 y SQLite integrando el ciclo CRUD completo",
+          "QTableWidget, QTableWidgetItem, QHeaderView)",
+          "classVentanaFerreteriaCRUD_SQLite(QWidget):"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "'''Diseña y organiza el formulario de captura, la botonera CRUD y la cuadrícula visual.'''",
+          "self.setWindowTitle(\"Ferretería Central - Sistema de Gestión CRUD Completo (SQLite)\")",
+          "# Botonera con acciones CRUD diferenciadas visualmente",
+          "# Componente tabular QTableWidget (Operación READ)",
+          "self.tabla_productos = QTableWidget()",
+          "self.tabla_productos.setSelectionBehavior(QTableWidget.SelectRows)",
+          "self.tabla_productos.setSelectionMode(QTableWidget.SingleSelection)",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "'''Mapea el registro pulsado en la tabla hacia los controles de edición.'''"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "ventana = VentanaFerreteriaCRUD_SQLite()",
+          "5. SECCIÓN 2: EJERCICIO GUIADO PASO A PASO - CRUD COMPLETO CON MYSQL",
+          "# Módulo completo de ciclo CRUD conectando PySide6 con un servidor MySQL",
+          "QTableWidget, QTableWidgetItem, QHeaderView)",
+          "classVentanaFerreteriaCRUD_MySQL(QWidget):",
+          "self.setWindowTitle(\"Ferretería Central - Sistema de Gestión CRUD Completo (MySQL)\")"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "self.tabla_productos = QTableWidget()",
+          "self.tabla_productos.setSelectionBehavior(QTableWidget.SelectRows)",
+          "self.tabla_productos.setSelectionMode(QTableWidget.SingleSelection)",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "'''Restablece el estado de los controles en pantalla.'''",
+          "ventana = VentanaFerreteriaCRUD_MySQL()",
+          "6. CUADRO COMPARATIVO TÉCNICO: SQLITE VS. MYSQL PARA CRUD",
+          "Operación CRUD SQLite (Embebido / DB Browser) MySQL (Cliente-Servidor / Workbench)",
+          "solución de escritorio con interfaz gráfica en PySide6 que resuelva el ciclo CRUD Completo para un Sistema de Facturación e"
+        ]
+      },
+      {
+        "page": 9,
+        "lines": [
+          "Cuadrícula tabular (QTableWidget) con encabezados legibles y ajuste automático de columnas (Stretch).",
+          "Implementación del Ciclo CRUD Completo:",
+          "UPDATE: Al hacer clic sobre una fila del QTableWidget, precarga sus valores en el formulario. Al presionar \"Actualizar\",",
+          "Control Transaccional y Manejo de Excepciones:",
+          "Todo bloque de persistencia debe encontrarse protegido con estructuras try-except, asegurando transacciones",
+          "Criterio Evaluado Excelente (Nivel Avanzado)Aceptable (Intermedio) Debe Mejorar (Deficiente)",
+          "controles sin validación de tamaño.",
+          "al mapear tuplas al QTableWidget.",
+          "transacciones seguras con commit/"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Guia_Practica_Sesion_25_PAE_Dual.pdf",
+    "pages": 14,
+    "intro": "UNAN-León | Área de Ciencias y Tecnología | Programación de Aplicaciones de Escritorio  \nDocente: Ing. Edilberto Lacayo Molina   Guía Técnica de Laboratorio - Sesión N° 25  \nUNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN  \nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA  \nCARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN  \nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 25  \nUNIDAD III: PROGRAMACIÓN CONCURRENTE  \nComponente Curricular: Programación de Aplicaciones \nde Escritorio \nAño / Ciclo: 2026 / Ciclo IV (Semestral)  \nDocente: Ing. Edilberto Lacayo Molina Frecuencia / Modalidad: 6 Horas / Presenci",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "CARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN",
+          "Tema N° 4: Señales Personalizadas (Signal",
+          "Resultado de Aprendizaje: El estudiante implementa mecanismos de comunicación asíncrona mediante señales",
+          "de un hilo secundario mediante las señales nativas started y finished de QThread, bloqueando botones para evitar",
+          "implementaremos señales personalizadas con argumentos tipados (Signal(int, str, float)), aprendiendo a emitir datos en",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "que el hilo de trabajo utilizará para enviar sus reportes periódicos.",
+          "comunicación desacoplados, asíncronos y fuertemente tipados. Las señales personalizadas deben declararse",
+          "2.2. La Emisión de Señales con Parámetros Mediante .emit()"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "Worker Thread que calcula pedidos y emite señales personalizadas"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "self.setWindowTitle('Sesión 25: Señales Personalizadas (Signal con Parámetros) - SQLite')"
+        ]
+      },
+      {
+        "page": 9,
+        "lines": [
+          "# Conexión de señales de ciclo de vida nativas"
+        ]
+      },
+      {
+        "page": 10,
+        "lines": [
+          "self.btn_iniciar.setText('Procesando datos y emitiendo señales...')"
+        ]
+      },
+      {
+        "page": 11,
+        "lines": [
+          "self.setWindowTitle('Sesión 25: Señales Personalizadas - MySQL')"
+        ]
+      },
+      {
+        "page": 13,
+        "lines": [
+          "lbl_sub = QLabel('Sesión N° 25: Señales Personalizadas (Signal con Parámetros)')",
+          "grupo = QGroupBox('Seleccione el entorno de pruebas de señales dinámicas')"
+        ]
+      },
+      {
+        "page": 14,
+        "lines": [
+          "6. Conclusión: Se logró una sincronización de datos continua, bidireccional y 100% thread -safe mediante señales tipadas."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Guia_Practica_Sesion_26_PAE.pdf",
+    "pages": 15,
+    "intro": "UNAN-León | Área de Ciencias y Tecnología | Programación de Aplicaciones de Escritorio  \nDocente: Ing. Edilberto Lacayo Molina   Guía Técnica de Laboratorio - Sesión N° 26  \nUNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN  \nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA  \nCARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN  \nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 26 \nUNIDAD III: PROGRAMACIÓN CONCURRENTE \nComponente Curricular: Programación de Aplicaciones \nde Es critorio \nAño / Ciclo: 2026 / Ciclo IV (Semestral)  \nDocente: Ing. Edilberto Lacayo Molina  Frecuencia / Modalidad: 6 Horas / Presenci",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "CARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN",
+          "gestionar su ciclo de vida y emitir señales personalizadas hacia barras de progreso (QProgressBar).",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "bloques finally, no libera bloqueos de memoria (Mutexes o Locks), deja transacciones de bases de datos a medio",
+          "mediante una instrucción break, finaliza las transacciones pendientes, cierra las conexiones de red o archivos locales y"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Guia_Practica_Sesion_27_PAE_.pdf",
+    "pages": 15,
+    "intro": "UNAN-León | Área de Ciencias y Tecnología | Programación de Aplicaciones de Escritorio  \nDocente: Ing. Edilberto Lacayo Molina   Guía Técnica de Laboratorio - Sesión N° 27  \nUNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN  \nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA  \nCARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN  \nGUÍA PRÁCTICA INTEGRADORA DE LABORATORIO - SESIÓN N° 27 \nUNIDAD III: PROGRAMACIÓN CONCURRENTE \nComponente Curricular: Programación de Aplicaciones \nde Es critorio \nAño / Ciclo: 2026 / Ciclo IV (Semestral)  \nDocente: Ing. Edilberto Lacayo Molina  Frecuencia / Modalidad: 6 Hora",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "CARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN",
+          "su ciclo de vida mediante started y finished, a transmitir telemetría dinámica en tiempo real mediante señales tipadas",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "cada fracción de segundo sin que los ingenieros tengan que viajar a tocar los cables de al ta tens ión (señales s egur as",
+          "Thread orquestado por un protocolo bidireccional asíncrono soportado por el bus de señales y ranuras de Qt: el Main"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "'• Control seguro del ciclo de vida con señales started y finished. \\n'"
+        ]
+      },
+      {
+        "page": 9,
+        "lines": [
+          "# Conexión limpia y explícita de señales"
+        ]
+      },
+      {
+        "page": 14,
+        "lines": [
+          "- Al llegar al 100%, finished reactiva los controles y muestra el diálogo QMessageBox.information.",
+          "adquiridos en la Unidad III antes de iniciar el estudio de los ORMs en la Unidad IV, cada estudiante deber á  des a r r ol l ar  y",
+          "registros, calcular el total de dinero descontado a los clientes y listar las transacciones en una tabla visual sin congela r l a"
+        ]
+      },
+      {
+        "page": 15,
+        "lines": [
+          "de fluidez (clics a 60 FPS) y un QTableWidget que se vaya poblando en tiempo real o al finalizar el hilo sin violar la"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Guia_Sesion_22_PAE_Dual.pdf",
+    "pages": 11,
+    "intro": "UNAN-León | Área de Ciencias y Tecnología | Programación de Aplicaciones de Escritorio  \nAutor: Ing. Edilberto Lacayo Molina   Guía Técnica de Laboratorio - Sesión N° 22 \nUNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN \nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA \nCARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN \nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 22 \nUNIDAD III: PROGRAMACIÓN CONCURRENTE  \nComponente Curricular: Programación de Aplicaciones \nde Escritorio \nAño / Ciclo: 2026 / Ciclo IV (Semestral) \nDocente Titular: Ing. Edilberto Lacayo Molina Frecuencia / Modalidad: 6 Horas / Presenci",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "CARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN",
+          "completa (CRUD) tanto en SQLite como en MySQL en las primeras dos unidades, iniciamos formalmente la Unidad III:"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "3. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "Sección 2: Conexión segura con captura de excepciones de red."
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "Sección 2: Construcción del formulario de credenciales y controles."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion28_MySQL.pdf",
+    "pages": 5,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 28 \n \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 28: INTRODUCCIÓN A LOS ORM CON SQLALCHEMY Y MYSQL \n \nContenido: \n1. Concepto de Mapeo Objeto-Relacional (ORM) y su rol en desarrollo de escritorio \n2. Ventajas de utilizar un ORM frente a consultas SQL nativas en texto plano \n3. Arquitectura de SQLAlchemy: El objeto Engine y gestión de pools de conexiones \n4. Conectores/Drivers en Python: El rol del paquete PyMySQL \n5. Instalación de dependencias (SQLAlchemy y PyMySQL) con pip \n6. Estructura del URI de conexión para motor de base d",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 28: INTRODUCCIÓN A LOS ORM CON SQLALCHEMY Y MYSQL",
+          "1. Concepto de Mapeo Objeto-Relacional (ORM) y su rol en desarrollo de escritorio",
+          "2. Ventajas de utilizar un ORM frente a consultas SQL nativas en texto plano",
+          "3. Arquitectura de SQLAlchemy: El objeto Engine y gestión de pools de conexiones",
+          "5. Instalación de dependencias (SQLAlchemy y PyMySQL) con pip",
+          "8. Manejo de excepciones de conexión mediante SQLAlchemyError",
+          "1. Concepto de Mapeo Objeto-Relacional (ORM) y su rol en desarrollo de escritorio",
+          "Un Mapeo Objeto-Relacional (ORM, por sus siglas en inglés Object-Relational Mapping) es una",
+          "desarrolladas con Python (como PySide6), el ORM actúa como una capa de abstracción"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "Puntos clave del ORM:",
+          "2. Ventajas de utilizar un ORM frente a consultas SQL nativas en texto plano",
+          "(SQLAlchemy)"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "3. Arquitectura de SQLAlchemy: El objeto Engine y gestión de pools de conexiones",
+          "SQLAlchemy está dividido en dos grandes componentes: Core y ORM. El núcleo de la",
+          "● Sirve de interfaz para iniciar transacciones de datos explícitas mediante el método",
+          "SQLAlchemy no se conecta directamente a la red ni al servidor de MySQL por sí solo; requiere",
+          "5. Instalación de dependencias (SQLAlchemy y PyMySQL) con pip",
+          "# Instalación del ORM SQLAlchemy y del driver PyMySQL",
+          "Para instanciar el motor de SQLAlchemy hacia MySQL, debemos proporcionar una cadena de"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "from sqlalchemy.exc import SQLAlchemyError",
+          "Función para instanciar el Engine de SQLAlchemy y verificar"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "except SQLAlchemyError as error:",
+          "8. Manejo de excepciones de conexión mediante SQLAlchemyError",
+          "El bloque try-except utiliza la clase base de excepciones SQLAlchemyError. Esto permite"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion29_MySQL.pdf",
+    "pages": 6,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 29 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 29: MODELOS Y ENTIDADES CON SQLALCHEMY Y MYSQL \n \nContenido: \n1. Introducción al Paradigma Declarativo en SQLAlchemy \n2. Componentes Clave del Mapeo Declarativo \n3. Tipos de Datos y Mapeo de Restricciones (SQL vs SQLAlchemy) \n4. Estructuración Modular del Archivo de Modelos (models.py) \n5. Integración con el motor y Creación Automática. \n6. Buenas prácticas y recomendaciones académicas. \n1. Introducción al Paradigma declarativo en SQLAlchemy \n \nEn las sesiones previas establecimos el",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "1. Introducción al Paradigma Declarativo en SQLAlchemy",
+          "3. Tipos de Datos y Mapeo de Restricciones (SQL vs SQLAlchemy)",
+          "1. Introducción al Paradigma declarativo en SQLAlchemy",
+          "clases. Este proceso se denomina Mapeo Objeto-Relacional (ORM).",
+          "A partir de la versi ón 2.0 de SQLAlchemy, se utiliza de manera estandarizada el Sistema",
+          "Arquitectura del Mapeo ORM:",
+          "[ PUENTE ORM: Traducción de Metadatos y Tipos ]"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "3. Tipos de Datos y Mapeo de Restricciones (SQL vs SQLAlchemy)",
+          "MySQL Workbench y su contraparte orientada a objetos en SQLAlchemy:",
+          "SQLAlchemy ORM"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "SQLAlchemy ORM",
+          "# 1. Declaración de la clase base central para los metadatos ORM"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "Una de las grandes ventajas de definir modelos mediante SQLAlchemy es que podemos verificar"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "SQLAlchemy, los nombres de las tablas ( __tablename__) deben ir en minúsculas y",
+          "excelente práctica de tipado en Python tiparlos como Optional[T] para que el analizador",
+          "enormemente las tareas de depuración (debugging), permitiéndote visualizar impresiones"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion30_MySQL.pdf",
+    "pages": 4,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 30 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 30: CONSULTAS ORM CON SQLALCHEMY \nContenido: \n1. El Objeto Session y el Patrón Unit of Work  \n2. Fábrica de Sesiones (sessionmaker) \n3. El Estándar de Consultas en SQLAlchemy 2.0: select() \n4. Métodos Clave para la Extracción de Resultados. \n5. Filtrado, Condiciones y Ordenamiento (where, filter_by, order_by) \n6. Estructuración del Módulo de Consultas (queries.py). \n \n1. El objeto Session y el patrón Unit of Work \n \nUna vez que hemos definido nuestros modelos y mapeado las tablas rel",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 30: CONSULTAS ORM CON SQLALCHEMY",
+          "3. El Estándar de Consultas en SQLAlchemy 2.0: select()",
+          "de datos es la gestión del flujo de trabajo transaccional. En SQLAlchemy, esta gestión recae",
+          "2. Agrupar las operaciones de inserción, actualización y consulta en transacciones",
+          "Arquitectura de la Sesión en SQLAlchemy 2.0:"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "SQLAlchemy provee la función sessionmaker, la cual actúa como una fábrica oficial para",
+          "3. 3. El Estándar de Consultas en SQLAlchemy 2.0: select()",
+          "A diferencia de las versiones antiguas de SQLAlchemy (donde se utilizaba el método obsoleto"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "SQLAlchemy provee múltiples alternativas para filtrar y ordenar los datos de forma intuitiva:",
+          "print(\"--- PROBANDO CONSULTAS ORM ---\")"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "inmediata al salir del bloque, incluso si ocurre una excepción en tiempo de ejecución."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion31_MySQL.pdf",
+    "pages": 5,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 31 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \n \nSESIÓN 31: Migración de CRUD tradicional a operaciones ORM con SQLAlchemy, \nCiclo de vida de las entidades y Control Transaccional \n \nContenido: \n1. El Ciclo de Vida de las Entidades en SQLAlchemy \n2. Mapeo de Operaciones CRUD en la API de SQLAlchemy \n3. Importancia del Control Transaccional (commit y rollback) \n \n1. El ciclo de vida de las entidades en SQLAlchemy \n \nCuando trabajamos con un ORM (Object-Relational Mapper), los objetos de Python que \nrepresentan filas en nuestra base de da",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 31: Migración de CRUD tradicional a operaciones ORM con SQLAlchemy,",
+          "1. El Ciclo de Vida de las Entidades en SQLAlchemy",
+          "2. Mapeo de Operaciones CRUD en la API de SQLAlchemy",
+          "1. El ciclo de vida de las entidades en SQLAlchemy",
+          "Cuando trabajamos con un ORM (Object-Relational Mapper), los objetos de Python que",
+          "de datos física, pero la sesión lo tiene en cola para la próxima transacción."
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "el cual la Session (sesión) de SQLAlchemy detecta si un objeto de tipo Persistent ha",
+          "de datos. En el ecosistema de los ORM, un objeto se marca como \"sucio\" (dirty) cuando"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "2. Mapeo de Operaciones CRUD en la API de SQLAlchemy",
+          "En la versión 2.0 de SQLAlchemy, las operaciones de modificación de datos se realizan"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "Una transacción agrupa múltiples operaciones de base de datos bajo el principio de \"todo o",
+          "Para evitar esto, las bases de datos usan transacciones: garantizan que o se ejecutan ambos pasos",
+          "session.rollback(): Revierte la transacción actual al estado previo si ocurre cualquier error o",
+          "excepción, evitando la corrupción de datos o tablas bloqueadas.",
+          "Es una buena práctica académica envolver las operaciones CRUD en bloques de",
+          "control de excepciones:"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "from sqlalchemy.exc import SQLAlchemyError",
+          "except SQLAlchemyError as e:",
+          "print(f\"Error transaccional detectado: {e}\")"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion32_MySQL.pdf",
+    "pages": 5,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 32 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \n \nSESIÓN 32: RELACIONES ENTRE TABLAS (UNO A MUCHOS) CON \nSQLALCHEMY Y MYSQL \nContenido: \n1. Fundamentos teóricos de las relaciones relacionales (One-to-Many / Uno a Muchos). \n2. Configuración de Claves Foráneas (ForeignKey) en SQLAlchemy. \n3. Uso del mapeador relacional relationship() y back_populates. \n4. Propagación de operaciones transaccionales y cascadas (cascade). \n5. Consultas avanzadas cruzadas entre tablas relacionadas (Join ORM). \n6. Integración práctica de relaciones en el proyec",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "2. Configuración de Claves Foráneas (ForeignKey) en SQLAlchemy.",
+          "4. Propagación de operaciones transaccionales y cascadas (cascade).",
+          "5. Consultas avanzadas cruzadas entre tablas relacionadas (Join ORM).",
+          "2. Configuración de claves foráneas en SQLAlchemy",
+          "SQLAlchemy utiliza la clase ForeignKey. Esta restricción asegura la integridad referencial"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "manuales y engorrosas en texto plano, SQLAlchemy provee la función relationship()."
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "4. Propagación de operaciones transaccionales y cascadas(cascade)",
+          "(CategoriaModel) instruye al ORM sobre cómo propagar las acciones de ciclo de vida",
+          "transaccional hacia los elementos hijos:"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "Pero en un ORM, las relaciones entre tablas se transforman en Atributos de Navegación . Esto",
+          "# SQLAlchemy optimiza automáticamente el JOIN mediante el mapeador",
+          "• Cuando el bucle for entra en reg.categoria.nombre, SQLAlchemy detecta que estás",
+          "• En ese preciso milisegundo, SQLAlchemy hace una consulta extra a MySQL de"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "3. Visualización en Grilla ( QTableWidget): Al mostrar la lista de registros"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion33_MySQL.pdf",
+    "pages": 6,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 33 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \n \nSESIÓN 32: VENTAJAS DEL ORM FRENTE A CONSULTAS SQL NATIVAS EN \nTEXTO PLANO. REFACTORIZACIÓN Y OPTIMIZACIÓN DEL PROYECTO \nPRÁCTICO UTILIZANDO SQLALCHEMY \nContenido: \n1. Análisis Comparativo Profundo: Consultas SQL Nativas vs. Mapeo Objeto -Relacional \n(SQLAlchemy) \n2. Mantenibilidad, Tipado Estático y Desacoplamiento de la Capa de Persistencia \n3. Portabilidad y Gestión Eficiente del Pool de Conexiones \n4. Estrategia de Refactorización Integral en el Proyecto de Escritorio (PySide6 + \nSQLA",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 32: VENTAJAS DEL ORM FRENTE A CONSULTAS SQL NATIVAS EN",
+          "(SQLAlchemy)",
+          "SQLAlchemy)",
+          "(SQLAlchemy)",
+          "La adopción de un ORM moderno como SQLAlchemy 2.0 desacopla la persistencia,",
+          "Mapeo Objeto-Relacional (SQLAlchemy",
+          "ORM)"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "Mapeo Objeto-Relacional (SQLAlchemy",
+          "ORM)",
+          "SQLAlchemy adapta la generación de",
+          "El paradigma declarativo moderno de SQLAlchemy 2.0 aprovecha las anotaciones de tipo",
+          "ORM.",
+          "SQLAlchemy)"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "asociados a señales clicked.connect) para que invoquen exclusivamente los métodos del",
+          "transaccional del proyecto práctico:from typing import List, Optional",
+          "from sqlalchemy.exc import SQLAlchemyError"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "\"\"\"Crea y persiste un nuevo registro bajo control transaccional estricto\"\"\"",
+          "except SQLAlchemyError as error:",
+          "print(f\"Error transaccional al guardar registro: {error}\")"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "except SQLAlchemyError as error:",
+          "print(f\"Error transaccional al actualizar registro: {error}\")",
+          "except SQLAlchemyError as error:",
+          "print(f\"Error transaccional al eliminar registro: {error}\")"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "renderiza limpiamente en un QTableWidget o QComboBox:# Ejemplo de int egración en un",
+          "self.tableWidget.setItem(row_idx, 0, QTableWidgetItem(str(reg.id)))",
+          "self.tableWidget.setItem(row_idx, 1, QTableWidgetItem(reg.titulo))",
+          "self.tableWidget.setItem(row_idx, 2, QTableWidgetItem(reg.estado))",
+          "self.tableWidget.setItem(row_idx, 3, QTableWidgetItem(reg.categoria.nombre))",
+          "SQLAlchemy e identificar oportunidades de optimización."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion34_MySQL.pdf",
+    "pages": 7,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 34 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \n \nSESIÓN 34: Introducción a la Generación de Reportes en Python y Preparación \nde Entorno \n   Contenido: \n1. Introducción Teórica \n2. ¿Qué es ReportLab? \n3. Diferencias entre el uso del lienzo directo (Canvas) y los elementos de flujo (Flowables). \n4. Ejemplo de reporte usando el lienzo directo (canvas) \n5. Ejemplo de reporte usando los elementos de flujo (flowables) \n6. Preguntas de Autoevaluación \n \n1. Introducción Teórica \n \nUna vez que hemos aprendido a gestionar los datos mediante la b",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 34: Introducción a la Generación de Reportes en Python y Preparación",
+          "2. ¿Qué es ReportLab?",
+          "4. Ejemplo de reporte usando el lienzo directo (canvas)",
+          "5. Ejemplo de reporte usando los elementos de flujo (flowables)",
+          "y a realizar consultas complejas utilizando el ORM en sesiones anteriores, el siguiente",
+          "impresión, archivo o distribución oficial.  Para alcanzar este objetivo, emplearemos la",
+          "herramienta ReportLab, cuy o concepto,  configuración y funcionamiento práctico",
+          "2. ¿Qué es ReportLab?",
+          "ReportLab es la librería estándar de código abierto en Python para la creación y manipulación de"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "Cuando trabajamos con ReportLa b en Python, nos enfrentamos a dos formas principales de",
+          "estrategia correcta según el tipo de reporte que necesites desarrollar.",
+          "Lienzo directo:  El Canvas es el enfoqu e más básico y directo de ReportLab. Funciona",
+          "Para solucionar el problema de los reportes dinámicos, ReportLab incluye un motor de",
+          "añades a una lista en orden secuencial. El motor de ReportLab se encarga automáticamente de",
+          "Cuándo usarlo: Es el enfoque estándar y obligatorio para reportes corporativos y basados en",
+          "Su gran ventaja: Si tu consulta al ORM arroja 3 o 300 registros, ReportLab generará"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "Alta. Ideal para reportes basados en",
+          "bases de datos (SQLAlchemy), ya que",
+          "reporte, listados dinámicos extraídos"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "4. Ejemplo de reporte usando el lienzo directo (canvas)",
+          "from reportlab.lib.pagesizes import letter",
+          "from reportlab.pdfgen import canvas",
+          "from reportlab.lib import colors",
+          "def generar_reporte_con_canvas():",
+          "filename = \"reporte_canvas_prueba.pdf\"",
+          "# 2. Cuerpo del Reporte (Información del Componente)",
+          "c.drawString(54, alto - 130, \"Tipo de Reporte: Prueba de Concepto - Modelo Canvas (Bajo Nivel)\")",
+          "en ReportLab.\")"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "c.drawString(54, 40, \"Generado automáticamente desde el entorno de desarrollo - ORM SQLAlchemy\")",
+          "print(\">>> Reporte con Canvas generado exitosamente.\")",
+          "generar_reporte_con_canvas()",
+          "5. Ejemplo de reporte usando los elementos de flujo (flowables)",
+          "from reportlab.lib.pagesizes import letter",
+          "from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable",
+          "from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle",
+          "from reportlab.lib import colors",
+          "def generar_reporte_con_flowables():"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "# 2. Cuerpo del Reporte"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "story.append(Paragraph(\"<b>Tipo de Reporte:</b> Prueba de Concepto - Modelo Flowables",
+          "consultas ORM de SQLAlchemy.\", estilo_cuerpo))",
+          "story.append(Paragraph(\"Generado automáticamente desde el entorno de desarrollo - ORM",
+          "SQLAlchemy\", estilo_pie))",
+          "print(\">>> Reporte con Flowables generado exitosamente.\")",
+          "generar_reporte_con_flowables()",
+          "¿Cuál es el propósito principal de utilizar ReportLab en una aplicación de escritorio"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion35_MySQL.pdf",
+    "pages": 4,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 35 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \n \nSESIÓN 35: Generación de Reportes PDF con Información del Sistema Usando \nSQLAlchemy y ReportLab \n   Contenido: \n1. Introducción Teórica \n2. Arquitectura de Reportes Dinámicos con ORM y ReportLab \n3. Construcción del Módulo de Generación de Reportes (report_generator.py). \n4. Integración del Generador de Reportes con la Interfaz de PySide6 \n5. Ejemplo Completo de Reporte Basado en Datos del Sistema \n6. Preguntas de Autoevaluación \n \n1. Introducción Teórica \n \nUna vez que hemos aprendido a",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 35: Generación de Reportes PDF con Información del Sistema Usando",
+          "SQLAlchemy y ReportLab",
+          "2. Arquitectura de Reportes Dinámicos con ORM y ReportLab",
+          "3. Construcción del Módulo de Generación de Reportes (report_generator.py).",
+          "4. Integración del Generador de Reportes con la Interfaz de PySide6",
+          "5. Ejemplo Completo de Reporte Basado en Datos del Sistema",
+          "relaciones de tipo uno a muchos y desacoplar la lógica transaccional mediante el Patrón",
+          "grillas visuales (c omo QTableWidget), sino que requieren generar documentos y reportes",
+          "SQLAlchemy. En esta sesión aprenderemos a fusionar el motor de maquetación de alto nivel de"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "3. Construcción del Módulo de Generación de Reportes (report_generator.py",
+          "report_generator.py que contendrá la lógica de extracción de datos por medio del ORM y la",
+          "from reportlab.lib.pagesizes import letter",
+          "from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle",
+          "from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle",
+          "from reportlab.lib import colors",
+          "def generar_reporte_productos(filename=\"reporte_inventario.pdf\"):",
+          "\"\"\" Extrae registros mediante SQLAlchemy ORM y genera un reporte corporativo estructurado en PDF. \"\"\"",
+          "#4. Extracción de datos usando SQLAlchemy ORM"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QMessageBox",
+          "from report_generator import generar_reporte_productos",
+          "# 3. Configuración y maquetación de la grilla de datos (QTableWidget)",
+          "\"\"\"Consume el repositorio ORM desacoplado y renderiza los datos en la interfaz.\"\"\"",
+          "# 3. Iteración y llenado de celdas con QTableWidgetItem",
+          "# 4. Manejo de excepciones con QMessageBox",
+          "def exportar_reporte_pdf(self):",
+          "\"\"\"Invoca el módulo generador de reportes PDF y notifica al usuario.\"\"\"",
+          "# 2. Invocación de la función generar_reporte_productos(filename)"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "¿De qué manera el uso de consultas ORM de SQLAlchemy simplifica la obtención de registros",
+          "estructurados para alimentar las tablas de un reporte en ReportLab?",
+          "reportes (report_generator.py) de la lógica visual de la interfaz de usuario en PySide6?"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_GuiaEstudio_Sesion36_MySQL.pdf",
+    "pages": 3,
+    "intro": "Programación de aplicaciones de escritorio      Sesión 36 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \n \nSESIÓN 36: Exportación de Información a Excel (openpyxl) en Aplicaciones de \nEscritorio PySide6 \n   Contenido: \n \n1. Introducción Teórica \n \nEn las aplicaciones de escritorio empresariales, la generación de reportes fijos en PDF (abordada \nen la Sesión 35) satisface la necesidad de documentación oficial e impresión. Sin embargo, los \nusuarios administrativos operativamente requieren analizar, auditar y manipular los datos del \nsistema de forma dinámica. Para ello, la exportación de inform",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 36: Exportación de Información a Excel (openpyxl) en Aplicaciones de",
+          "En las aplicaciones de escritorio empresariales, la generación de reportes fijos en PDF (abordada",
+          "en la Sesión 35) satisface la necesidad de documentación oficial e impresión. Sin embargo, los",
+          "Microsoft Excel (.xlsx) es una característica imprescindible.",
+          "con archivos hojas de cálculo Excel, conectando nuestras consultas relacionales de SQLAlchemy",
+          "ORM con una interfaz visual amigable en PySide6.",
+          "2. Arquitectura de Reportes Dinámicos con ORM y ReportLab",
+          "• Exportación a PDF (ReportLab): Documento no editable de maquetación vectorial rígida, óptimo",
+          "para comprobantes, facturas y reportes oficiales listos para imprimir."
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "3. Fundamentos de Manipulación de Libros Excel con openpyxl",
+          "1. Workbook: Representa el libro completo de Excel (.xlsx).",
+          "4. Construcción del Módulo de Exportación (excel_exporter.py)",
+          "SQLAlchemy ORM y generar la hoja de cálculo estilizada:",
+          "def exportar_registros_excel(filename='reporte_registros.xlsx'):",
+          "# Extracción de Datos ORM"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "print(f'Archivo Excel generado exitosamente: {filename}')",
+          "Para vincular la exportación a Excel en la interfaz PySide6, agregamos un nuevo QPushButton",
+          "('Exportar Excel') y lo conectamos con la función exportar_registros_excel(filename) mostrando",
+          "2. ¿En qué escenario operativo es preferible ofrecer al usuario una exportación a Excel en",
+          "lugar de un reporte en PDF?"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema2.pdf",
+    "pages": 14,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 2 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 2: ESTRUCTURA DE UNA APLICACIÓN GUI \nContenido: \n1. Organización de un proyecto GUI \n2. Clase QApplication \n3. Clase QWidget \n4. Ventanas principales y ciclo de vida de una aplicación \n5. Layouts en PySide6 \n6. QVBoxLayout \n7. QHBoxLayout \n8. QGridLayout \n9. QStackedLayout \n10. Layouts anidados \n11. Espaciados y márgenes con layouts \n \n1. Organización de un proyecto GUI \nUna aplicación gráfica debe organizarse adecuadamente para facilitar su mantenimiento y escalabilidad. \nEstructura bási",
+    "topics": [
+      {
+        "page": 6,
+        "lines": [
+          "Organiza los controles en una cuadrícula de filas y columnas, asignándolos a celdas específicas mediante"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema3.pdf",
+    "pages": 29,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 3 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 3: USO DE CONTROLES BÁSICOS DE PYSIDE6 \nContenido: \n1. Controles básicos \n2. QLabel \n3. QPushButton \n4. QLineEdit \n5. QTextEdit \n6. Propiedades comunes de los widgets \n7. Estilos de los widgets \n \n1. Controles básicos \nLos widgets son los componentes visuales con los que interactúa el usuario. \nLos más utilizados son: \n• QLabel \n• QPushButton \n• QLineEdit \n• QTextEdit \n• QCheckBox \n• QRadioButton \n• QComboBox \n• QListWidget \nDurante esta sesión se trabajará con los cuatro primeros. \n2. QL",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "1. Controles básicos",
+          "1. Controles básicos"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "# 2. TEXTO CON FORMATO HTML"
+        ]
+      },
+      {
+        "page": 13,
+        "lines": [
+          "# 3. MÁSCARA DE ENTRADA (MÁSCARA DATO FORMATO)"
+        ]
+      },
+      {
+        "page": 18,
+        "lines": [
+          "# BARRA DE HERRAMIENTAS (FORMATO RÁPIDO)"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema4.pdf",
+    "pages": 17,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 4 \n \n \nElaborado por: MSc. Johanna de la Concepción Hernández Alonso             \n \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 4 : CONTROLES DE SELECCIÓN EN PYSIDE6  \nContenido: \n1. Controles de selección CheckBox \n2. Controles de selección RadioButton \n3. Controles de selección ComboBox \n4. Controles de selección ListWidget \n5. Comparativa \n \n1. Controles de selección CheckBox \n \n• Permite seleccionar una o varias opciones. \n• Todas las opciones pueden permanecer activas simultáneamente. \nEjemplos de uso \n• Aceptar términos. \n• Sele",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "1. Controles de selección CheckBox",
+          "2. Controles de selección RadioButton",
+          "3. Controles de selección ComboBox",
+          "4. Controles de selección ListWidget",
+          "1. Controles de selección CheckBox"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "2. Controles de selección RadioButton"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "self.etiqueta2.setText(f\"¡Excelente elección! Elegiste:"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "3. Controles de selección ComboBox"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "# 2. Agregar elementos con DATOS OCULTOS (Data Roles)"
+        ]
+      },
+      {
+        "page": 10,
+        "lines": [
+          "4. Controles de selección ListWidget"
+        ]
+      },
+      {
+        "page": 12,
+        "lines": [
+          "# Conectar señales y slots"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema5.pdf",
+    "pages": 47,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 5 \n \n \nElaborado por: MSc. Johanna de la C.  Hernández Alonso             \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 5 : CONTENEDORES Y ORGANIZACIÓN DE INTERFACES EN PYSIDE6  \nContenido: \n1. Diseño de formularios \n2. Contenedores \n3. Contenedor QFormLayout \n4. Contenedor QWidget \n5. Contenedor QFrame \n6. Contenedor QGroupBox \n7. Contenedor QScrollArea \n8. Contenedor QMainWindow  \n9. Contenedor QDockWidget \n10. Contenedor QMdiArea \n11. Organización  visual y principios básicos de usabilidad  \n \n1. Diseño de formularios  \nUn formulari",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "El diseño de formularios en PySide6 consiste en organizar controles de entrada de datos (cajas de texto,"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "En este ejemplo construiremos un Formulario de Registro de Empleados que utiliza QFormLayout dentro de",
+          "class FormularioEmpleado(QWidget):",
+          "self.setWindowTitle(\"Registro de Empleados — Formulario PySide6\")"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "# 1. CONTENEDOR DEL FORMULARIO (QGroupBox + QFormLayout)",
+          "grupo_formulario = QGroupBox(\"Datos Personales del Empleado\")"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "f\"<b>Empleado registrado con éxito:</b><br><br>\""
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "ventana = FormularioEmpleado()"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "• QMainWindow: El contenedor por excelencia para ventanas principales. Incluye áreas"
+        ]
+      },
+      {
+        "page": 10,
+        "lines": [
+          "# 2. Creación de controles de entrada"
+        ]
+      },
+      {
+        "page": 13,
+        "lines": [
+          "funciona como un lienzo o panel vacío que agrupa otros controles mediante un diseño (layout).",
+          "• Organización: Agrupar controles relacionados (por ejemplo, una sección de \"Datos de contacto\" con",
+          "• Modularidad: Mostrar, ocultar o activar/desactivar un grupo entero de controles con un solo método"
+        ]
+      },
+      {
+        "page": 14,
+        "lines": [
+          "layout a ese contenedor (QVBoxLayout(contenedor)), y finalmente añades controles a ese layout",
+          "# 1. CONTENEDOR DE FORMULARIO (QWidget)"
+        ]
+      },
+      {
+        "page": 16,
+        "lines": [
+          "- Un panel tipo \"tarjeta\" con bordes y sombra hundida para agrupar controles."
+        ]
+      },
+      {
+        "page": 18,
+        "lines": [
+          "controles (botones, casillas de verificación, campos de texto) bajo un mismo tema o propósito,",
+          "título (setCheckable(True)). Esto permite al usuario activar o desactivar en bloque todos los controles"
+        ]
+      },
+      {
+        "page": 20,
+        "lines": [
+          "desplazamiento (scroll horizontal y vertical). Se utiliza cuando el contenido o los controles que necesitas",
+          "• Layout (El diseño que organiza los controles dentro del lienzo)."
+        ]
+      },
+      {
+        "page": 21,
+        "lines": [
+          "└── ... (Cualquier cantidad de controles)"
+        ]
+      },
+      {
+        "page": 27,
+        "lines": [
+          "Un QDockWidget no contiene controles directamente en su interior. En su lugar, debes meter tus elementos",
+          "└── QWidget (Contenedor de controles)"
+        ]
+      },
+      {
+        "page": 32,
+        "lines": [
+          "o Zona Lateral (QDockWidget / QFrame): Controles secundarios, inspectores de propiedades"
+        ]
+      },
+      {
+        "page": 34,
+        "lines": [
+          "• Deshabilitar controles inválidos: Deshabilita el botón Enviar (setEnabled(False)) hasta que",
+          "EJEMPLO COMPLETO: FORMULARIO APLICANDO USABILIDAD Y ORGANIZACIÓN"
+        ]
+      },
+      {
+        "page": 41,
+        "lines": [
+          "Que podrías encontrar en un restaurante o tienda.  Este ejemplo  combina distintos tipos de controles"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema6.pdf",
+    "pages": 25,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 6 \n \n \nElaborado por: MSc. Johanna de la Concepción Hernández Alonso             \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 6 : MANEJO DE EVENTOS Y SEÑALES (SIGNALS & SLOTS) EN PYSIDE6 \nContenido: \n1. Programación dirigida por eventos.  \n2. Señales y Slots.  \n3. Eventos más comunes.  \n4. Asociación entre controles y funciones. \n5. Flujo de ejecución de eventos. \n6. Ejemplo que integra controles, eventos más comunes y flujo de ejecución. \n \n1. Programación dirigida por eventos \nUn evento es un objeto que representa una acción o un suce",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "2. Señales y Slots.",
+          "4. Asociación entre controles y funciones.",
+          "6. Ejemplo que integra controles, eventos más comunes y flujo de ejecución."
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "2. Señales (Signals) y Slots",
+          "Comunicación entre controles",
+          "En PySide6, la comunicación entre controles (widgets) se realiza principalmente mediante el",
+          "mecanismo de Señales y Ranuras (Signals and Slots).",
+          "¿Qué son las Señales y las Ranuras?",
+          "Tipos de Comunicación entre Controles",
+          "3. Señales Personalizadas (Signal)"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "self.setWindowTitle(\"Comunicación entre Controles\")",
+          "# 1. Crear los controles",
+          "self.boton_limpiar.clicked.connect(self.limpiar_controles)",
+          "def limpiar_controles(self):",
+          "# Esta función actúa como Slot para modificar ambos controles"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "Las Señales Personalizadas (Signal) te permiten definir tus propios eventos cuando los controles nativos",
+          "Ejemplo de Señales Personalizadas (Signal):"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "Qt requiere que las señales pertenezcan a la estructura de la clase (metaobjeto) antes de"
+        ]
+      },
+      {
+        "page": 12,
+        "lines": [
+          "# Conexiones de señales"
+        ]
+      },
+      {
+        "page": 18,
+        "lines": [
+          "4. Asociación entre controles y funciones",
+          "Sistema de exportación de reportes de ventas",
+          "Los controles gráficos (desplegable, campo de texto, botón y barra de progreso) se asocian explícitamente",
+          "Reporte de Estado:  Permite"
+        ]
+      },
+      {
+        "page": 19,
+        "lines": [
+          "def generar_reporte_ventas(formato: str, limite_filas: int, callback_progreso) ->",
+          "Simula el procesamiento y exportación de un reporte.",
+          "self.setWindowTitle(\"Sistema de Reportes - Asociación Control/Función\")",
+          "# ASOCIACIÓN DIRECTA: Conexión de Controles a Funciones/Slots",
+          "# Componentes / Controles",
+          "self.combo_formato.addItems([\"PDF\", \"Excel (.xlsx)\", \"CSV\"])"
+        ]
+      },
+      {
+        "page": 20,
+        "lines": [
+          "Mapeo explícito entre los controles gráficos (Signals)"
+        ]
+      },
+      {
+        "page": 21,
+        "lines": [
+          "# Bloquear controles durante procesamiento",
+          "self.lbl_estado.setText(\"Procesando reporte...\")",
+          "exito = generar_reporte_ventas(",
+          "QMessageBox.information(self, \"Éxito\", f\"Reporte en {formato} generado"
+        ]
+      },
+      {
+        "page": 23,
+        "lines": [
+          "botón para proteger la transacción y actualiza la"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema7.pdf",
+    "pages": 13,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 7 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 7: VALIDACIÓN DE DATOS INGRESADOS POR EL USUARIO \nContenido: \n1. Validación de datos. \n2. Tipos de validación. \n3. Validadores de PySide6. \n4. Manejo de errores de entrada. \n5. Ejemplo de validación de formulario. \n \n1. Validación de datos \nLa validación consiste en verificar que los datos ingresados por el usuario sean correctos antes de ser \nprocesados o almacenados. \nObjetivos de la validación: \n• Evitar errores de ejecución. \n• Garantizar la integridad de la información. \n• Mejorar la",
+    "topics": [
+      {
+        "page": 6,
+        "lines": [
+          "Se recomienda utilizar manejo de excepciones para controlar errores de entrada"
+        ]
+      },
+      {
+        "page": 9,
+        "lines": [
+          "# --- Conexión de Señales (Validación en tiempo real) ---"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema8.pdf",
+    "pages": 15,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 8 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 8: Menús, barra de herramientas y barra de estado \nContenido: \n1. Menús \n2. Barra de herramientas \n3. Barra de estado \n4. Acciones (QAction) \n5. Organización de comandos en aplicaciones profesionales \n6. Anexo: Desarrollo de aplicaciones con QtDesigner y PySide6 \n \n1. Menús \nUn menú agrupa las funcionalidades de una aplicación de forma organizada. \nEjemplos de menús comunes: \n• Archivo \n• Editar \n• Ver \n• Herramientas \n• Ayuda \nEstructura típica: \nArchivo \n ├── Nuevo \n ├── Abrir \n ├── Gua",
+    "topics": [
+      {
+        "page": 12,
+        "lines": [
+          "En la siguiente tabla, se indican cada uno de los controles utilizados y las propiedades modificadas"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "PAE_Tema9.pdf",
+    "pages": 15,
+    "intro": "Programación de aplicaciones de escritorio  Sesión 9 \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 9: Cuadros de diálogo estándar y personalizados en PySide6 \nContenido: \n1. Cuadros de diálogo \n2. QMessageBox \n3. QFileDialog \n4. QColorDialog \n5. QFontDialog \n6. Cuadros de diálogo personalizados \n7. Cuándo utilizar cada uno \n \n1. Cuadros de diálogo \nUn cuadro de diálogo es una ventana utilizada para solicitar información al usuario, mostrar mensajes o \npermitirle tomar decisiones. \nEjemplos: \n• Confirmar una operación. \n• Seleccionar un archivo. \n• Seleccionar una carpeta. \n• Selecciona",
+    "topics": [
+      {
+        "page": 3,
+        "lines": [
+          "# Conectar señales"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion10_ContenidoTeorico_QTableWidget.pdf",
+    "pages": 13,
+    "intro": "Primera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 10: Integración de componentes de interfaz: Manejo de QTableWidget, \ninserción dinámica y gestión de selección de datos. \nContenido: \n1. Introducción al componente QTableWidget. \n2. Diferencias entre QTableWidget y QTableView (modelo MVC vs. control integrado). \n3. Estructuración de columnas, encabezados y comportamiento de ajuste (QHeaderView.Stretch). \n4. Creación y asignación de celdas mediante QTableWidgetItem. \n5. Captura y eliminación de filas seleccionadas (currentRow(), removeRow()). \n6. Buen",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 10: Integración de componentes de interfaz: Manejo de QTableWidget,",
+          "1. Introducción al componente QTableWidget.",
+          "2. Diferencias entre QTableWidget y QTableView (modelo MVC vs. control integrado).",
+          "4. Creación y asignación de celdas mediante QTableWidgetItem.",
+          "1. Introducción al componente QTableWidget",
+          "widget QTableWidget, un componente  visual basado en elementos ( item-based table view) que integra una",
+          "estructura bidimensional de filas y columnas por omisión y hereda de la clase QTableView.",
+          "A diferencia de los controles que requieren implementar patrones de arquitectura complejos desde cer o,",
+          "QTableWidget integra de manera nativa su propia estructura de almacenamiento en memoria, donde cada casilla"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "from PySide6.QtWidgets i mport QApplication, QTableWidget, QWidget, QVBoxLayout",
+          "# Creación e instanciación del QTableWidget básico",
+          "tabla_demo = QTableWidget(3, 2) # 3 filas, 2 columnas",
+          "2. Diferencias entre QTableWidget y QTableView (modelo MVC vs. control integrado)",
+          "QTableView (Arquitectura MVC) QTableWidget (Control Integrado)",
+          "(QTableView) y el Delegado.",
+          "QTableWidgetItem creados en la",
+          "Caso de Uso Conexión directa a ORMs, bases de datos",
+          "módulos CRUD rápidos."
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "Caso A: QTableWidget (Acceso e Inserción Directa)",
+          "tabla_widget.setItem(0, 0, QTableWidgetItem(\"Dato Directo\"))",
+          "Caso B: QTableView (Requiere clase Modelo intermedia)",
+          "Para configurar la estructura bidimensional de un QTableWidget, se deben definir explícitamente las dimensiones",
+          "from PySide6.QtWidgets import QTableWidget",
+          "tabla = QTableWidget()"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "4. Creación y asignación de celdas mediante QTableWidgetItem",
+          "Cada celda de un QTableWidget requiere un objeto de tipo QTableWidgetItem. Este objeto almacena el texto, la",
+          "from PySide6.QtWidgets import QTableWidgetItem",
+          "item_carnet = QTableWidgetItem(\"2026 -0101\")",
+          "item_nota = QTableWidgetItem(\"88.50\")"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "Se pueden modificar los permisos de interacción sobre un elemento específico:"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "Siempre se debe comprobar que currentRow() no sea -1 antes de acceder a las celdas para evitar excepciones"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "QLabel, QLineEdit, QComboBox, QPushButton, QTableWidget,",
+          "QTableWidgetItem, QMessageBox, QHeaderView, QAbstractItemView"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "# 1. FORMULARIO DE ENTRADA DE DATOS"
+        ]
+      },
+      {
+        "page": 10,
+        "lines": [
+          "self.tabla = QTableWidget()"
+        ]
+      },
+      {
+        "page": 11,
+        "lines": [
+          "# Creación y formato de objetos QTableWidgetIt em",
+          "item_carnet = QTableWidgetItem(carnet)",
+          "item_nombre = QTableWidgetItem(nombre)",
+          "item_carrera = QTableWidgetItem(carrera)",
+          "item_nota = QTableWidgetItem (f\"{nota_num:.2f}\")",
+          "item_estado = QTableWidgetItem(estado)"
+        ]
+      },
+      {
+        "page": 12,
+        "lines": [
+          "\"\"\"Restablece los controles y limpia la selección visual.\"\"\""
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion11_ContenidoTeorico_QtStyleSheets.pdf",
+    "pages": 16,
+    "intro": "Primera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 11: Buenas prácticas de diseño GUI: Personalización visual con Qt Style Sheets (QSS), jerarquía \nvisual, diseño responsivo y usabilidad \nContenido: \n1. Introducción a Qt Style Sheets (QSS) y su analogía con CSS web. \n2. Sintaxis básica: Selectores, propiedades y valores. \n3. Aplicación de estilos: setStyleSheet() global vs. local. \n4. Pseudo-estados y sub-controles para retroalimentación interactiva (:hover, :pressed, \n:disabled). \n5. Carga de archivos de estilo externos .qss para mantener la separac",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "4. Pseudo-estados y sub-controles para retroalimentación interactiva (:hover, :pressed,"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "4. Pseudo-estados y sub-controles para retroalimentación interactiva (:hover, :pressed, :disabled)."
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "3.2 Subcontroles",
+          "Los componentes complejos de Qt (como QComboBox, QTableWidget o QSpinBox) están integrados por"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "3. Límites dimensionales:  Definición de  setMinimumSize() y setMaximumSize() para evitar que controles"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "QTableWidget y un selector dinámico de tema (Oscuro vs. Claro) , este ejemplo implementa un Sistema de",
+          "QTableWidget, QTableWidgetItem, QHeaderView, QMessageBox"
+        ]
+      },
+      {
+        "page": 10,
+        "lines": [
+          "/* Estilizado de la tabla y sus subcontroles */",
+          "QTableWidget {",
+          "QTableWidget::item:selected {"
+        ]
+      },
+      {
+        "page": 12,
+        "lines": [
+          "/* Estilizado de la tabla y sus subcontroles */",
+          "QTableWidget {"
+        ]
+      },
+      {
+        "page": 13,
+        "lines": [
+          "QTableWidget::item:selected {"
+        ]
+      },
+      {
+        "page": 14,
+        "lines": [
+          "# 3. Acciones y Controles de Temas",
+          "self.tabla = QTableWidget()"
+        ]
+      },
+      {
+        "page": 15,
+        "lines": [
+          "self.tabla.setItem(posicion, 0, QTableWidgetItem(usuario))",
+          "self.tabla.setItem(posicion, 1, QTableWidgetItem(correo))",
+          "self.tabla.setItem(posicion, 2, QTableWidgetItem(rol))"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion13_ContenidoTeorico_.pdf",
+    "pages": 4,
+    "intro": "Programación de Aplicaciones de Escritorio  Sesión13  \n \nPrimera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 13: Introducción al Acceso a Bases de Datos, Arquitectura de MySQL \nServer y Definición de Tablas. \nContenido: \n1. Conceptos Fundamentales de Persistencia de Datos.  \n2. Arquitectura Cliente-Servidor de MySQL Server.  \n3. El Entorno MySQL: Motor Server vs. MySQL Workbench.  \n4. Creación Físico-Estructural de la Base de Datos y Definición de Tablas (Comandos DDL). \n5. Resumen de Cierre y Orientación para el Laboratorio. \n \n1. Conceptos Fundament",
+    "topics": [
+      {
+        "page": 2,
+        "lines": [
+          "o Contraseña: Credencial de autenticación del motor."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion14_ContenidoTeorico_.pdf",
+    "pages": 4,
+    "intro": "Programación de Aplicaciones de Escritorio  Sesión14  \nPrimera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 14: Modelo Relacional y Lenguaje SQL Básico (Operaciones DML: INSERT, \nUPDATE, DELETE) \nContenido: \n1. Fundamentos Teóricos del Modelo Relacional  \n2. Reglas de Integridad en el Modelo Relacional  \n3. Introducción al Lenguaje de Manipulación de Datos (DML) \n4. Inserción de Datos (INSERT INTO) \n5. Modificación de Registros ( UPDATE) y el Mantenimiento de la Integridad \n6. Eliminación de Registros (DELETE vs TRUNCATE) \n7. Concepto de Transacciones ",
+    "topics": [
+      {
+        "page": 4,
+        "lines": [
+          "inmediata). En sistemas transaccionales, se pueden agrupar varias operaciones DML mediante",
+          " ROLLBACK: Deshace todos los cambios realizados durante la transacción si ocurre un error,"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion15_ContenidoTeorico_.pdf",
+    "pages": 5,
+    "intro": "Programación de Aplicaciones de Escritorio  Sesión15  \nPrimera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 14: Lenguaje SQL para Consultas DML (SELECT): Filtrado, Ordenamiento y \nCombinación Básica de Tablas \nContenido: \n1. La Operación de Consulta en el Modelo Relacional  \n2. Estructura y Orden de Ejecución Sintáctica de  SELECT \n3. Predicados y Operadores de Filtrado (WHERE) \n4. Ordenamiento y Paginación (ORDER BY y LIMIT) \n5. Combinación Básica de Tablas (INNER JOIN) \n6. Ejemplo Guiado con Contexto Real (Preparación para el Laboratorio) \n7. Resumen",
+    "topics": [
+      {
+        "page": 5,
+        "lines": [
+          "QTableWidget."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion16_ContenidoTeorico_Python_con_MySQL.pdf",
+    "pages": 8,
+    "intro": "Programación de Aplicaciones de Escritorio  Sesión1 6 \nPrimera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 16: Conexión Python-MySQL Server: Conectar la aplicación GUI con MySQL \nServer \nContenido: \n1. Arquitectura de Conectividad y Estándar DB-API 2.0 \n2. Configuración del Entorno e Instalación del Conector \n3. Parámetros Fundamentales de Conexión \n4. Control Robusto de Excepciones con mysql.connector.Error \n5. Arquitectura Modular: Patrón de Clase de Conexión (conexion.py) \n6. Integración Inicial de la Conexión con PySide6 \n7. Resumen de Cierre y Or",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "4. Control Robusto de Excepciones con mysql.connector.Error"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "1. Conexión (connect() ): Establece el socket de red y la sesión autenticada con el servidor.",
+          "4. Confirmación / Reversión (commit() / rollback() ): Controla el estado transaccional de las operaciones."
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "configuración o argumentos por palabra clave (kwargs) con la información de red y autenticación:",
+          "4. Control Robusto de Excepciones con mysql.connector.Error",
+          "El módulo provee la clase de excepción mysql.connector.Error y la subclase errorcode para auditar de forma"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          " Es imperativo gestionar las excepciones mediante mysql.connector.Error para garantizar la estabilidad"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion17_ContenidoTeorico_.pdf",
+    "pages": 7,
+    "intro": "Programación de Aplicaciones de Escritorio  Sesión1 7 \nPrimera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 17: Inserción de Datos (INSERT) y Formularios en PySide6 \nContenido: \n1. Flujo Transaccional DML en el Estándar DB-API 2.0 (cursor, commit y rollback) \n2. Prevención de Inyección SQL mediante Sentencias Preparadas (Parametrización con %s) \n3. Captura del Identificador Autogenerado (cursor.lastrowid) \n4. Control de Excepciones Específicas en Inserción (ER_DUP_ENTRY y \nER_NO_REFERENCED_ROW_2) \n5. Patrón DAO (Data Access Object) para la Entidad Estu",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "4. Control de Excepciones Específicas en Inserción (ER_DUP_ENTRY y",
+          "(DML) como INSERT requiere el control explícito del estado transaccional sobre el motor de base de datos.",
+          "tablas involucradas en la transacción.",
+          " Reversión (conexion.rollback() ): Cancela todas las modificaciones realizadas durante la transacción"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "4. Control de Excepciones Específicas en Inserción"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "transacciones.\"\"\""
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          " Las operaciones  INSERT requieren control transaccional explícito mediante commit() para confirmar",
+          " La captura de excepciones con  ER_DUP_ENTRY (1062) y ER_NO_REFERENCED_ROW_2 (1452)"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion18_ContenidoTeorico_.pdf",
+    "pages": 11,
+    "intro": "Programación de Aplicaciones de Escritorio  Sesión1 8 \nPrimera parte: Conferencia (20 minutos)  \n \nPROGRAMACIÓN DE APLICACIONES DE ESCRITORIO \nSESIÓN 18: Consulta de Datos (SELECT), Visualización en QTableWidget y Filtrado \nen PySide6 \nContenido: \n1. Recuperación de Datos en DB-API 2.0 (cursor.fetchall(), fetchone() y fetchmany()) \n2. Métodos de Lectura y Filtrado en el Patrón DAO \n3. Componente QTableWidget: Estructura, Cabeceras y Mapeo de Registros \n4. Búsqueda y Filtrado Dinámico en Tiempo Real (Señal textChanged) \n5. Gestión de Recursos y Cierre Seguro de Cursores de Lectura \n6. Integraci",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "SESIÓN 18: Consulta de Datos (SELECT), Visualización en QTableWidget y Filtrado",
+          "3. Componente QTableWidget: Estructura, Cabeceras y Mapeo de Registros"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "3. Componente QTableWidget : Estructura y Mapeo",
+          "El componente QTableWidget permite renderizar datos bidimensionales en formato tabular dentro de PySide6."
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "3. Insertar cada celda como un objeto QTableWidgetItem(str(valor))",
+          "QLineEdit, QTableWidget, QTableWidgetItem, QHeaderView, QMessageBox"
+        ]
+      },
+      {
+        "page": 5,
+        "lines": [
+          "QTableWidget {"
+        ]
+      },
+      {
+        "page": 6,
+        "lines": [
+          "# Configuración de QTableWidget",
+          "self.tabla = QTableWidget()",
+          "self.tabla.setEditTriggers(QTableWidget.NoEditTriggers)",
+          "self.tabla.setSelectionBehavior(QTableWidget.SelectRows)",
+          "item = QTableWidgetItem(str(valor))"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          " El componente  QTableWidget administra la presentación visual tabular, requiriendo instancias de"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "QTableWidgetItem por cada celda."
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion_23_PAE_Dual_Edilberto_Lacayo.pdf",
+    "pages": 15,
+    "intro": "UNAN-León | Área de Ciencias y Tecnología | Programación de Aplicaciones de Escritorio  \nAutor: Ing. Edilberto Lacayo Molina   Guía Técnica de Laboratorio - Sesión N° 23  \nUNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN  \nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA  \nCARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN  \nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 23 \nUNIDAD III: PROGRAMACIÓN CONCURRENTE \nComponente Curricular: Programación de Aplicaciones \nde Es critorio \nAño / Ciclo: 2026 / Ciclo IV (Semestral)  \nDocente: Ing. Edilberto Lacayo Molina  Frecuencia / Modalidad: 6 Horas / Presencial",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "CARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN"
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "3. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS"
+        ]
+      },
+      {
+        "page": 3,
+        "lines": [
+          "# FORMA CORRECTA: start() solicita el hilo al SO y ejecuta run()  en paralelo",
+          "# FORMA INCORRECTA (ERROR GRAVE): run() directo ejecuta el código en el Main Thread"
+        ]
+      },
+      {
+        "page": 4,
+        "lines": [
+          "Ejecución transaccional íntegra en el fondo"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "Sección 2: Conexión TCP/IP segura y manejo de excepciones de red.",
+          "# SECCIÓN 2: Canal de Conexión y Control de Excepciones TCP/IP"
+        ]
+      },
+      {
+        "page": 9,
+        "lines": [
+          "# SECCIÓN 2: Construcción de Controles y Layouts"
+        ]
+      },
+      {
+        "page": 15,
+        "lines": [
+          "6. En la siguiente sesión (Sesión N° 24) aprenderemos a comunicar el hilo con la interfaz mediante señales nativas (starte d"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "Sesion_24_PAE_Dual_Edilberto_Lacayo.pdf",
+    "pages": 12,
+    "intro": "UNAN-León | Área de Ciencias y Tecnología | Programación de Aplicaciones de Escritorio  \nDocente: Ing. Edilberto Lacayo Molina   Guía Técnica de Laboratorio - Sesión N° 24  \nUNIVERSIDAD NACIONAL AUTÓNOMA DE NICARAGUA, LEÓN  \nÁREA DE CONOCIMIENTO DE CIENCIAS Y TECNOLOGÍA  \nCARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN  \nGUÍA PRÁCTICA DE LABORATORIO - SESIÓN N° 24 \nUNIDAD III: PROGRAMACIÓN CONCURRENTE \nComponente Curricular: Programa ción de Aplicaciones \nde Es critorio \nAño / Ciclo: 2026 / Ciclo IV (Semestral)  \nDocente: Ing. Edilberto Lacayo Molina  Frecuencia / Modalidad: 6 Horas / Presenc",
+    "topics": [
+      {
+        "page": 1,
+        "lines": [
+          "CARRERA DE INGENIERÍA EN SISTEMAS DE INFORMACIÓN",
+          "Tema N° 3: Es tados de un Hilo y Señales de",
+          "las señales nativas started y finished de QThread. Aprender emos a proteger los controle s contra ejecuciones duplicadas,",
+          "2. DEFINICIONES FORMALES Y ANALOGÍAS DIDÁCTICAS",
+          "auto a otro cliente. Una vez concluidas las pruebas y firmado el reporte, la orden pasa a 'Cerrada/Finalizada'."
+        ]
+      },
+      {
+        "page": 2,
+        "lines": [
+          "2.3. Señales Nativas de Ciclo de Vida: started y finished",
+          "Metodología Pedagógica: Señales Nativas de Ciclo de Vida",
+          "Definición Formal: Las señales started y finished son señales nativas integradas en la clase QThread: 1) started: Se emite",
+          "instante en que run() concluye su última línea, antes de liberar recursos. Al conectar estas señales a métodos"
+        ]
+      },
+      {
+        "page": 7,
+        "lines": [
+          "self.setWindowTitle('Sesión 24: Ciclo de Vida y Señales (started/finished) - SQLite')",
+          "grupo_info = QGroupBox('Control Seguro del Ciclo de Vida y Señales Nativas')"
+        ]
+      },
+      {
+        "page": 8,
+        "lines": [
+          "self.txt_salida.append(' -> [SEÑAL STARTED]: Hilo en ejecución. Co ntroles bloqueados. \\n')"
+        ]
+      },
+      {
+        "page": 9,
+        "lines": [
+          "self.setWindowTitle('Sesión 24: Ciclo de Vida y Señales (started/finished) - MySQL')"
+        ]
+      },
+      {
+        "page": 10,
+        "lines": [
+          "# Conexión explícita de señales nativas sin lambdas",
+          "self.txt_salida.append(' -> [SEÑAL STARTED]: Hilo MySQL iniciado. Controles bloqueados. \\n')"
+        ]
+      },
+      {
+        "page": 11,
+        "lines": [
+          "lbl_sub = QLabel('Sesión N° 24: Estados de un Hilo y Señales de Ciclo de Vida')"
+        ]
+      },
+      {
+        "page": 12,
+        "lines": [
+          "7. En la  Sesión N° 25 aprenderemos a enviar datos continuos en tiempo real mediante señales personalizadas (Signal con",
+          "Conexión de Señales Nativas  Conecta started y finished a métodos manejadores",
+          "inhabilita controles al arrancar.",
+          "Notificación y Diálogos Modales  Reactiv a controles y presenta totales consolidados"
+        ]
+      }
+    ]
+  }
+]
