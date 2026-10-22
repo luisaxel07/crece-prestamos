@@ -1,0 +1,29 @@
+# Configuración privada del equipo (el ejemplo sí se versiona)
+conexion.py
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python, entornos, preferencias y archivos temporales
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.vscode/
+tmp/
+tests/tmp*/
+*.log
+*.tmp
+~$*
+Thumbs.db
+desktop.ini
+
+# Respaldos y exportaciones personales
+respaldos/
+backups/
+comprobantes_privados/
+*.sql.gz
+*.sql.zip
