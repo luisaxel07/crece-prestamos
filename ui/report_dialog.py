@@ -29,13 +29,13 @@ class ReportDialog(QDialog):
         box.addWidget(label((client['nombre_completo']+' · '+client['cedula']) if client else 'Todos los clientes incluidos en el alcance seleccionado','surfaceTitle'))
         totals=reporte['totales']
         box.addWidget(label(f"Principal: C$ {totals['principal']:,.2f}  ·  Cobrado: C$ {totals['cobrado']:,.2f}  ·  Saldo programado: C$ {totals['saldo']:,.2f}",wrap=True))
-        box.addWidget(label('Saldo programado = capital e interés pendientes. Las condiciones de préstamos emitidos se conservan.',wrap=True))
-        self.table=DataTable(['PRÉSTAMO','#','VENCE','CAPITAL INICIAL','TASA MENSUAL','INTERÉS','CAPITAL','CUOTA','PAGADO','PENDIENTE','ESTADO'])
+        box.addWidget(label('Saldo pendiente = capital, interés y recargos pendientes aplicables. Las condiciones de préstamos emitidos se conservan.',wrap=True))
+        self.table=DataTable(['PRÉSTAMO','#','VENCE','CAPITAL INICIAL','TASA DEL PERÍODO','INTERÉS','CAPITAL','CUOTA','PAGADO ORDINARIO','RECARGO','RECARGO PAGADO','PENDIENTE TOTAL','ESTADO'])
         rows=[(loan,q) for loan in reporte['prestamos'] for q in loan['cuotas']]
         self.table.setRowCount(len(rows))
         self.table.setMinimumWidth(0)
         for row,(loan,q) in enumerate(rows):
-            values=[f"PR-{loan['id']:05d}",q['numero_cuota'],q['fecha_vencimiento'].strftime('%d/%m/%Y'),f"C$ {q['saldo_inicial']:,.2f}",f"{q['tasa_mensual']:.4f} %",f"C$ {q['interes']:,.2f}",f"C$ {q['abono_capital']:,.2f}",f"C$ {q['cuota_programada']:,.2f}",f"C$ {q['monto_pagado']:,.2f}",f"C$ {q['saldo']:,.2f}",q['estado']]
+            values=[f"PR-{loan['id']:05d}",q['numero_cuota'],q['fecha_vencimiento'].strftime('%d/%m/%Y'),f"C$ {q['saldo_inicial']:,.2f}",f"{q.get('tasa_periodica',q['tasa_mensual']):.6f} % · {loan.get('frecuencia','MENSUAL').lower()}",f"C$ {q['interes']:,.2f}",f"C$ {q['abono_capital']:,.2f}",f"C$ {q['cuota_programada']:,.2f}",f"C$ {q['monto_pagado']:,.2f}",f"C$ {q.get('recargo',0):,.2f}",f"C$ {q.get('recargo_pagado',0):,.2f}",f"C$ {q['saldo']:,.2f}",q['estado']]
             for col,value in enumerate(values): self.table.setItem(row,col,QTableWidgetItem(str(value)))
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setStretchLastSection(True)

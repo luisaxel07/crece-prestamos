@@ -238,7 +238,7 @@ def inicio():
         flash(str(error), "error")
         resumen, prestamos, cuotas = {"nombre": "Cliente", "saldo": 0, "pendientes": 0}, [], []
     proximas = sorted((cuota for cuota in cuotas if cuota["estado"] != "PAGADA"), key=lambda cuota: cuota["fecha_vencimiento"])[:4]
-    return render_template("inicio.html", resumen=resumen, prestamos=prestamos, proximas=proximas)
+    return render_template("inicio.html", resumen=resumen, prestamos=prestamos, proximas=proximas, avisos=[q for q in cuotas if q.get("aviso_pago")])
 
 
 @aplicacion.route("/prestamos")
@@ -318,7 +318,9 @@ def formato_fecha(valor) -> str:
 
 @aplicacion.template_filter("porcentaje")
 def formato_porcentaje(valor) -> str:
-    return f"{Decimal(valor or 0):,.2f} %"
+    tasa=Decimal(valor or 0)
+    if tasa==tasa.quantize(Decimal('0.01')):return f'{tasa:.2f} %'
+    return format(tasa,'.8f').rstrip('0').rstrip('.')+' %'
 
 
 @aplicacion.errorhandler(403)

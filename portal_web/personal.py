@@ -11,7 +11,7 @@ from crece.servicios.reportes import obtener_reporte, limitar_reporte
 from crece.infraestructura.exportadores import exportar_pdf, exportar_excel
 from crece.infraestructura.base_datos import ErrorConexionBaseDatos
 from crece.nucleo.validaciones import REGLAS, ErrorValidacion, validar_numero_texto, validar_plazo
-from crece.nucleo.amortizacion import calcular_tabla_mensual
+from crece.nucleo.amortizacion import calcular_tabla_credito,tasa_por_periodo,FRECUENCIAS
 from portal_web.seguridad_web import requiere_personal
 
 from crece.servicios.permisos import ErrorPermiso
@@ -75,7 +75,7 @@ def formulario(titulo,campos,guardar,datos=None,volver=None,nota='',plan=None,ad
     return render_template('personal/formulario.html',titulo=titulo,campos=campos,valores=valores,error=error,volver=volver or url_for('personal.inicio'),nota=nota,plan=plan,campo_error=campo_error,adjunto=adjunto,sin_comprobante=sin_comprobante),400 if error else 200
 
 PERSONA=[campo('cedula','Cédula',maxlength=30),campo('nombres','Nombres',maxlength=80),campo('apellidos','Apellidos',maxlength=80),campo('telefono','Teléfono','tel',maxlength=25),campo('correo','Correo electrónico','email',requerido=False,maxlength=160)]
-COL_PRESTAMOS=[('codigo','Préstamo','texto'),('cliente','Cliente','texto'),('monto_principal','Capital','moneda'),('tasa_mensual','Tasa mensual','porcentaje'),('saldo_pendiente','Saldo','moneda'),('estado','Estado','estado')]
+COL_PRESTAMOS=[('codigo','Préstamo','texto'),('cliente','Cliente','texto'),('monto_principal','Capital','moneda'),('tasa_periodica','Tasa del período','porcentaje'),('frecuencia','Frecuencia','texto'),('saldo_pendiente','Saldo','moneda'),('estado','Estado','estado')]
 def codigos(rows): return [dict(d,codigo=f"PR-{d['id']:05d}") for d in rows]
 
 @personal.route('/')
@@ -123,7 +123,7 @@ def prestamos():
     return tabla('Préstamos',COL_PRESTAMOS,codigos(servicios.listar_prestamos()),lambda d:[enlace('Ver detalle','prestamo',id=d['id'])],enlace('Emitir préstamo','prestamo_form'))
 
 def campos_plan():
-    return [campo('monto','Capital (C$)','number',min='0.01',step='0.01'),campo('tasa','Tasa mensual (%)','number',min='0',step='0.0001'),campo('meses','Plazo en meses','number',min=1,max=600,step=1),campo('fecha_primera_cuota','Primera cuota','date')]
+    return [campo('monto','Capital (C$)','number',min='0.01',step='0.01'),campo('tasa','Tasa mensual (%)','number',min='0',step='0.0001'),campo('frecuencia','Frecuencia de pago','select',list(FRECUENCIAS.items())),campo('meses','Número de cuotas','number',min=1,max=600,step=1),campo('fecha_primera_cuota','Primera cuota','date')]
 
 @personal.route('/prestamos/nuevo',methods=['GET','POST'])
 @requiere_personal()
@@ -131,19 +131,19 @@ def prestamo_form():
     clientes=servicios.listar_clientes_para_prestamo()
     campos=[campo('cliente_id','Cliente','select',[(c['id'],c['nombre']+' · '+c['cedula']) for c in clientes])]+campos_plan()+[campo('fecha_desembolso','Desembolso','date')]
     def guardar():
-        id=servicios.registrar_prestamo_mensual(int(texto('cliente_id')),numero('monto'),numero('tasa'),validar_plazo(texto('meses')),date.fromisoformat(texto('fecha_desembolso')),date.fromisoformat(texto('fecha_primera_cuota')))
+        id=servicios.registrar_prestamo_periodico(int(texto('cliente_id')),numero('monto'),numero('tasa'),validar_plazo(texto('meses')),date.fromisoformat(texto('fecha_desembolso')),date.fromisoformat(texto('fecha_primera_cuota')),texto('frecuencia'))
         return url_for('personal.prestamo',id=id)
-    return formulario('Emitir préstamo',campos,guardar,dict(cliente_id=request.args.get('cliente_id',''),fecha_desembolso=date.today().isoformat()),url_for('personal.prestamos'),nota='La tasa se expresa por mes. Antes de emitir puedes revisar el plan en el simulador. Se conservarán las condiciones y cuotas del contrato emitido.')
+    return formulario('Emitir préstamo',campos,guardar,dict(cliente_id=request.args.get('cliente_id',''),frecuencia='MENSUAL',fecha_desembolso=date.today().isoformat()),url_for('personal.prestamos'),nota='Tasa mensual: se divide entre 2 para quincenas de 15 días, se multiplica por 12/52 para semanas y se divide entre 30 para días. El plazo indica cuántas cuotas pagar. Recargo único: 1 % del capital pendiente de cada cuota tras 72 horas desde el final del vencimiento, sin capitalizar recargos. Solo se permite un préstamo sin saldar por cliente. Revisa el plan en el simulador antes de emitir.')
 
 @personal.route('/prestamos/<int:id>')
 @requiere_personal()
 def prestamo(id):
     p=obtener_reporte(prestamo_id=id)['prestamos'][0]
-    columnas=[('numero_cuota','Cuota','texto'),('fecha_vencimiento','Vence','fecha'),('tasa_mensual','Tasa mensual','porcentaje'),('saldo_inicial','Capital inicial','moneda'),('interes','Interés','moneda'),('abono_capital','Capital','moneda'),('cuota_programada','Programada','moneda'),('monto_pagado','Pagado','moneda'),('saldo','Pendiente','moneda'),('estado','Estado','estado')]
+    columnas=[('numero_cuota','Cuota','texto'),('fecha_vencimiento','Vence','fecha'),('tasa_periodica','Tasa del período','porcentaje'),('frecuencia','Frecuencia','texto'),('saldo_inicial','Capital inicial','moneda'),('interes','Interés','moneda'),('abono_capital','Capital','moneda'),('cuota_programada','Programada','moneda'),('monto_pagado','Pagado ordinario','moneda'),('recargo','Recargo total','moneda'),('recargo_pagado','Recargo pagado','moneda'),('recargo_pendiente','Mora pendiente','moneda'),('saldo','Pendiente total','moneda'),('estado','Estado','estado')]
     acciones=lambda d: [enlace('Cobrar','cobro',cuota_id=d['id'])] if d['saldo']>0 and p['estado'] not in ('CANCELADO','BORRADOR') else []
     enlaces=[enlace('Editar notas','notas',id=id),enlace('PDF / Imprimir','exportar',formato='pdf',prestamo_id=id,vista=1),enlace('Excel','exportar',formato='xlsx',prestamo_id=id)]
     if g.usuario_actual['rol']=='ADMINISTRADOR': enlaces.append(enlace('Anular préstamo','baja',tipo='prestamo',id=id))
-    return tabla(f'PR-{id:05d} · {p["cliente"]}',columnas,p['cuotas'],acciones,filtrar=False,detalles=[('Capital',f'C$ {p["monto_principal"]:,.2f}'),('Tasa mensual',f'{p["tasa_mensual"]:.4f} %'),('Plazo',f'{p["plazo_meses"]} meses'),('Estado',p['estado']),('Emitido por',p['empleado']),('Notas',p['notas'])],enlaces=enlaces)
+    return tabla(f'PR-{id:05d} · {p["cliente"]}',columnas,p['cuotas'],acciones,filtrar=False,detalles=[('Capital',f'C$ {p["monto_principal"]:,.2f}'),('Tasa mensual',f'{p["tasa_mensual"]:.4f} %'),('Frecuencia',p['frecuencia_texto']),('Tasa del período',f'{p["tasa_periodica"]:.6f} %'),('Plazo',f'{p["numero_cuotas"]} cuotas'),('Condiciones de mora',f'{p["recargo_porcentaje"]} % único sobre capital pendiente por cuota, tras {p["gracia_horas"]} horas desde el final del vencimiento' if p['recargo_porcentaje'] else 'Sin recargo: contrato anterior'),('Estado',p['estado']),('Emitido por',p['empleado']),('Notas',p['notas'])],enlaces=enlaces)
 
 @personal.route('/prestamos/<int:id>/notas',methods=['GET','POST'])
 @requiere_personal()
@@ -157,7 +157,7 @@ def notas(id):
 @personal.route('/cobros')
 @requiere_personal()
 def cobros():
-    return tabla('Cuotas por cobrar',[('cliente','Cliente','texto'),('prestamo_id','Préstamo','texto'),('numero_cuota','Cuota','texto'),('fecha_vencimiento','Vence','fecha'),('tasa_mensual','Tasa mensual','porcentaje'),('saldo','Pendiente','moneda'),('estado','Estado','estado')],servicios.listar_cuotas_cobro(),lambda d:[enlace('Registrar cobro','cobro',cuota_id=d['id'])],enlaces=[enlace('Pagos y solicitudes','pagos')])
+    return tabla('Cuotas por cobrar',[('cliente','Cliente','texto'),('prestamo_id','Préstamo','texto'),('numero_cuota','Cuota','texto'),('fecha_vencimiento','Vence','fecha'),('tasa_periodica','Tasa del período','porcentaje'),('frecuencia','Frecuencia','texto'),('recargo_pendiente','Mora pendiente','moneda'),('saldo','Pendiente total','moneda'),('estado','Estado','estado')],servicios.listar_cuotas_cobro(),lambda d:[enlace('Registrar cobro','cobro',cuota_id=d['id'])],enlaces=[enlace('Pagos y solicitudes','pagos')])
 
 @personal.route('/cobros/<int:cuota_id>',methods=['GET','POST'])
 @requiere_personal()
@@ -167,12 +167,12 @@ def cobro(cuota_id):
     def guardar():
         servicios.registrar_cobro(cuota_id,numero('monto'),texto('metodo'),texto('referencia'))
         return url_for('personal.prestamo',id=q['prestamo_id'])
-    return formulario('Registrar cobro',[campo('monto','Importe recibido (C$)','number',step='0.01',min='0.01',max=str(q['saldo'])),campo('metodo','Método','select',[(s,s.capitalize()) for s in ('EFECTIVO','TRANSFERENCIA','TARJETA')]),campo('referencia','Referencia','text',requerido=False,maxlength=100)],guardar,dict(monto=q['saldo']),url_for('personal.cobros'),nota=f"{q['cliente']} · Cuota {q['numero_cuota']} · Pendiente C$ {q['saldo']:,.2f}. Registra únicamente un pago recibido y verificado.")
+    return formulario('Registrar cobro',[campo('monto','Importe recibido (C$)','number',step='0.01',min='0.01',max=str(q['saldo'])),campo('metodo','Método','select',[(s,s.capitalize()) for s in ('EFECTIVO','TRANSFERENCIA','TARJETA')]),campo('referencia','Referencia','text',requerido=False,maxlength=100)],guardar,dict(monto=q['saldo']),url_for('personal.cobros'),nota=f"{q['cliente']} · Cuota {q['numero_cuota']} · Pendiente C$ {q['saldo']:,.2f} (recargo pendiente: C$ {q['recargo_pendiente']:,.2f}). Registra únicamente un pago recibido y verificado.")
 
 @personal.route('/pagos')
 @requiere_personal()
 def pagos():
-    return tabla('Pagos y solicitudes',[('cliente','Cliente','texto'),('numero_cuota','Cuota','texto'),('fecha_pago','Fecha','fecha'),('monto','Importe','moneda'),('metodo','Método','texto'),('referencia','Referencia','texto'),('tiene_comprobante','Comprobante','comprobante'),('estado','Estado','estado')],servicios.listar_pagos(),lambda d:[enlace('Revisar','pago',id=d['id'])])
+    return tabla('Pagos y solicitudes',[('cliente','Cliente','texto'),('numero_cuota','Cuota','texto'),('fecha_pago','Fecha','fecha'),('monto','Importe total','moneda'),('monto_recargo','Aplicado a recargo','moneda'),('metodo','Método','texto'),('referencia','Referencia','texto'),('tiene_comprobante','Comprobante','comprobante'),('estado','Estado','estado')],servicios.listar_pagos(),lambda d:[enlace('Revisar','pago',id=d['id'])])
 
 @personal.route('/pagos/<int:id>',methods=['GET','POST'])
 @requiere_personal()
@@ -202,9 +202,9 @@ def simulador():
     plan=[];error=None;values={}
     if request.method=='POST':
         values=request.form
-        try: plan=calcular_tabla_mensual(numero('monto'),numero('tasa'),validar_plazo(texto('meses')),date.fromisoformat(texto('fecha_primera_cuota')))
+        try: plan=calcular_tabla_credito(numero('monto'),numero('tasa'),validar_plazo(texto('meses')),date.fromisoformat(texto('fecha_primera_cuota')),texto('frecuencia'))
         except (ValueError,DecimalException,OverflowError) as exc: error=str(exc)
-    return render_template('personal/formulario.html',titulo='Simulador de préstamo',campos=campos_plan(),valores=values,error=error,volver=url_for('personal.prestamos'),plan=plan,nota='Calcula una proyección sin emitir un préstamo ni guardar movimientos.',boton='Calcular plan'),400 if error else 200
+    return render_template('personal/formulario.html',titulo='Simulador de préstamo',campos=campos_plan(),valores=values or {'frecuencia':'MENSUAL'},error=error,volver=url_for('personal.prestamos'),plan=plan,tasa_periodica=tasa_por_periodo(numero('tasa'),texto('frecuencia')) if plan else None,nota='Proyección de capital e interés ordinario, sin recargos. Quincenal: cada 15 días; semanal: cada 7 días; diario: todos los días del calendario. El número de cuotas determina la duración.',boton='Calcular plan'),400 if error else 200
 
 def reporte_filtrado():
     def id_arg(k):

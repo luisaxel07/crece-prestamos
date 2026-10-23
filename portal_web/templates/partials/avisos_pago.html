@@ -1,0 +1,19 @@
+{% if avisos|default([]) %}
+<section class="panel" aria-label="Avisos de vencimiento" role="status">
+  <h2>Recordatorios de pago</h2>
+  {% set hoy = avisos|selectattr('aviso_pago','equalto','VENCE_HOY')|list %}
+  {% set gracia = avisos|selectattr('aviso_pago','equalto','EN_GRACIA')|list %}
+  {% set vencidas = avisos|selectattr('aviso_pago','equalto','VENCIDA')|list %}
+  <p>{% if hoy %}<strong>{{ hoy|length }} cuota{{ 's' if hoy|length != 1 else '' }} vence{{ 'n' if hoy|length != 1 else '' }} hoy.</strong> {% endif %}{{ gracia|length }} en período de gracia · {{ vencidas|length }} vencida{{ 's' if vencidas|length != 1 else '' }}.</p>
+  <details><summary>Ver detalle de {{ avisos|length }} cuota{{ 's' if avisos|length != 1 else '' }}</summary>
+  {% for q in avisos %}
+  <p class="aviso"><span><strong>Préstamo #{{ q.prestamo_id }} · Cuota {{ q.numero_cuota }}:</strong>
+  {% if q.aviso_pago == 'VENCE_HOY' %}Hoy corresponde tu pago de {{ q.saldo|moneda }}.
+  {% elif q.aviso_pago == 'EN_GRACIA' %}Tu cuota venció el {{ q.fecha_vencimiento|fecha }}. Puedes pagar hasta el {{ q.limite_gracia.strftime('%d/%m/%Y %H:%M') }} (hora de Nicaragua) sin recargo.
+  {% else %}Tienes una cuota vencida. Saldo total: {{ q.saldo|moneda }}. Recargo pendiente: {{ q.recargo_pendiente|default(0)|moneda }}.
+  {% endif %} <a class="enlace" href="{{ url_for('cuotas',cuota=q.id) }}#plan-cuotas">Revisar cuota</a></span></p>
+  {% endfor %}
+  <p>Si ya informaste una transferencia, espera su verificación. Una solicitud confirmada conserva la fecha en que la enviaste para calcular la gracia.</p>
+  </details>
+</section>
+{% endif %}

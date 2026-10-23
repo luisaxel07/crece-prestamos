@@ -6,7 +6,7 @@
   <div><span class="etiqueta">MI CUENTA</span><h1>Hola, {{ resumen.nombre.split(' ')[0] or 'Cliente' }}.</h1><p>Tu información financiera, en un solo lugar.</p></div>
   <a class="boton-secundario" href="{{ url_for('cuotas') }}">Ver mis cuotas {{ icono('flecha') }}</a>
 </section>
-<section class="metricas" aria-label="Resumen de tu cuenta">
+{% include "partials/avisos_pago.html" %}<section class="metricas" aria-label="Resumen de tu cuenta">
   <article class="metrica metrica-destacada"><div class="metrica-titulo"><span>Saldo pendiente</span>{{ icono('pagos') }}</div><strong>{{ resumen.saldo|moneda }}</strong><small>De tus créditos activos</small></article>
   <article class="metrica"><div class="metrica-titulo"><span>Cuotas por atender</span>{{ icono('calendario') }}</div><strong>{{ resumen.pendientes }}</strong><small>Pendientes, parciales o vencidas</small></article>
   <article class="metrica"><div class="metrica-titulo"><span>Mis préstamos</span>{{ icono('prestamos') }}</div><strong>{{ prestamos|length }}</strong><small>Créditos registrados en tu cuenta</small></article>

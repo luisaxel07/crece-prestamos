@@ -2,27 +2,27 @@
 {% from 'partials/ui.html' import icono, estado %}
 {% block titulo %}Cuotas y pagos | CRECE+ PRÉSTAMOS{% endblock %}
 {% block contenido %}
-<section class="encabezado-pagina"><div><span class="etiqueta">MI CALENDARIO</span><h1>Cuotas y pagos</h1><p>Consulta tus vencimientos y da seguimiento a los pagos que has informado.</p></div></section>
+<section class="encabezado-pagina"><div><span class="etiqueta">MI CALENDARIO</span><h1>Cuotas y pagos</h1><p>Consulta tus vencimientos y da seguimiento a los pagos que has informado. El saldo total incluye los recargos pendientes, cuando corresponden.</p></div></section>
 <p class="aviso">{{ icono('info') }}<span>Informa un pago solo después de realizarlo por el canal autorizado. El equipo lo verificará antes de confirmarlo.</span></p>
-<section class="panel tabla-panel" id="plan-cuotas" aria-labelledby="titulo-cuotas">
+{% set avisos = cuotas|selectattr("aviso_pago", "defined")|selectattr("aviso_pago")|list %}{% include "partials/avisos_pago.html" %}<section class="panel tabla-panel" id="plan-cuotas" aria-labelledby="titulo-cuotas">
   <div class="titulo-panel"><h2 id="titulo-cuotas">Mi plan de cuotas</h2><span class="contador" id="conteoCuotas" aria-live="polite">{{ cuotas|length }} cuotas</span></div>
   <div class="filtros" hidden id="filtrosCuotas">
     <div><label for="filtroPrestamo">Préstamo</label><select id="filtroPrestamo"><option value="">Todos los préstamos</option>{% for id in cuotas|map(attribute='prestamo_id')|unique|sort %}<option value="{{ id }}">Préstamo #{{ id }}</option>{% endfor %}</select></div>
     <div><label for="filtroEstado">Mostrar</label><select id="filtroEstado"><option value="">Todas las cuotas</option><option value="pendientes">Por pagar</option><option value="PAGADA">Pagadas</option></select></div>
     <button type="button" class="boton-texto" id="limpiarFiltros">Limpiar filtros</button>
   </div>
-  <div class="tabla-responsive"><table id="tablaCuotas"><caption class="solo-lector">Calendario de cuotas ordenado por fecha de vencimiento, de la más próxima a la más lejana.</caption><thead><tr><th scope="col">Préstamo / cuota</th><th scope="col">Vencimiento</th><th scope="col" class="numero">Tasa mensual</th><th scope="col" class="numero">Programada</th><th scope="col" class="numero">Saldo</th><th scope="col">Estado</th><th scope="col"><span class="solo-lector">Acción</span></th></tr></thead><tbody>
+  <div class="tabla-responsive"><table id="tablaCuotas"><caption class="solo-lector">Calendario de cuotas ordenado por fecha de vencimiento, de la más próxima a la más lejana.</caption><thead><tr><th scope="col">Préstamo / cuota</th><th scope="col">Vencimiento</th><th scope="col" class="numero">Tasa del período</th><th scope="col" class="numero">Programada</th><th scope="col" class="numero">Recargo pendiente</th><th scope="col" class="numero">Saldo total</th><th scope="col">Estado</th><th scope="col"><span class="solo-lector">Acción</span></th></tr></thead><tbody>
   {% for cuota in cuotas %}
     <tr data-prestamo="{{ cuota.prestamo_id }}" data-estado="{{ cuota.estado }}" data-id="{{ cuota.id }}">
       <td data-etiqueta="Préstamo / cuota"><strong>#{{ cuota.prestamo_id }}</strong><span class="detalle-celda">Cuota {{ cuota.numero_cuota }}</span></td>
       <td data-etiqueta="Vencimiento">{{ cuota.fecha_vencimiento|fecha }}</td>
-      <td data-etiqueta="Tasa mensual" class="numero">{% if cuota.tasa_mensual is defined %}{{ cuota.tasa_mensual|porcentaje }}{% else %}—{% endif %}</td>
+      <td data-etiqueta="Tasa del período" class="numero">{% if cuota.tasa_mensual is defined %}{{ cuota.tasa_periodica|default(cuota.tasa_mensual)|porcentaje }}<span class="detalle-celda">{{ cuota.frecuencia|default("MENSUAL") }}</span>{% else %}—{% endif %}</td>
       <td data-etiqueta="Programada" class="numero">{{ cuota.cuota_programada|moneda }}</td>
-      <td data-etiqueta="Saldo" class="numero"><strong>{{ cuota.saldo|moneda }}</strong></td>
+      <td data-etiqueta="Recargo pendiente" class="numero">{{ cuota.recargo_pendiente|default(0)|moneda }}</td><td data-etiqueta="Saldo total" class="numero"><strong>{{ cuota.saldo|moneda }}</strong></td>
       <td data-etiqueta="Estado">{{ estado(cuota.estado) }}</td>
       <td data-etiqueta="Acción">{% if cuota.estado != 'PAGADA' and cuota.saldo > 0 %}<button class="enlace-accion" type="button" data-cuota="{{ cuota.id }}" data-saldo="{{ cuota.saldo }}" data-nombre="Cuota {{ cuota.numero_cuota }} · Préstamo #{{ cuota.prestamo_id }}" aria-label="Informar pago de cuota {{ cuota.numero_cuota }}, préstamo {{ cuota.prestamo_id }}">Informar pago {{ icono('flecha') }}</button>{% else %}<span class="sin-accion">Sin saldo pendiente</span>{% endif %}</td>
     </tr>
-  {% else %}<tr><td colspan="7" class="vacio">No tienes cuotas para mostrar.</td></tr>{% endfor %}
+  {% else %}<tr><td colspan="8" class="vacio">No tienes cuotas para mostrar.</td></tr>{% endfor %}
   </tbody></table></div>
   <p id="sinCoincidencias" class="vacio" hidden>No hay cuotas que coincidan con estos filtros.</p>
 </section>
