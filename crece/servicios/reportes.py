@@ -7,6 +7,12 @@ from crece.infraestructura.repositorios import PrestamosRepositorio
 from crece.servicios.permisos import exigir_personal
 from crece.servicios.gestion import prestamo_dict,cuota_dict,cliente_dict
 
+def totales_cartera(prestamos):
+    valid=[p for p in prestamos if p['estado'] not in ('CANCELADO','BORRADOR')]
+    cuotas=[q for p in valid for q in p['cuotas']]
+    total=lambda campo:sum((q.get(campo,Decimal('0')) for q in cuotas),Decimal('0'))
+    return dict(principal=sum((p['monto_principal'] for p in valid),Decimal('0')),interes=total('interes'),programado=total('cuota_programada'),cobrado=total('monto_pagado')+total('recargo_pagado'),saldo=total('saldo'),recargos=total('recargo'),recargos_cobrados=total('recargo_pagado'),recargos_pendientes=total('recargo_pendiente'))
+
 def obtener_reporte(cliente_id=None,prestamo_id=None):
     with transaccion() as s:
         actor=exigir_personal(s)
@@ -21,7 +27,7 @@ def obtener_reporte(cliente_id=None,prestamo_id=None):
         loans=[dict(**prestamo_dict(p),cuotas=[cuota_dict(q,p) for q in p.cuotas]) for p in rows]
         valid=[p for p in loans if p['estado'] not in ('CANCELADO','BORRADOR')]
         quotas=[q for p in valid for q in p['cuotas']]
-        totals=dict(principal=sum((p['monto_principal'] for p in valid),Decimal('0')),interes=sum((q['interes'] for q in quotas),Decimal('0')),programado=sum((q['cuota_programada'] for q in quotas),Decimal('0')),cobrado=sum((q['monto_pagado'] for q in quotas),Decimal('0')),saldo=sum((q['saldo'] for q in quotas),Decimal('0')))
+        totals=totales_cartera(loans)
         return dict(titulo='Ficha de préstamo y plan de cuotas' if prestamo_id is not None else 'Estado de cuenta del cliente' if client else 'Reporte general de cartera',generado_en=datetime.now(),generado_por=actor.nombre_usuario,cliente=client,prestamos=loans,totales=totals)
 
 def limitar_reporte(reporte,ids):
@@ -29,5 +35,5 @@ def limitar_reporte(reporte,ids):
     report={**reporte,'prestamos':[p for p in reporte['prestamos'] if p['id'] in ids]}
     valid=[p for p in report['prestamos'] if p['estado'] not in ('CANCELADO','BORRADOR')]
     quotas=[q for p in valid for q in p['cuotas']]
-    report['totales']=dict(principal=sum((p['monto_principal'] for p in valid),Decimal('0')),interes=sum((q['interes'] for q in quotas),Decimal('0')),programado=sum((q['cuota_programada'] for q in quotas),Decimal('0')),cobrado=sum((q['monto_pagado'] for q in quotas),Decimal('0')),saldo=sum((q['saldo'] for q in quotas),Decimal('0')))
+    report['totales']=totales_cartera(report['prestamos'])
     return report

@@ -63,6 +63,9 @@ class Prestamo(Base):
     tasa_interes_anual=mapped_column(Numeric(7,4),nullable=False)
     plazo_meses=mapped_column(Integer,nullable=False)
     cuota_mensual=mapped_column(DINERO,nullable=False)
+    frecuencia=mapped_column(String(12),nullable=False,default='MENSUAL',server_default='MENSUAL')
+    recargo_porcentaje=mapped_column(Numeric(5,2),nullable=False,default=Decimal('0'),server_default='0')
+    gracia_horas=mapped_column(Integer,nullable=False,default=72,server_default='72')
     fecha_desembolso=mapped_column(Date,nullable=False)
     fecha_primera_cuota=mapped_column(Date,nullable=False)
     estado=mapped_column(String(20),nullable=False,default='ACTIVO')
@@ -73,6 +76,12 @@ class Prestamo(Base):
     cuotas=relationship('CuotaModel',back_populates='prestamo',order_by='CuotaModel.numero_cuota')
     @property
     def tasa_mensual(self): return self.tasa_interes_anual/Decimal('12')
+    @property
+    def tasa_periodica(self):
+        from crece.nucleo.amortizacion import tasa_por_periodo
+        return tasa_por_periodo(self.tasa_mensual,self.frecuencia)
+    @property
+    def numero_cuotas(self):return self.plazo_meses
 
 class CuotaModel(Base):
     __tablename__='cuotas'
@@ -86,12 +95,15 @@ class CuotaModel(Base):
     abono_capital=mapped_column(DINERO,nullable=False)
     interes=mapped_column(DINERO,nullable=False)
     monto_pagado=mapped_column(DINERO,nullable=False,default=Decimal('0'))
+    recargo_pagado=mapped_column(DINERO,nullable=False,default=Decimal('0'),server_default='0')
     pagado_en=mapped_column(DateTime)
     estado=mapped_column(String(20),nullable=False,default='PENDIENTE')
     prestamo=relationship('Prestamo',back_populates='cuotas')
     pagos=relationship('Pago',back_populates='cuota')
     @property
-    def saldo(self): return self.cuota_programada-self.monto_pagado
+    def saldo(self):
+        from crece.nucleo.mora import detalle_mora
+        return detalle_mora(self)['saldo_total']
 
 class Pago(Base):
     __tablename__='pagos'
@@ -99,6 +111,7 @@ class Pago(Base):
     cuota_id=mapped_column(PK,ForeignKey('cuotas.id'),nullable=False)
     registrado_por=mapped_column(PK,ForeignKey('usuarios.id'))
     monto=mapped_column(DINERO,nullable=False)
+    monto_recargo=mapped_column(DINERO,nullable=False,default=Decimal('0'),server_default='0')
     fecha_pago=mapped_column(DateTime,nullable=False,default=datetime.now)
     metodo=mapped_column(String(20),nullable=False)
     referencia=mapped_column(String(100))

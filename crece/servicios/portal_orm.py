@@ -6,6 +6,7 @@ from crece.infraestructura.modelos import Usuario,Cliente,Prestamo,CuotaModel,Pa
 from crece.infraestructura.repositorios import Repositorio,PrestamosRepositorio
 from crece.servicios.comprobantes import preparar_comprobante,guardar_comprobante
 from crece.servicios.gestion import cuota_dict,prestamo_dict,estado_prestamo,dinero
+from crece.nucleo.mora import ahora_local
 
 def _cliente(s,usuario_id):
     c=s.scalar(select(Cliente).join(Usuario,Usuario.id==Cliente.usuario_id).where(Cliente.usuario_id==int(usuario_id),Cliente.estado=='ACTIVO',Usuario.activo.is_(True),Usuario.rol=='CLIENTE'))
@@ -46,6 +47,6 @@ def solicitar_pago(usuario_id,cuota_id,monto,referencia,comprobante=None):
         if not q or not 0<amount<=q.saldo: raise ValueError('No puedes solicitar ese monto para esta cuota.')
         if s.scalar(select(Pago.id).where(Pago.cuota_id==q.id,Pago.estado=='PENDIENTE_VERIFICACION').limit(1)):
             raise ValueError('Esta cuota ya tiene un aviso pendiente de revisión.')
-        pago=Repositorio(s,Pago).agregar(cuota_id=q.id,monto=amount,metodo='PAGO_CLIENTE',referencia=referencia.strip(),estado='PENDIENTE_VERIFICACION')
+        pago=Repositorio(s,Pago).agregar(cuota_id=q.id,monto=amount,fecha_pago=ahora_local(),metodo='PAGO_CLIENTE',referencia=referencia.strip(),estado='PENDIENTE_VERIFICACION')
         guardar_comprobante(s,pago.id,imagen)
         return pago.id

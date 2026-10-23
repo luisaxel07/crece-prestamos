@@ -1,7 +1,7 @@
 """Patrón repositorio: consultas y ciclo de vida ORM separados de PySide6."""
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload,selectinload
-from .modelos import Prestamo
+from .modelos import Prestamo,CuotaModel
 
 class Repositorio:
     def __init__(self,session,model): self.session,self.model=session,model
@@ -17,7 +17,7 @@ class Repositorio:
 class PrestamosRepositorio(Repositorio):
     def __init__(self,session): super().__init__(session,Prestamo)
     def cartera(self,cliente_id=None,prestamo_id=None):
-        query=select(Prestamo).options(joinedload(Prestamo.cliente),joinedload(Prestamo.creador),selectinload(Prestamo.cuotas)).order_by(Prestamo.id.desc())
+        query=select(Prestamo).options(joinedload(Prestamo.cliente),joinedload(Prestamo.creador),selectinload(Prestamo.cuotas).selectinload(CuotaModel.pagos)).order_by(Prestamo.id.desc())
         if cliente_id is not None: query=query.where(Prestamo.cliente_id==int(cliente_id))
         if prestamo_id is not None: query=query.where(Prestamo.id==int(prestamo_id))
         return list(self.session.scalars(query))

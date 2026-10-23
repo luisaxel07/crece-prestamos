@@ -1,0 +1,93 @@
+{
+  "migracion": "FRECUENCIAS_MORA",
+  "columnas_verificadas": {
+    "clientes": [
+      "id",
+      "usuario_id",
+      "cedula",
+      "nombres",
+      "apellidos",
+      "telefono",
+      "correo",
+      "direccion",
+      "estado",
+      "creado_en"
+    ],
+    "prestamos": [
+      "id",
+      "cliente_id",
+      "creado_por",
+      "monto_principal",
+      "tasa_interes_anual",
+      "plazo_meses",
+      "cuota_mensual",
+      "fecha_desembolso",
+      "fecha_primera_cuota",
+      "estado",
+      "notas",
+      "creado_en"
+    ],
+    "cuotas": [
+      "id",
+      "prestamo_id",
+      "numero_cuota",
+      "fecha_vencimiento",
+      "saldo_inicial",
+      "cuota_programada",
+      "abono_capital",
+      "interes",
+      "monto_pagado",
+      "pagado_en",
+      "estado"
+    ],
+    "pagos": [
+      "id",
+      "cuota_id",
+      "registrado_por",
+      "monto",
+      "fecha_pago",
+      "metodo",
+      "referencia",
+      "estado",
+      "notas",
+      "creado_en"
+    ]
+  },
+  "historial_sin_cambios": true,
+  "antes": {
+    "clientes": {
+      "registros": 2,
+      "sha256": "8526c0c430f4b1ffaee673646c434a3211e89a375dc1481a20023455f86f3a15"
+    },
+    "prestamos": {
+      "registros": 1,
+      "sha256": "1fa0ede54c6e643c3d7a5f1d9c806798a545531a2a1c24ee65a153689ebd06c2"
+    },
+    "cuotas": {
+      "registros": 12,
+      "sha256": "0af8c509ed3823495d7eff95f4ddbe5089a87b12266927def300a886c2324243"
+    },
+    "pagos": {
+      "registros": 3,
+      "sha256": "b004addab56a1f03500f7c4222edfcff112a46088666b24f3bbae00f8553fa66"
+    }
+  },
+  "despues": {
+    "clientes": {
+      "registros": 2,
+      "sha256": "8526c0c430f4b1ffaee673646c434a3211e89a375dc1481a20023455f86f3a15"
+    },
+    "prestamos": {
+      "registros": 1,
+      "sha256": "1fa0ede54c6e643c3d7a5f1d9c806798a545531a2a1c24ee65a153689ebd06c2"
+    },
+    "cuotas": {
+      "registros": 12,
+      "sha256": "0af8c509ed3823495d7eff95f4ddbe5089a87b12266927def300a886c2324243"
+    },
+    "pagos": {
+      "registros": 3,
+      "sha256": "b004addab56a1f03500f7c4222edfcff112a46088666b24f3bbae00f8553fa66"
+    }
+  }
+}
