@@ -9,7 +9,8 @@ Evolución de Brainrot Company hacia una aplicación de escritorio para administ
 - Persistencia con SQLAlchemy ORM, relaciones, repositorios y transacciones con rollback.
 - CRUD de clientes, empleados y cuentas; préstamos con edición de observaciones y anulación que conserva historial.
 - Empleados con credenciales propias y autorización vigente antes de cada operación.
-- Tasa mensual nominal en préstamos nuevos y simulador; contratos y cuotas existentes conservados.
+- Frecuencias mensual, quincenal, semanal y diaria, con número de cuotas y conversión proporcional de la tasa mensual; contratos existentes conservados.
+- Un préstamo sin saldar por cliente y recargo único de mora del 1 % sobre capital pendiente por cuota, tras 72 horas de gracia, únicamente en contratos nuevos.
 - Reportes generales, por cliente y por préstamo; PDF, Excel y vista previa de impresión con todas las cuotas.
 - Cobros, revisión de avisos de pago, corrección de referencias y anulación administrativa con motivo.
 - Temas claro y oscuro, identidad corporativa y contraseñas con PBKDF2.
@@ -21,7 +22,8 @@ Evolución de Brainrot Company hacia una aplicación de escritorio para administ
 3. Instala dependencias: `python -m pip install -r requirements.txt`.
 4. Si aún no está aplicada la migración de seguridad, ejecuta `python database/aplicar_migracion_seguridad.py`.
 5. Ejecuta `python database/actualizar_orm.py --aplicar`. Crea las tablas de empleados, comprobantes y recuperación que falten, y añade la versión de sesión; no recalcula préstamos ni cuotas.
-6. Ejecuta `python app.py` (o `python main.py`).
+6. Ejecuta `python database/actualizar_frecuencias_mora.py --aplicar`. Añade las frecuencias y condiciones de mora; los contratos anteriores quedan mensuales y sin recargos nuevos.
+7. Ejecuta `python app.py` (o `python main.py`).
 
 Las migraciones son aditivas. Las verificaciones de conservación de datos están en `database/verificacion_migracion_orm.json`, `database/verificacion_migracion_comprobantes.json` y `database/verificacion_migracion_recuperacion.json`.
 
@@ -33,7 +35,7 @@ Las migraciones son aditivas. Las verificaciones de conservación de datos está
 - **Reportes:** escoger reporte general o un cliente y aplicar búsqueda/estado; PDF / Excel / imprimir exporta ese mismo alcance visible.
 - **Cobros:** registrar un cobro o abrir historial y solicitudes para confirmar, rechazar, corregir referencia o anular un pago confirmado con motivo (solo administrador).
 
-El saldo programado incluye capital e interés pendientes. La tasa mensual es nominal: 2 % mensual equivale a 24 % nominal anual, sin cambiar las cuotas históricas. Las cuotas muestran tanto la tasa como el interés monetario correspondiente.
+El saldo pendiente incluye capital, interés ordinario y recargos pendientes aplicables, mostrados por separado. La tasa mensual es nominal: 2 % mensual equivale a 24 % nominal anual, sin cambiar las cuotas históricas. El número de cuotas y la frecuencia determinan el calendario. Consulta [frecuencias y mora](docs/frecuencias_y_mora.md) para conversiones, gracia y ejemplos.
 
 La vista previa de impresión muestra el mismo PDF corporativo, en A4 horizontal. Incluye navegación por página, ajuste al ancho y zoom; el botón Imprimir permite escoger impresora, rango y copias. No se envía nada hasta confirmar. Excel incorpora el logo en las tres hojas, bordes de celdas, filas alternadas y encabezados inmovilizados. Los archivos exportados anteriormente deben volver a generarse para obtener el formato nuevo.
 

@@ -75,6 +75,21 @@ class WorkspaceDataTests(unittest.TestCase):
         self.assertIn('Vuelve a calcular',page.resumen.text())
         page.close()
 
+    def test_simulator_frequency_changes_calendar_and_period_interest(self):
+        page=SimuladorPrestamo()
+        page.plazo_meses.setText('4')
+        page.frecuencia.setCurrentIndex(page.frecuencia.findData('DIARIO'))
+        page.calcular_plan()
+        self.assertEqual(page.tabla_cuotas.rowCount(),4)
+        self.assertEqual(page.tabla_cuotas.item(0,3).text(),'C$ 6.67')
+        self.assertIn('0.066667',page.tabla_cuotas.item(0,6).text())
+        self.assertIn('Diario',page.resumen.text())
+        page.frecuencia.setCurrentIndex(page.frecuencia.findData('QUINCENAL'))
+        self.assertIn('Vuelve a calcular',page.resumen.text())
+        page.calcular_plan()
+        self.assertEqual(page.tabla_cuotas.item(0,3).text(),'C$ 100.00')
+        page.close()
+
 
 if __name__=='__main__':
     unittest.main()

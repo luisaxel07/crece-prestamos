@@ -51,7 +51,7 @@ class PrintExportTests(unittest.TestCase):
         self.assertTrue(quotas['D10'].is_date)
         self.assertEqual(quotas['E10'].value,10000)
         self.assertEqual(quotas.max_row,21)
-        self.assertEqual(quotas.auto_filter.ref,'A9:L21')
+        self.assertEqual(quotas.auto_filter.ref,'A9:Q21')
         self.assertEqual(quotas.freeze_panes,'C10')
         self.assertEqual(book['Resumen']['D14'].value,float(self.report['totales']['saldo']))
         self.assertEqual(self.report,before)

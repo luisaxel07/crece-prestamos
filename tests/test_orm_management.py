@@ -28,7 +28,8 @@ class OrmManagementTests(unittest.TestCase):
         establecer_actor(None)
 
     def loan(self,client=None):
-        return g.registrar_prestamo(client or self.client,Decimal('10000'),Decimal('24'),12,date(2026,9,8),date(2026,10,8))
+        # Representa un contrato anterior a la política de mora, como los migrados.
+        return g.registrar_prestamo(client or self.client,Decimal('10000'),Decimal('24'),12,date(2026,9,8),date(2026,10,8),con_recargo=False)
 
     def employee(self):
         return g.guardar_empleado('001-190894-0101E','Asesor','Prueba','88888888','asesor@example.test','Asesor de crédito','asesor_prueba','ClavePrueba-2026')
