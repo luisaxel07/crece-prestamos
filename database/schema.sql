@@ -37,6 +37,8 @@ CREATE TABLE prestamos (
   plazo_meses SMALLINT UNSIGNED NOT NULL,
   cuota_mensual DECIMAL(14,2) NOT NULL,
   frecuencia VARCHAR(12) NOT NULL DEFAULT 'MENSUAL',
+  tipo_credito VARCHAR(20) NOT NULL DEFAULT 'GENERAL',
+  metodo_interes VARCHAR(12) NOT NULL DEFAULT 'FRANCES',
   recargo_porcentaje DECIMAL(5,2) NOT NULL DEFAULT 0,
   gracia_horas INT NOT NULL DEFAULT 72,
   fecha_desembolso DATE NOT NULL,

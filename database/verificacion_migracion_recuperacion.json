@@ -3,38 +3,38 @@
   "historial_sin_cambios": true,
   "antes": {
     "clientes": {
-      "registros": 3,
-      "sha256": "fd27b6815e33eeee3cab8e90b650168eaa4ec96fffd7eda11cac41747f126737"
+      "registros": 2,
+      "sha256": "10e363abb1738107ea603d2c3b4169f22468b52755675fe411da3204e4291483"
     },
     "prestamos": {
-      "registros": 1,
-      "sha256": "1fa0ede54c6e643c3d7a5f1d9c806798a545531a2a1c24ee65a153689ebd06c2"
+      "registros": 2,
+      "sha256": "0cfdecd06c31fc773eddc13632297ce2e12dda2550b67571c4bf91d8f4520cd9"
     },
     "cuotas": {
-      "registros": 12,
-      "sha256": "0af8c509ed3823495d7eff95f4ddbe5089a87b12266927def300a886c2324243"
+      "registros": 24,
+      "sha256": "fd196389cea21ee6735488ae79b15f713607e9de51a9813006f309944b56987f"
     },
     "pagos": {
-      "registros": 3,
-      "sha256": "b004addab56a1f03500f7c4222edfcff112a46088666b24f3bbae00f8553fa66"
+      "registros": 4,
+      "sha256": "1ce65e90eec0e416fee8e62086ca86defe826af07574f3ce20e0ae50fde09184"
     }
   },
   "despues": {
     "clientes": {
-      "registros": 3,
-      "sha256": "fd27b6815e33eeee3cab8e90b650168eaa4ec96fffd7eda11cac41747f126737"
+      "registros": 2,
+      "sha256": "10e363abb1738107ea603d2c3b4169f22468b52755675fe411da3204e4291483"
     },
     "prestamos": {
-      "registros": 1,
-      "sha256": "1fa0ede54c6e643c3d7a5f1d9c806798a545531a2a1c24ee65a153689ebd06c2"
+      "registros": 2,
+      "sha256": "0cfdecd06c31fc773eddc13632297ce2e12dda2550b67571c4bf91d8f4520cd9"
     },
     "cuotas": {
-      "registros": 12,
-      "sha256": "0af8c509ed3823495d7eff95f4ddbe5089a87b12266927def300a886c2324243"
+      "registros": 24,
+      "sha256": "fd196389cea21ee6735488ae79b15f713607e9de51a9813006f309944b56987f"
     },
     "pagos": {
-      "registros": 3,
-      "sha256": "b004addab56a1f03500f7c4222edfcff112a46088666b24f3bbae00f8553fa66"
+      "registros": 4,
+      "sha256": "1ce65e90eec0e416fee8e62086ca86defe826af07574f3ce20e0ae50fde09184"
     }
   }
 }

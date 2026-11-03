@@ -6,7 +6,7 @@
 {% block contenido %}
 <div class="area-trabajo">
 <aside class="panel menu-personal"><span class="etiqueta">ÁREA DE TRABAJO</span><nav aria-label="Gestión financiera">
-{% for ruta,nombre,simbolo in [('inicio','Resumen','inicio'),('clientes','Clientes','persona'),('prestamos','Préstamos','prestamos'),('cobros','Cobros','pagos'),('pagos','Pagos y solicitudes','escudo'),('simulador','Simulador','calendario'),('reportes','Reportes','prestamos')] %}
+{% for ruta,nombre,simbolo in [('inicio','Resumen','inicio'),('clientes','Clientes','persona'),('historial_cuotas','Historial de cuotas','calendario'),('prestamos','Préstamos','prestamos'),('cobros','Cobros','pagos'),('pagos','Pagos y solicitudes','escudo'),('simulador','Simulador','calendario'),('reportes','Reportes','prestamos')] %}
 <a href="{{ url_for('personal.'+ruta) }}" {% if request.endpoint == 'personal.'+ruta %}aria-current="page"{% endif %}>{{ icono(simbolo) }}{{ nombre }}</a>{% endfor %}
 {% if rol_portal=='ADMINISTRADOR' %}<span class="etiqueta">ADMINISTRACIÓN</span>{% for ruta,nombre in [('empleados','Empleados'),('usuarios','Cuentas y permisos')] %}<a href="{{ url_for('personal.'+ruta) }}" {% if request.endpoint == 'personal.'+ruta %}aria-current="page"{% endif %}>{{ icono('persona') }}{{ nombre }}</a>{% endfor %}{% endif %}
 </nav><small>Tu operación continúa en web y escritorio.</small></aside>

@@ -115,15 +115,15 @@ paragraph('Excel incorpora el logotipo oficial en las tres hojas, bordes de celd
 paragraph('La cancelación es cooperativa: una operación interna de escritura que ya está en curso puede tardar en devolver el control. Antes de publicar el archivo se vuelve a comprobar la cancelación. La vista previa usa QPdfDocument y QPdfView para mostrar el PDF corporativo A4 horizontal, con navegación, zoom y ajuste al ancho. QPrinter permite elegir impresora, rango y copias; requiere confirmación antes de imprimir.')
 
 page();heading('6. Reglas de préstamo, empleados y autorización')
-paragraph('Decisión aceptada por el responsable del proyecto: tasa mensual para préstamos nuevos y conservación de los préstamos existentes. Se usa tasa mensual nominal; 2 % mensual equivale a 24 % nominal anual. No se está calculando una tasa efectiva anual ni cobrando doce meses en un crédito de tres meses.')
+paragraph('Modalidades vigentes para prestamos nuevos: asalariado al 12% mensual y credito comercial al 14% mensual, ambos con interes plano calculado sobre el capital inicial de cada periodo. Los prestamos emitidos con anterioridad conservan tasa, metodo y cuotas persistidas.')
 plan=calcular_tabla_mensual(10000,2,3,date(2026,11,21))
 table(['Ejemplo ficticio de tres meses','Resultado calculado'],[
- ['Principal / tasa / plazo','C$ 10,000.00 / 2 % mensual / 3 meses'],
+ ['Principal / modalidad / plazo','C$ 10,000.00 / asalariado al 12% mensual plano / 3 cuotas'],
  ['Primera cuota',f'C$ {plan[0].pago:,.2f}'],
  ['Total de cuotas',f'C$ {sum(q.pago for q in plan):,.2f}'],
  ['Interés total',f'C$ {sum(q.interes for q in plan):,.2f}'],
  ['Saldo de capital final',f'C$ {plan[-1].saldo_final:,.2f}']], [233,266])
-paragraph('Cada fila muestra la tasa mensual nominal constante y el interés monetario calculado sobre el saldo inicial de capital de esa cuota. En el método francés, la tasa permanece igual mientras el importe del interés disminuye al amortizar capital. La última cuota absorbe diferencias de redondeo en centavos.')
+paragraph('En las modalidades nuevas, el interes de cada periodo se calcula sobre el capital inicial y se mantiene fijo. El capital se divide entre las cuotas, con ajuste de centavos en la ultima. Los contratos historicos siguen usando las cuotas que ya estaban guardadas.')
 table(['Operación','Administrador','Empleado activo'],[
  ['Clientes, emisión, cobros y reportes','Permitido','Permitido'],
  ['Administración de empleados y cuentas','Permitido','No permitido'],
@@ -143,7 +143,7 @@ paragraph('7. Recuperar una cuenta ficticia con asistencia del administrador: ve
 page();heading('8. Validación y límites de la evidencia')
 paragraph('Verificación del 22/10/2026: 94 casos distintos revisados. Tras corregir la conexión MySQL y la carga de la vista previa, se repitieron las suites afectadas: las 12 pruebas de recuperación y las 4 de impresión/Excel finalizaron sin fallos. La integración se ejecuta exclusivamente en MySQL/InnoDB, con datos ficticios en un esquema aleatorio creado para la prueba. Al finalizar se elimina solo ese esquema. No se insertan datos de demostración en la base del proyecto; la interfaz sin persistencia usa servicios controlados.')
 table(['Verificación','Resultado / alcance'],[
- ['Conservación de cuotas','Equivalencia 24 % anual nominal / 2 % mensual; editar observaciones no modifica cuotas persistidas.'],
+ ['Conservacion de cuotas','Cada contrato guarda modalidad y metodo; los planes anteriores permanecen intactos.'],
  ['Credenciales y permisos','Empleado inactivo rechazado; personal sin permiso no administra empleados; protección de la propia cuenta administrativa.'],
  ['CRUD y rollback','Duplicados revierten la operación; bajas conservan vínculos cuando hay historia.'],
  ['Cobros','Sobrepago bloqueado; confirmación única; anulación restaura saldo y conserva el registro.'],

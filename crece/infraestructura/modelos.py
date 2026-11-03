@@ -64,6 +64,8 @@ class Prestamo(Base):
     plazo_meses=mapped_column(Integer,nullable=False)
     cuota_mensual=mapped_column(DINERO,nullable=False)
     frecuencia=mapped_column(String(12),nullable=False,default='MENSUAL',server_default='MENSUAL')
+    tipo_credito=mapped_column(String(20),nullable=False,default='GENERAL',server_default='GENERAL')
+    metodo_interes=mapped_column(String(12),nullable=False,default='FRANCES',server_default='FRANCES')
     recargo_porcentaje=mapped_column(Numeric(5,2),nullable=False,default=Decimal('0'),server_default='0')
     gracia_horas=mapped_column(Integer,nullable=False,default=72,server_default='72')
     fecha_desembolso=mapped_column(Date,nullable=False)

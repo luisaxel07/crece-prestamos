@@ -10,7 +10,7 @@ from crece.servicios.permisos import exigir_personal,auditar
 from crece.nucleo.seguridad import generar_hash_contrasena,verificar_contrasena
 from crece.nucleo.validaciones import normalizar_persona, normalizar_nombre
 from crece.nucleo.amortizacion import calcular_tabla_francesa,redondear_moneda
-from crece.nucleo.amortizacion import calcular_tabla_credito,normalizar_frecuencia,FRECUENCIAS
+from crece.nucleo.amortizacion import calcular_tabla_credito,normalizar_frecuencia,normalizar_metodo_interes,FRECUENCIAS,TASAS_TIPO_CREDITO
 from crece.nucleo.mora import detalle_mora,ahora_local
 
 def dinero(value):
@@ -39,7 +39,7 @@ def cuota_dict(q,p=None):
     return dict(id=q.id,cuota_id=q.id,prestamo_id=p.id,cliente=p.cliente.nombre,cliente_id=p.cliente_id,numero_cuota=q.numero_cuota,fecha_vencimiento=q.fecha_vencimiento,saldo_inicial=q.saldo_inicial,cuota_programada=q.cuota_programada,abono_capital=q.abono_capital,interes=q.interes,tasa_mensual=p.tasa_mensual,tasa_periodica=p.tasa_periodica,frecuencia=p.frecuencia,monto_pagado=q.monto_pagado,saldo=mora['saldo_total'],saldo_cuota=mora['saldo_total'],saldo_final=q.saldo_inicial-q.abono_capital,estado=cuota_estado(q),**mora)
 
 def prestamo_dict(p):
-    return dict(id=p.id,cliente=p.cliente.nombre,cliente_id=p.cliente_id,cedula=p.cliente.cedula,monto_principal=p.monto_principal,cuota_mensual=p.cuota_mensual,cuota_periodica=p.cuota_mensual,tasa_interes_anual=p.tasa_interes_anual,tasa_mensual=p.tasa_mensual,tasa_periodica=p.tasa_periodica,frecuencia=p.frecuencia,frecuencia_texto=FRECUENCIAS[p.frecuencia],numero_cuotas=p.numero_cuotas,recargo_porcentaje=p.recargo_porcentaje,gracia_horas=p.gracia_horas,plazo_meses=p.plazo_meses,fecha_desembolso=p.fecha_desembolso,fecha_primera_cuota=p.fecha_primera_cuota,estado=estado_prestamo(p),notas=p.notas,creado_por=p.creado_por,empleado=p.creador.nombre_usuario,saldo_pendiente=sum((q.saldo for q in p.cuotas),Decimal('0')),cuotas_vencidas=sum(cuota_estado(q)=='VENCIDA' for q in p.cuotas))
+    return dict(id=p.id,cliente=p.cliente.nombre,cliente_id=p.cliente_id,cedula=p.cliente.cedula,monto_principal=p.monto_principal,cuota_mensual=p.cuota_mensual,cuota_periodica=p.cuota_mensual,tasa_interes_anual=p.tasa_interes_anual,tasa_mensual=p.tasa_mensual,tasa_periodica=p.tasa_periodica,interes_cuota_inicial=p.cuotas[0].interes if p.cuotas else Decimal('0'),frecuencia=p.frecuencia,frecuencia_texto=FRECUENCIAS[p.frecuencia],tipo_credito=p.tipo_credito,metodo_interes=p.metodo_interes,numero_cuotas=p.numero_cuotas,recargo_porcentaje=p.recargo_porcentaje,gracia_horas=p.gracia_horas,plazo_meses=p.plazo_meses,fecha_desembolso=p.fecha_desembolso,fecha_primera_cuota=p.fecha_primera_cuota,estado=estado_prestamo(p),notas=p.notas,creado_por=p.creado_por,empleado=p.creador.nombre_usuario,saldo_pendiente=sum((q.saldo for q in p.cuotas),Decimal('0')),cuotas_vencidas=sum(cuota_estado(q)=='VENCIDA' for q in p.cuotas))
 
 def validar_persona(cedula,nombres,apellidos,telefono,correo='',**_):
     return normalizar_persona(cedula,nombres,apellidos,telefono,correo)
@@ -111,17 +111,22 @@ def listar_prestamos():
         exigir_personal(s)
         return [prestamo_dict(p) for p in PrestamosRepositorio(s).cartera()]
 
-def registrar_prestamo(cliente_id,monto_principal,tasa_anual,plazo_meses,fecha_desembolso,fecha_primera_cuota,actor_id=None,*,frecuencia='MENSUAL',con_recargo=True):
+def registrar_prestamo(cliente_id,monto_principal,tasa_anual,plazo_meses,fecha_desembolso,fecha_primera_cuota,actor_id=None,*,frecuencia='MENSUAL',con_recargo=True,tipo_credito='GENERAL',metodo_interes='FRANCES'):
     """Contrato anual conservado para compatibilidad; la nueva UI convierte la tasa mensual."""
     principal=dinero(monto_principal)
     annual=Decimal(str(tasa_anual))
     if not annual.is_finite() or not 0<=annual<=Decimal('999.9999') or annual.as_tuple().exponent < -4:
         raise ValueError('La tasa debe poder almacenarse con hasta cuatro decimales nominales anuales.')
     frecuencia=normalizar_frecuencia(frecuencia)
+    tipo_credito=str(tipo_credito).strip().upper()
+    metodo_interes=normalizar_metodo_interes(metodo_interes)
+    if tipo_credito not in (*TASAS_TIPO_CREDITO,'GENERAL'): raise ValueError('Selecciona asalariado o credito comercial.')
+    if tipo_credito in TASAS_TIPO_CREDITO and (annual/Decimal('12')!=TASAS_TIPO_CREDITO[tipo_credito] or metodo_interes!='PLANO'):
+        raise ValueError('La tasa y el metodo deben coincidir con la modalidad elegida.')
     if not isinstance(plazo_meses,int) or isinstance(plazo_meses,bool) or not 1<=plazo_meses<=600 or principal<=0 or principal>Decimal('999999999999.99'):
         raise ValueError('Monto o número de cuotas fuera de rango (1 a 600 cuotas).')
     if fecha_primera_cuota<=fecha_desembolso: raise ValueError('La primera cuota debe ser posterior al desembolso.')
-    tabla=calcular_tabla_credito(principal,annual/Decimal('12'),plazo_meses,fecha_primera_cuota,frecuencia)
+    tabla=calcular_tabla_credito(principal,annual/Decimal('12'),plazo_meses,fecha_primera_cuota,frecuencia,metodo_interes)
     if any(q.abono_capital<0 or q.pago<=0 for q in tabla): raise ValueError('El monto y plazo no permiten cuotas positivas en centavos.')
     if any(q.pago+(redondear_moneda(q.abono_capital/100) if con_recargo else 0)>Decimal('999999999999.99') for q in tabla):
         raise ValueError('El monto y la tasa producen cuotas fuera del rango permitido. Reduce el capital o la tasa.')
@@ -130,10 +135,10 @@ def registrar_prestamo(cliente_id,monto_principal,tasa_anual,plazo_meses,fecha_d
         c=s.get(Cliente,int(cliente_id),with_for_update=True)
         if not c or c.estado!='ACTIVO': raise ValueError('El cliente debe estar activo para emitir un préstamo.')
         _exigir_cliente_sin_prestamo_pendiente(s,c.id)
-        p=Repositorio(s,Prestamo).agregar(cliente_id=c.id,creado_por=user.id,monto_principal=principal,tasa_interes_anual=annual,plazo_meses=plazo_meses,cuota_mensual=tabla[0].pago,frecuencia=frecuencia,recargo_porcentaje=Decimal('1') if con_recargo else Decimal('0'),gracia_horas=72,fecha_desembolso=fecha_desembolso,fecha_primera_cuota=fecha_primera_cuota)
+        p=Repositorio(s,Prestamo).agregar(cliente_id=c.id,creado_por=user.id,monto_principal=principal,tasa_interes_anual=annual,plazo_meses=plazo_meses,cuota_mensual=tabla[0].pago,frecuencia=frecuencia,tipo_credito=tipo_credito,metodo_interes=metodo_interes,recargo_porcentaje=Decimal('1') if con_recargo else Decimal('0'),gracia_horas=72,fecha_desembolso=fecha_desembolso,fecha_primera_cuota=fecha_primera_cuota)
         for q in tabla:
             s.add(CuotaModel(prestamo_id=p.id,numero_cuota=q.numero,fecha_vencimiento=q.fecha_vencimiento,saldo_inicial=q.saldo_inicial,cuota_programada=q.pago,abono_capital=q.abono_capital,interes=q.interes))
-        auditar(s,user,'prestamo',p.id,'EMITIR',tasa_mensual=str(annual/12),cuotas=plazo_meses,frecuencia=frecuencia,recargo_porcentaje=str(p.recargo_porcentaje),gracia_horas=72)
+        auditar(s,user,'prestamo',p.id,'EMITIR',tasa_mensual=str(annual/12),cuotas=plazo_meses,frecuencia=frecuencia,tipo_credito=tipo_credito,metodo_interes=metodo_interes,recargo_porcentaje=str(p.recargo_porcentaje),gracia_horas=72)
         return p.id
 
 
@@ -145,10 +150,10 @@ def registrar_prestamo_mensual(cliente_id,monto_principal,tasa_mensual,plazo_mes
     annual=(monthly*Decimal('12')).normalize()
     return registrar_prestamo(cliente_id,monto_principal,annual,plazo_meses,fecha_desembolso,fecha_primera_cuota)
 
-def registrar_prestamo_periodico(cliente_id,monto_principal,tasa_mensual,numero_cuotas,fecha_desembolso,fecha_primera_cuota,frecuencia='MENSUAL'):
+def registrar_prestamo_periodico(cliente_id,monto_principal,tasa_mensual,numero_cuotas,fecha_desembolso,fecha_primera_cuota,frecuencia='MENSUAL',tipo_credito='GENERAL',metodo_interes='FRANCES'):
     mensual=Decimal(str(tasa_mensual))
-    if not mensual.is_finite() or mensual<0:raise ValueError('Ingresa una tasa mensual válida y no negativa.')
-    return registrar_prestamo(cliente_id,monto_principal,(mensual*12).normalize(),numero_cuotas,fecha_desembolso,fecha_primera_cuota,frecuencia=frecuencia,con_recargo=True)
+    if not mensual.is_finite() or mensual<0:raise ValueError('Ingresa una tasa mensual valida y no negativa.')
+    return registrar_prestamo(cliente_id,monto_principal,(mensual*12).normalize(),numero_cuotas,fecha_desembolso,fecha_primera_cuota,frecuencia=frecuencia,con_recargo=True,tipo_credito=tipo_credito,metodo_interes=metodo_interes)
 
 def actualizar_prestamo(prestamo_id,notas):
     if len(notas)>500: raise ValueError('Las notas admiten hasta 500 caracteres.')
@@ -215,20 +220,43 @@ def _actualizar_estados_cobro(s,q):
     q.prestamo.estado=estado_prestamo(q.prestamo)
 
 def registrar_cobro(cuota_id,monto,metodo,referencia=''):
-    if metodo not in ('EFECTIVO','TRANSFERENCIA','TARJETA'): raise ValueError('Método de pago inválido.')
+    if metodo not in ('EFECTIVO','TRANSFERENCIA','TARJETA'): raise ValueError('Metodo de pago invalido.')
     amount=dinero(monto)
     with transaccion() as s:
         user=exigir_personal(s)
-        q=s.get(CuotaModel,int(cuota_id),with_for_update=True)
-        if not q: raise ValueError('Cuota no encontrada.')
-        if s.scalar(select(Pago.id).where(Pago.cuota_id==q.id,Pago.estado=='PENDIENTE_VERIFICACION').limit(1)):
-            raise ValueError('Hay una solicitud pendiente para esta cuota. Revísala antes de registrar otro cobro.')
-        recargo=_aplicar_pago(s,q,amount)
-        pg=Repositorio(s,Pago).agregar(cuota_id=q.id,registrado_por=user.id,monto=amount,monto_recargo=recargo,fecha_pago=q.pagado_en,metodo=metodo,referencia=referencia.strip()[:100] or None)
-        s.expire(q,['pagos'])
-        _actualizar_estados_cobro(s,q)
-        auditar(s,user,'pago',pg.id,'REGISTRAR',monto=str(amount),recargo=str(recargo))
-        return pg.id
+        selected=s.get(CuotaModel,int(cuota_id),with_for_update=True)
+        if not selected: raise ValueError('Cuota no encontrada.')
+        loan=s.get(Prestamo,selected.prestamo_id,with_for_update=True)
+        if not loan or loan.estado in ('CANCELADO','BORRADOR'): raise ValueError('El prestamo no esta activo para recibir pagos.')
+        cuotas=list(s.scalars(select(CuotaModel).where(CuotaModel.prestamo_id==loan.id).order_by(CuotaModel.numero_cuota).with_for_update()).all())
+        start=next((i for i,q in enumerate(cuotas) if q.id==selected.id),None)
+        if start is None: raise ValueError('Cuota no encontrada en el prestamo.')
+        momento=ahora_local()
+        disponibles=[]
+        for q in cuotas[start:]:
+            saldo=detalle_mora(q,momento)['saldo_total']
+            if saldo>0: disponibles.append((q,saldo))
+        maximo=sum((saldo for _,saldo in disponibles),Decimal('0'))
+        if amount<=0 or amount>maximo:
+            raise ValueError(f'El monto debe ser positivo y no superar el saldo pendiente desde esta cuota: C$ {maximo:,.2f}.')
+        pendientes=[]
+        restantes=amount
+        for q,saldo in disponibles:
+            if restantes<=0: break
+            parte=min(restantes,saldo)
+            if s.scalar(select(Pago.id).where(Pago.cuota_id==q.id,Pago.estado=='PENDIENTE_VERIFICACION').limit(1)):
+                raise ValueError(f'La cuota {q.numero_cuota} tiene una solicitud pendiente. Revisala antes de distribuir el excedente.')
+            pendientes.append((q,parte))
+            restantes-=parte
+        ids=[]
+        for q,parte in pendientes:
+            recargo=_aplicar_pago(s,q,parte)
+            pg=Repositorio(s,Pago).agregar(cuota_id=q.id,registrado_por=user.id,monto=parte,monto_recargo=recargo,fecha_pago=q.pagado_en,metodo=metodo,referencia=referencia.strip()[:100] or None)
+            s.expire(q,['pagos'])
+            _actualizar_estados_cobro(s,q)
+            auditar(s,user,'pago',pg.id,'REGISTRAR',monto=str(parte),recargo=str(recargo))
+            ids.append(pg.id)
+        return ids[0]
 
 def listar_pagos():
     with transaccion() as s:

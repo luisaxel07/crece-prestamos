@@ -4,7 +4,7 @@ Evolución de Brainrot Company hacia una aplicación de escritorio para administ
 
 ## Funciones actuales
 
-- Método francés implementado con `Decimal`: cuota fija, redondeo monetario y saldo final exacto.
+- Metodo frances para contratos historicos y dos modalidades nuevas con interes plano: asalariado al 12% mensual y credito comercial al 14%.
 - Esquema relacional: usuarios por rol, clientes, préstamos, cuotas, pagos y auditoría.
 - Persistencia con SQLAlchemy ORM, relaciones, repositorios y transacciones con rollback.
 - CRUD de clientes, empleados y cuentas; préstamos con edición de observaciones y anulación que conserva historial.
@@ -23,7 +23,8 @@ Evolución de Brainrot Company hacia una aplicación de escritorio para administ
 4. Si aún no está aplicada la migración de seguridad, ejecuta `python database/aplicar_migracion_seguridad.py`.
 5. Ejecuta `python database/actualizar_orm.py --aplicar`. Crea las tablas de empleados, comprobantes y recuperación que falten, y añade la versión de sesión; no recalcula préstamos ni cuotas.
 6. Ejecuta `python database/actualizar_frecuencias_mora.py --aplicar`. Añade las frecuencias y condiciones de mora; los contratos anteriores quedan mensuales y sin recargos nuevos.
-7. Ejecuta `python app.py` (o `python main.py`).
+7. Ejecuta `python database/migracion_modalidades_credito.py --aplicar`. Agrega modalidad y metodo de interes; contratos existentes quedan como GENERAL/FRANCES y no se recalculan.
+8. Ejecuta `python app.py` (o `python main.py`).
 
 Las migraciones son aditivas. Las verificaciones de conservación de datos están en `database/verificacion_migracion_orm.json`, `database/verificacion_migracion_comprobantes.json` y `database/verificacion_migracion_recuperacion.json`.
 
@@ -31,11 +32,11 @@ Las migraciones son aditivas. Las verificaciones de conservación de datos está
 
 - **Empleados:** añadir, editar perfil o credenciales y activar/desactivar. La baja conserva al empleado si tiene operaciones. El empleado accede al mismo escritorio con su propio usuario, sin administrar empleados ni usuarios.
 - **Clientes:** seleccionar fila y usar editar, eliminar/inactivar o estado de cuenta.
-- **Préstamos:** emitir indicando tasa mensual; al terminar se ofrece abrir la ficha. También se abre con doble clic. Contiene PDF, Excel e impresión. Las condiciones financieras emitidas se conservan; se editan observaciones. Un préstamo con movimientos no se elimina físicamente.
+- **Prestamos:** emitir eligiendo Asalariado (12% mensual plano) o Credito comercial (14% mensual plano); las fichas y reportes indican modalidad. Los contratos existentes conservan condiciones.
 - **Reportes:** escoger reporte general o un cliente y aplicar búsqueda/estado; PDF / Excel / imprimir exporta ese mismo alcance visible.
 - **Cobros:** registrar un cobro o abrir historial y solicitudes para confirmar, rechazar, corregir referencia o anular un pago confirmado con motivo (solo administrador).
 
-El saldo pendiente incluye capital, interés ordinario y recargos pendientes aplicables, mostrados por separado. La tasa mensual es nominal: 2 % mensual equivale a 24 % nominal anual, sin cambiar las cuotas históricas. El número de cuotas y la frecuencia determinan el calendario. Consulta [frecuencias y mora](docs/frecuencias_y_mora.md) para conversiones, gracia y ejemplos.
+El saldo pendiente incluye capital, interés ordinario y recargos pendientes aplicables, mostrados por separado. La tasa mensual es nominal: asalariados nuevos usan 12 % mensual y credito comercial 14 % mensual, con interes plano sobre el capital inicial; los existentes conservan su plan, sin cambiar las cuotas históricas. El número de cuotas y la frecuencia determinan el calendario. Consulta [frecuencias y mora](docs/frecuencias_y_mora.md) para conversiones, gracia y ejemplos.
 
 La vista previa de impresión muestra el mismo PDF corporativo, en A4 horizontal. Incluye navegación por página, ajuste al ancho y zoom; el botón Imprimir permite escoger impresora, rango y copias. No se envía nada hasta confirmar. Excel incorpora el logo en las tres hojas, bordes de celdas, filas alternadas y encabezados inmovilizados. Los archivos exportados anteriormente deben volver a generarse para obtener el formato nuevo.
 

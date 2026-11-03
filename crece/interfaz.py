@@ -21,7 +21,7 @@ from ui.workspace_simulator import PremiumSimulator
 from ui.workspace_shell import sidebar as workspace_sidebar, header as workspace_header
 from ui.widgets.premium import symbol, load_fonts
 
-from crece.nucleo.amortizacion import calcular_tabla_francesa, calcular_tabla_mensual, calcular_tabla_credito, tasa_por_periodo, FRECUENCIAS
+from crece.nucleo.amortizacion import calcular_tabla_francesa, calcular_tabla_mensual, calcular_tabla_credito, tasa_por_periodo, FRECUENCIAS, TASAS_TIPO_CREDITO, TIPOS_CREDITO
 from crece.servicios.permisos import establecer_actor
 from crece.servicios.gestion import obtener_cliente, actualizar_cliente, eliminar_cliente, actualizar_prestamo, eliminar_prestamo
 from crece.servicios.cuentas_orm import actualizar_usuario, eliminar_usuario
@@ -533,12 +533,15 @@ class PaginaPrestamos(PaginaListado):
         dialogo.setMinimumWidth(490)
         distribucion = QVBoxLayout(dialogo)
         distribucion.addWidget(etiqueta("Emitir préstamo", "font-size: 21px; font-weight: 800;"))
-        distribucion.addWidget(etiqueta("La tabla de cuotas se generará automáticamente con el método francés.", f"color: {GRIS_NEUTRO};"))
+        distribucion.addWidget(etiqueta("Interes plano: cada cuota calcula intereses sobre el capital inicial.", f"color: {GRIS_NEUTRO};"))
         formulario = QFormLayout(); formulario.setSpacing(11)
         cliente = QComboBox()
         for registro in clientes:
             cliente.addItem(f"{registro['nombre']}  |  {registro['cedula']}", registro["id"])
-        monto, tasa, plazo = QLineEdit("10000"), QLineEdit("2"), QLineEdit("12")
+        monto, tasa, plazo = QLineEdit("10000"), QLineEdit("12"), QLineEdit("12")
+        tipo_credito=QComboBox()
+        for codigo,nombre in TIPOS_CREDITO.items(): tipo_credito.addItem(f"{nombre} | {TASAS_TIPO_CREDITO[codigo]}% mensual",codigo)
+        tasa.setReadOnly(True)
         frecuencia=QComboBox()
         for codigo,nombre in FRECUENCIAS.items():frecuencia.addItem(nombre,codigo)
         for field,tipo in [(monto,"monto"),(tasa,"tasa"),(plazo,"meses")]:configurar_numero(field,tipo)
@@ -547,7 +550,7 @@ class PaginaPrestamos(PaginaListado):
             campo.setCalendarPopup(True)
         fecha_desembolso.setDate(date.today())
         fecha_primera_cuota.setDate(date.today() + timedelta(days=30))
-        for titulo, campo in (("Cliente *", cliente), ("Monto principal (C$) *", monto), ("Tasa mensual (%) *", tasa), ("Frecuencia de pago *", frecuencia), ("Número de cuotas *", plazo), ("Fecha de desembolso", fecha_desembolso), ("Primera cuota", fecha_primera_cuota)):
+        for titulo, campo in (("Cliente *", cliente), ("Modalidad *", tipo_credito), ("Monto principal (C$) *", monto), ("Tasa mensual fija", tasa), ("Frecuencia de pago *", frecuencia), ("Número de cuotas *", plazo), ("Fecha de desembolso", fecha_desembolso), ("Primera cuota", fecha_primera_cuota)):
             formulario.addRow(titulo, campo)
         distribucion.addLayout(formulario)
         vista_previa = etiqueta("Ingresa los datos para calcular la cuota periódica.", f"background: #E6F5ED; border-radius: 8px; padding: 13px; color: {VERDE_OSCURO};")
@@ -559,15 +562,19 @@ class PaginaPrestamos(PaginaListado):
 
         def actualizar_vista_previa() -> None:
             try:
-                tabla = calcular_tabla_credito(leer_numero(monto,"monto"), leer_numero(tasa,"tasa"), leer_plazo(plazo), fecha_primera_cuota.date().toPython(),frecuencia.currentData())
+                tabla = calcular_tabla_credito(leer_numero(monto,"monto"), leer_numero(tasa,"tasa"), leer_plazo(plazo), fecha_primera_cuota.date().toPython(),frecuencia.currentData(),metodo_interes="PLANO")
                 total = sum(cuota.pago for cuota in tabla)
                 periodo=tasa_por_periodo(leer_numero(tasa,'tasa'),frecuencia.currentData())
-                vista_previa.setText(f"Cuota: <b>C${tabla[0].pago:,.2f}</b> · Tasa del período: {periodo:.6f} % · Total ordinario: <b>C${total:,.2f}</b> · Última cuota: {tabla[-1].fecha_vencimiento:%d/%m/%Y}")
+                vista_previa.setText(f"Cuota inicial: <b>C${tabla[0].pago:,.2f}</b> | Interes plano por periodo: {periodo:.6f} % del capital inicial | Total: <b>C${total:,.2f}</b> | Ultima cuota: {tabla[-1].fecha_vencimiento:%d/%m/%Y}")
             except (ValueError, InvalidOperation):
                 vista_previa.setText("Ingresa un monto, tasa y plazo válidos para calcular la cuota.")
 
+        def actualizar_tasa_modalidad() -> None:
+            tasa.setText(str(TASAS_TIPO_CREDITO[tipo_credito.currentData()]))
+            actualizar_vista_previa()
+
+        tipo_credito.currentIndexChanged.connect(actualizar_tasa_modalidad)
         monto.textChanged.connect(actualizar_vista_previa)
-        tasa.textChanged.connect(actualizar_vista_previa)
         plazo.textChanged.connect(actualizar_vista_previa)
         frecuencia.currentIndexChanged.connect(actualizar_vista_previa)
         fecha_primera_cuota.dateChanged.connect(actualizar_vista_previa)
@@ -586,7 +593,7 @@ class PaginaPrestamos(PaginaListado):
                 fecha_cuota = fecha_primera_cuota.date().toPython()
                 if fecha_cuota <= fecha_inicio:
                     raise ValueError("La primera cuota debe ser posterior al desembolso.")
-                codigo = registrar_prestamo_periodico(cliente.currentData(), monto_principal, tasa_mensual, plazo_meses, fecha_inicio, fecha_cuota,frecuencia.currentData())
+                codigo = registrar_prestamo_periodico(cliente.currentData(), monto_principal, tasa_mensual, plazo_meses, fecha_inicio, fecha_cuota,frecuencia.currentData(),tipo_credito=tipo_credito.currentData(),metodo_interes="PLANO")
             except (ValueError, InvalidOperation, ErrorConexionBaseDatos) as error:
                 QMessageBox.warning(dialogo, "No se pudo emitir", str(error))
                 return
@@ -605,7 +612,7 @@ class PaginaCobros(PaginaListado):
             "Cobros",
             "Registra pagos, actualiza saldos y controla las cuotas vencidas.",
             "+  Registrar cobro",
-            ["CLIENTE", "PRÉSTAMO", "CUOTA", "VENCIMIENTO", "SALDO TOTAL", "TASA DEL PERÍODO", "ESTADO", "RECARGO PENDIENTE"],
+            ["CLIENTE", "PRÉSTAMO", "CUOTA", "VENCIMIENTO", "SALDO TOTAL", "TASA DEL PERÍODO EQUIVALENTE (C$)", "ESTADO", "RECARGO PENDIENTE"],
             "No hay cuotas pendientes de cobro.",
             self.abrir_formulario_cobro,
         )
@@ -630,7 +637,7 @@ class PaginaCobros(PaginaListado):
         for fila, cuota in enumerate(cuotas):
             valores = (
                 cuota["cliente"], f"PR-{cuota['prestamo_id']:05d}", f"#{cuota['numero_cuota']}",
-                cuota["fecha_vencimiento"].strftime("%d/%m/%Y"), f"C${cuota['saldo_cuota']:,.2f}", f"{cuota.get('tasa_periodica',cuota['tasa_mensual']):.6f} % · {cuota.get('frecuencia','MENSUAL').lower()}" if cuota.get("tasa_mensual") is not None else "—", cuota["estado"].title(), f"C${cuota.get('recargo_pendiente',0):,.2f}",
+                cuota["fecha_vencimiento"].strftime("%d/%m/%Y"), f"C${cuota['saldo_cuota']:,.2f}", f"C${cuota['interes']:,.2f}", cuota["estado"].title(), f"C${cuota.get('recargo_pendiente',0):,.2f}",
             )
             for columna, valor in enumerate(valores):
                 celda = QTableWidgetItem(str(valor))
@@ -651,7 +658,7 @@ class PaginaCobros(PaginaListado):
         dialogo.setMinimumWidth(480)
         distribucion = QVBoxLayout(dialogo)
         distribucion.addWidget(etiqueta("Registrar cobro", "font-size: 21px; font-weight: 800;"))
-        distribucion.addWidget(etiqueta("El pago se aplicará de inmediato al saldo de la cuota seleccionada.", f"color: {GRIS_NEUTRO};"))
+        distribucion.addWidget(etiqueta("El excedente adelanta las cuotas siguientes del mismo prestamo.", f"color: {GRIS_NEUTRO};"))
         formulario = QFormLayout(); formulario.setSpacing(11)
         cuota = QComboBox()
         for registro in cuotas:
@@ -667,8 +674,9 @@ class PaginaCobros(PaginaListado):
 
         def actualizar_saldo() -> None:
             registro = cuota.currentData()
+            maximo = sum((r['saldo_cuota'] for r in cuotas if r['prestamo_id']==registro['prestamo_id'] and r['numero_cuota']>=registro['numero_cuota']), Decimal('0'))
             monto.setText(f"{registro['saldo_cuota']:.2f}")
-            saldo.setText(f"Saldo total: <b>C${registro['saldo_cuota']:,.2f}</b> · Recargo pendiente: C${registro.get('recargo_pendiente',0):,.2f}")
+            saldo.setText(f"Saldo de esta cuota: <b>C${registro['saldo_cuota']:,.2f}</b> | Recargo: C${registro.get('recargo_pendiente',0):,.2f}<br>Maximo desde esta cuota, incluyendo las siguientes: <b>C${maximo:,.2f}</b>")
             saldo.setWordWrap(True)
 
         cuota.currentIndexChanged.connect(actualizar_saldo)
@@ -687,7 +695,7 @@ class PaginaCobros(PaginaListado):
                 return
             dialogo.accept()
             self.cargar_cobros()
-            QMessageBox.information(self, "Cobro registrado", "El pago fue aplicado correctamente a la cuota.")
+            QMessageBox.information(self, "Cobro registrado", "El pago se distribuyo desde la cuota seleccionada hacia las siguientes, segun el saldo.")
 
         guardar.clicked.connect(guardar_cobro)
         dialogo.exec()
@@ -990,7 +998,7 @@ class PanelCliente(QMainWindow):
         superficie = workspace_surface()
         distribucion = QVBoxLayout(superficie)
         distribucion.setContentsMargins(1,1,1,1)
-        self.tabla = DataTable(['PRÉSTAMO','CUOTA','VENCIMIENTO','CUOTA ORDINARIA','SALDO TOTAL','TASA DEL PERÍODO','ESTADO','RECARGO PENDIENTE'])
+        self.tabla = DataTable(['PRÉSTAMO','CUOTA','VENCIMIENTO','CUOTA ORDINARIA','SALDO TOTAL','TASA DEL PERÍODO EQUIVALENTE (C$)','ESTADO','RECARGO PENDIENTE'])
         distribucion.addWidget(self.tabla,1)
         exterior.addWidget(superficie,1)
         bind_theme(self,pagina)
@@ -1005,7 +1013,7 @@ class PanelCliente(QMainWindow):
         self.resumen.setText(f"Saldo pendiente total: C${resumen['saldo']:,.2f}  ·  Cuotas pendientes: {resumen['pendientes']}")
         self.tabla.setRowCount(len(cuotas))
         for fila, cuota in enumerate(cuotas):
-            valores = (f"PR-{cuota['prestamo_id']:05d}", f"#{cuota['numero_cuota']}", cuota['fecha_vencimiento'].strftime('%d/%m/%Y'), f"C${cuota['cuota_programada']:,.2f}", f"C${cuota['saldo']:,.2f}", f"{cuota.get('tasa_periodica',cuota['tasa_mensual']):.6f} % · {cuota.get('frecuencia','MENSUAL').lower()}", cuota['estado'].title(),f"C${cuota.get('recargo_pendiente',0):,.2f}")
+            valores = (f"PR-{cuota['prestamo_id']:05d}", f"#{cuota['numero_cuota']}", cuota['fecha_vencimiento'].strftime('%d/%m/%Y'), f"C${cuota['cuota_programada']:,.2f}", f"C${cuota['saldo']:,.2f}", f"C${cuota['interes']:,.2f}", cuota['estado'].title(),f"C${cuota.get('recargo_pendiente',0):,.2f}")
             for columna, valor in enumerate(valores): self.tabla.setItem(fila, columna, QTableWidgetItem(str(valor)))
             self.tabla.item(fila, 0).setData(Qt.UserRole, cuota)
 

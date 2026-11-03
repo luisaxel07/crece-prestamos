@@ -8,6 +8,15 @@ from decimal import Decimal, ROUND_HALF_UP
 
 CENTAVO = Decimal("0.01")
 FRECUENCIAS = {'MENSUAL':'Mensual','QUINCENAL':'Quincenal (cada 15 días)','SEMANAL':'Semanal (cada 7 días)','DIARIO':'Diario'}
+TIPOS_CREDITO={'ASALARIADO':'Asalariado','COMERCIAL':'Credito comercial'}
+TASAS_TIPO_CREDITO={'ASALARIADO':Decimal('12'),'COMERCIAL':Decimal('14')}
+METODOS_INTERES={'FRANCES':'Frances sobre saldo','PLANO':'Plano sobre capital inicial'}
+
+def normalizar_metodo_interes(metodo):
+    valor=str(metodo).strip().upper()
+    if valor not in METODOS_INTERES: raise ValueError('Selecciona un metodo de interes valido.')
+    return valor
+
 
 def normalizar_frecuencia(frecuencia):
     valor=str(frecuencia).strip().upper()
@@ -47,13 +56,14 @@ def calcular_tabla_francesa(monto_principal: Decimal, tasa_anual: Decimal, plazo
     return _calcular_tabla(monto_principal,tasa_anual/Decimal('1200'),plazo_meses,fecha_primera_cuota,'MENSUAL')
 
 
-def calcular_tabla_periodica(monto_principal: Decimal, tasa_periodica: Decimal, numero_cuotas: int, fecha_primera_cuota: date, frecuencia: str) -> list[Cuota]:
+def calcular_tabla_periodica(monto_principal: Decimal, tasa_periodica: Decimal, numero_cuotas: int, fecha_primera_cuota: date, frecuencia: str, metodo_interes="FRANCES") -> list[Cuota]:
     """El interés recibido es el porcentaje del período elegido, no una tasa anual."""
-    return _calcular_tabla(monto_principal,Decimal(tasa_periodica)/Decimal('100'),numero_cuotas,fecha_primera_cuota,frecuencia)
+    return _calcular_tabla(monto_principal,Decimal(tasa_periodica)/Decimal('100'),numero_cuotas,fecha_primera_cuota,frecuencia,metodo_interes)
 
 
-def _calcular_tabla(monto_principal,tasa_mensual,plazo_meses,fecha_primera_cuota,frecuencia):
+def _calcular_tabla(monto_principal,tasa_mensual,plazo_meses,fecha_primera_cuota,frecuencia,metodo_interes="FRANCES"):
     frecuencia=normalizar_frecuencia(frecuencia)
+    metodo_interes=normalizar_metodo_interes(metodo_interes)
     monto_principal = Decimal(monto_principal)
     if not isinstance(plazo_meses,int) or isinstance(plazo_meses,bool) or not isinstance(fecha_primera_cuota,date):
         raise ValueError('Indica un número entero de cuotas y una fecha válida.')
@@ -62,6 +72,19 @@ def _calcular_tabla(monto_principal,tasa_mensual,plazo_meses,fecha_primera_cuota
     monto_principal = redondear_moneda(monto_principal)
     if monto_principal <= 0:
         raise ValueError("El monto debe ser al menos un centavo")
+    tabla: list[Cuota] = []
+    saldo = monto_principal
+    if metodo_interes=='PLANO':
+        capital_periodo=redondear_moneda(monto_principal/plazo_meses)
+        interes_periodo=redondear_moneda(monto_principal*tasa_mensual)
+        for numero in range(1,plazo_meses+1):
+            abono_capital=saldo if numero==plazo_meses else min(saldo,capital_periodo)
+            interes=interes_periodo
+            pago=redondear_moneda(abono_capital+interes)
+            saldo_final=redondear_moneda(saldo-abono_capital)
+            tabla.append(Cuota(numero,fecha_cuota(fecha_primera_cuota,numero-1,frecuencia),saldo,pago,abono_capital,interes,saldo_final))
+            saldo=saldo_final
+        return tabla
     if tasa_mensual == 0:
         pago_fijo = redondear_moneda(monto_principal / plazo_meses)
     else:
@@ -82,9 +105,9 @@ def _calcular_tabla(monto_principal,tasa_mensual,plazo_meses,fecha_primera_cuota
     return tabla
 
 
-def calcular_tabla_mensual(monto_principal: Decimal, tasa_mensual: Decimal, plazo_meses: int, fecha_primera_cuota: date) -> list[Cuota]:
-    """Tasa mensual nominal: 2 % mensual equivale a 24 % nominal anual."""
-    return calcular_tabla_francesa(monto_principal, Decimal(tasa_mensual)*Decimal('12'), plazo_meses, fecha_primera_cuota)
+def calcular_tabla_mensual(monto_principal: Decimal, tasa_mensual: Decimal, plazo_meses: int, fecha_primera_cuota: date, metodo_interes="FRANCES") -> list[Cuota]:
+    """Calcula una tabla mensual con tasa nominal y metodo de interes seleccionable."""
+    return _calcular_tabla(monto_principal,Decimal(tasa_mensual)/Decimal('100'),plazo_meses,fecha_primera_cuota,'MENSUAL',metodo_interes)
 
 def tasa_por_periodo(tasa_mensual,frecuencia):
     frecuencia=normalizar_frecuencia(frecuencia)
@@ -95,7 +118,8 @@ def tasa_por_periodo(tasa_mensual,frecuencia):
     if frecuencia=='DIARIO':return tasa/Decimal('30')
     return tasa
 
-def calcular_tabla_credito(monto,tasa_mensual,numero_cuotas,primera_cuota,frecuencia='MENSUAL'):
+def calcular_tabla_credito(monto,tasa_mensual,numero_cuotas,primera_cuota,frecuencia='MENSUAL',metodo_interes='FRANCES'):
     frecuencia=normalizar_frecuencia(frecuencia)
-    if frecuencia=='MENSUAL':return calcular_tabla_mensual(monto,tasa_mensual,numero_cuotas,primera_cuota)
-    return calcular_tabla_periodica(monto,tasa_por_periodo(tasa_mensual,frecuencia),numero_cuotas,primera_cuota,frecuencia)
+    metodo_interes=normalizar_metodo_interes(metodo_interes)
+    if frecuencia=='MENSUAL':return calcular_tabla_mensual(monto,tasa_mensual,numero_cuotas,primera_cuota,metodo_interes)
+    return calcular_tabla_periodica(monto,tasa_por_periodo(tasa_mensual,frecuencia),numero_cuotas,primera_cuota,frecuencia,metodo_interes)

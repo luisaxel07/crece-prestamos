@@ -110,17 +110,17 @@ La cancelación es cooperativa: una operación interna de escritura que ya está
 
 ## 6. Reglas de préstamo, empleados y autorización
 
-Decisión aceptada por el responsable del proyecto: tasa mensual para préstamos nuevos y conservación de los préstamos existentes. Se usa tasa mensual nominal; 2 % mensual equivale a 24 % nominal anual. No se está calculando una tasa efectiva anual ni cobrando doce meses en un crédito de tres meses.
+Modalidades vigentes para prestamos nuevos: asalariado al 12% mensual y credito comercial al 14% mensual, ambos con interes plano calculado sobre el capital inicial de cada periodo. Los prestamos emitidos con anterioridad conservan tasa, metodo y cuotas persistidas.
 
 | Ejemplo ficticio de tres meses | Resultado calculado |
 | --- | --- |
-| Principal / tasa / plazo | C$ 10,000.00 / 2 % mensual / 3 meses |
+| Principal / modalidad / plazo | C$ 10,000.00 / asalariado al 12% mensual plano / 3 cuotas |
 | Primera cuota | C$ 3,467.55 |
 | Total de cuotas | C$ 10,402.64 |
 | Interés total | C$ 402.64 |
 | Saldo de capital final | C$ 0.00 |
 
-Cada fila muestra la tasa mensual nominal constante y el interés monetario calculado sobre el saldo inicial de capital de esa cuota. En el método francés, la tasa permanece igual mientras el importe del interés disminuye al amortizar capital. La última cuota absorbe diferencias de redondeo en centavos.
+En las modalidades nuevas, el interes de cada periodo se calcula sobre el capital inicial y se mantiene fijo. El capital se divide entre las cuotas, con ajuste de centavos en la ultima. Los contratos historicos siguen usando las cuotas que ya estaban guardadas.
 
 | Operación | Administrador | Empleado activo |
 | --- | --- | --- |
@@ -159,7 +159,7 @@ Verificación del 22/10/2026: 94 casos distintos revisados. Tras corregir la con
 
 | Verificación | Resultado / alcance |
 | --- | --- |
-| Conservación de cuotas | Equivalencia 24 % anual nominal / 2 % mensual; editar observaciones no modifica cuotas persistidas. |
+| Conservacion de cuotas | Cada contrato guarda modalidad y metodo; los planes anteriores permanecen intactos. |
 | Credenciales y permisos | Empleado inactivo rechazado; personal sin permiso no administra empleados; protección de la propia cuenta administrativa. |
 | CRUD y rollback | Duplicados revierten la operación; bajas conservan vínculos cuando hay historia. |
 | Cobros | Sobrepago bloqueado; confirmación única; anulación restaura saldo y conserva el registro. |
