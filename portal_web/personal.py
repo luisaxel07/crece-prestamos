@@ -252,49 +252,107 @@ def simulador():
     return render_template('personal/formulario.html',titulo='Simulador de prestamo',campos=campos_plan(),valores=defaults,error=error,volver=url_for('personal.prestamos'),plan=plan,tasa_periodica=tasa_por_periodo(tasa,defaults.get('frecuencia','MENSUAL')) if plan else None,nota='Interes plano: cada cuota calcula interes sobre el capital inicial. Asalariado 12% mensual; credito comercial 14% mensual. El capital se distribuye entre las cuotas. Sin recargos por mora.',boton='Calcular plan'),400 if error else 200
 
 def reporte_filtrado():
-    def id_arg(k):
-        value=request.args.get(k,'')
-        return int(value) if value else None
-    report=obtener_reporte(cliente_id=id_arg('cliente_id'),prestamo_id=id_arg('prestamo_id'))
-    q=request.args.get('q','').strip().casefold()[:160];estado=request.args.get('estado','')
-    prestamos_alcance=report['prestamos']
-    prestamos_base=prestamos_alcance
-    tipo_reporte=request.args.get('tipo_reporte','GENERAL').upper()
-    if tipo_reporte not in ('GENERAL','PRESTAMOS','COBROS'): tipo_reporte='GENERAL'
-    periodo=request.args.get('periodo','').upper()
-    if periodo not in ('DIARIO','SEMANAL','MENSUAL'): periodo=''
+    """Aplica los mismos filtros a la tabla web y a los archivos exportados.
+
+    Los pr?stamos se filtran por fecha de desembolso; los cobros confirmados,
+    por fecha de pago. Los filtros de cliente, estado y texto se aplican al
+    pr?stamo relacionado con cada cobro.
+    """
+    def id_arg(nombre):
+        valor=request.args.get(nombre, '').strip()
+        if not valor:
+            return None
+        if not valor.isdecimal() or int(valor) < 1:
+            abort(400)
+        return int(valor)
+
+    tipo_reporte=request.args.get('tipo_reporte', 'GENERAL').strip().upper()
+    if tipo_reporte not in ('GENERAL', 'PRESTAMOS', 'COBROS'):
+        tipo_reporte='GENERAL'
+
+    periodo=request.args.get('periodo', '').strip().upper()
+    if periodo not in ('DIARIO', 'SEMANAL', 'MENSUAL'):
+        periodo=''
+    fecha_texto=request.args.get('fecha', '').strip()
+    # Una fecha elegida sin periodo equivale a filtrar ese d?a.
+    if not periodo and fecha_texto:
+        periodo='DIARIO'
+
+    referencia=None
+    desde=hasta=None
     if periodo:
-        try: referencia=date.fromisoformat(request.args.get('fecha',''))
-        except ValueError: referencia=date.today()
-        if periodo=='DIARIO': desde=hasta=referencia
+        try:
+            referencia=date.fromisoformat(fecha_texto) if fecha_texto else date.today()
+        except ValueError:
+            referencia=date.today()
+        if periodo=='DIARIO':
+            desde=hasta=referencia
         elif periodo=='SEMANAL':
             desde=referencia-timedelta(days=referencia.weekday())
             hasta=desde+timedelta(days=6)
         else:
-            desde=date(referencia.year,referencia.month,1)
-            siguiente=date(referencia.year+(referencia.month==12),1 if referencia.month==12 else referencia.month+1,1)
+            desde=date(referencia.year, referencia.month, 1)
+            siguiente=date(referencia.year+(referencia.month==12), 1 if referencia.month==12 else referencia.month+1, 1)
             hasta=siguiente-timedelta(days=1)
-        if tipo_reporte!='COBROS':
-            prestamos_base=[p for p in prestamos_base if desde<=p['fecha_desembolso']<=hasta]
-    ids={p['id'] for p in prestamos_base if (not q or q in f"{p['cliente']} {p['cedula']} PR-{p['id']:05d}".casefold()) and (not estado or p['estado']==estado)}
-    if tipo_reporte=='COBROS': ids=set()
-    report=limitar_reporte(report,ids)
-    report['tipo_reporte']=tipo_reporte
-    report['titulo']={'GENERAL':'Reporte general de cartera','PRESTAMOS':'Reporte de préstamos','COBROS':'Reporte de cobros'}[tipo_reporte]
+
+    report=obtener_reporte(cliente_id=id_arg('cliente_id'), prestamo_id=id_arg('prestamo_id'))
+    q=request.args.get('q', '').strip().casefold()[:160]
+    estados_validos={'ACTIVO', 'MORA', 'FINALIZADO', 'CANCELADO', 'BORRADOR'}
+    estado=request.args.get('estado', '').strip().upper()
+    if estado not in estados_validos:
+        estado=''
+
+    def coincide_busqueda(prestamo):
+        texto=f"{prestamo['cliente']} {prestamo['cedula']} PR-{prestamo['id']:05d}".casefold()
+        return not q or q in texto
+
+    # Primero se aplican los filtros comunes a pr?stamos y cobros.
+    prestamos_coincidentes=[p for p in report['prestamos']
+                            if coincide_busqueda(p) and (not estado or p['estado']==estado)]
+
+    # El periodo de pr?stamos corresponde a la fecha de desembolso.
+    prestamos_resultado=prestamos_coincidentes
+    if periodo and tipo_reporte!='COBROS':
+        prestamos_resultado=[p for p in prestamos_resultado if desde<=p['fecha_desembolso']<=hasta]
+    if tipo_reporte=='COBROS':
+        prestamos_resultado=[]
+    report=limitar_reporte(report, {p['id'] for p in prestamos_resultado})
+
+    # Los cobros se cuentan solo si est?n confirmados y el periodo coincide
+    # con la fecha del pago, sin depender de la fecha en que se desembols?.
     pagos=[]
-    if tipo_reporte in ('GENERAL','COBROS'):
-        ids_alcance={p['id'] for p in prestamos_alcance if (not q or q in f"{p['cliente']} {p['cedula']} PR-{p['id']:05d}".casefold()) and (not estado or p['estado']==estado)}
-        pagos=[p for p in servicios.listar_pagos() if p['estado']=='CONFIRMADO' and p['prestamo_id'] in ids_alcance and (not periodo or desde<=p['fecha_pago'].date()<=hasta)]
+    if tipo_reporte in ('GENERAL', 'COBROS'):
+        ids_prestamos={p['id'] for p in prestamos_coincidentes}
+        for pago in servicios.listar_pagos():
+            if pago['estado']!='CONFIRMADO' or pago['prestamo_id'] not in ids_prestamos:
+                continue
+            fecha_pago=pago['fecha_pago']
+            fecha_pago=fecha_pago.date() if hasattr(fecha_pago, 'date') else fecha_pago
+            if periodo and not (desde<=fecha_pago<=hasta):
+                continue
+            pagos.append(pago)
+
+    if tipo_reporte in ('GENERAL', 'COBROS'):
         report['pagos_periodo']=pagos
+    else:
+        report.pop('pagos_periodo', None)
+    report['tipo_reporte']=tipo_reporte
+    report['titulo']={'GENERAL':'Reporte general de cartera',
+                      'PRESTAMOS':'Reporte de pr?stamos',
+                      'COBROS':'Reporte de cobros'}[tipo_reporte]
     if periodo:
-        report['periodo']={'tipo':periodo,'desde':desde,'hasta':hasta,'referencia':referencia}
+        report['periodo']={'tipo':periodo, 'desde':desde, 'hasta':hasta, 'referencia':referencia}
+    else:
+        report.pop('periodo', None)
+
+    validos=[p for p in report['prestamos'] if p['estado'] not in ('BORRADOR', 'CANCELADO')]
     report['resumen_periodo']={
-        'prestamos':sum(p['estado'] not in ('BORRADOR','CANCELADO') for p in report['prestamos']),
-        'capital':sum((p['monto_principal'] for p in report['prestamos'] if p['estado'] not in ('BORRADOR','CANCELADO')),Decimal('0')),
+        'prestamos':len(validos),
+        'capital':sum((p['monto_principal'] for p in validos), Decimal('0')),
         'numero_pagos':len(pagos),
-        'cobrado':sum((p['monto'] for p in pagos),Decimal('0')),
-        'ordinario':sum((p['monto']-p['monto_recargo'] for p in pagos),Decimal('0')),
-        'recargos':sum((p['monto_recargo'] for p in pagos),Decimal('0')),
+        'cobrado':sum((p['monto'] for p in pagos), Decimal('0')),
+        'ordinario':sum((p['monto']-p['monto_recargo'] for p in pagos), Decimal('0')),
+        'recargos':sum((p['monto_recargo'] for p in pagos), Decimal('0')),
     }
     return report
 
@@ -303,7 +361,10 @@ def reporte_filtrado():
 def reportes():
     report=reporte_filtrado()
     params={k:request.args[k] for k in ('cliente_id','prestamo_id','q','estado','periodo','fecha','tipo_reporte') if request.args.get(k)}
-    return render_template('personal/reportes.html',titulo=report['titulo'],reporte=report,clientes=servicios.listar_clientes(),params=params,fecha_reporte=request.args.get('fecha',date.today().isoformat()))
+    if report.get('periodo'):
+        params['periodo']=report['periodo']['tipo']
+        params['fecha']=report['periodo']['referencia'].isoformat()
+    return render_template('personal/reportes.html',titulo=report['titulo'],reporte=report,clientes=servicios.listar_clientes(),params=params,fecha_reporte=params.get('fecha',''))
 
 @personal.route('/reportes/<formato>')
 @requiere_personal()
