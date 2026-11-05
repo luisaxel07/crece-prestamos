@@ -123,7 +123,7 @@ class RecoveryTests(unittest.TestCase):
 
     def test_public_registration_explains_controlled_access_without_fake_form(self):
         b=aplicacion.test_client();html=b.get('/registro').get_data(as_text=True)
-        self.assertIn('Tu cuenta se crea desde administración',html);self.assertNotIn('<form',html)
+        self.assertIn('Las cuentas se crean desde administración',html);self.assertNotIn('<form',html)
         html=b.get('/recuperar').get_data(as_text=True)
         for name in ('username','code','password','confirm'):self.assertIn(f'name="{name}"',html)
 

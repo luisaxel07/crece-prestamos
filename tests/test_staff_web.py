@@ -82,10 +82,10 @@ class StaffWebTests(unittest.TestCase):
     def test_web_loan_records_real_employee_and_existing_contract_is_preserved(self):
         establecer_actor(self.admin);before=obtener_reporte(prestamo_id=self.loan)['prestamos'][0]['cuotas'];nuevo_cliente=servicios.registrar_cliente('001-160891-0002B','Nuevo','Cliente','88888888');establecer_actor(None)
         self.login('asesor_web')
-        r=self.post('/gestion/prestamos/nuevo',dict(cliente_id=str(nuevo_cliente),monto='6000',tasa='3',frecuencia='MENSUAL',meses='6',fecha_desembolso='2026-10-22',fecha_primera_cuota='2026-11-22',creado_por=str(self.admin),rol='ADMINISTRADOR'))
+        r=self.post('/gestion/prestamos/nuevo',dict(cliente_id=str(nuevo_cliente),tipo_credito='ASALARIADO',monto='6000',tasa='12',frecuencia='MENSUAL',meses='6',fecha_desembolso='2026-10-22',fecha_primera_cuota='2026-11-22',creado_por=str(self.admin),rol='ADMINISTRADOR'))
         self.assertEqual(r.status_code,302)
         with transaccion() as s:
-            p=s.scalar(select(Prestamo).where(Prestamo.id!=self.loan));self.assertEqual(p.creado_por,self.emp);self.assertEqual(p.tasa_mensual,3);self.assertEqual(len(p.cuotas),6)
+            p=s.scalar(select(Prestamo).where(Prestamo.id!=self.loan));self.assertEqual(p.creado_por,self.emp);self.assertEqual(p.tasa_mensual,12);self.assertEqual(len(p.cuotas),6)
         establecer_actor(self.admin);self.assertEqual(before,obtener_reporte(prestamo_id=self.loan)['prestamos'][0]['cuotas']);establecer_actor(None)
         self.assertEqual(self.post('/gestion/prestamos/nuevo',dict(cliente_id=self.cid,monto='NaN',tasa=2,meses=6,fecha_desembolso='2026-10-22',fecha_primera_cuota='2026-11-22')).status_code,400)
     def test_customer_crud_and_credential_provisioning(self):
@@ -127,7 +127,7 @@ class StaffWebTests(unittest.TestCase):
         from openpyxl import load_workbook
         r=self.browser.get(f'/gestion/reportes/xlsx?cliente_id={self.cid}')
         self.assertEqual(r.status_code,200);self.assertEqual(r.headers['Cache-Control'],'no-store')
-        wb=load_workbook(BytesIO(r.data));self.assertEqual(wb.sheetnames,['Resumen','Préstamos','Cuotas'])
+        wb=load_workbook(BytesIO(r.data));self.assertEqual(wb.sheetnames,['Resumen','Préstamos','Cuotas','Pagos periodo'])
         self.assertTrue(all(ws._images for ws in wb));self.assertEqual(wb['Cuotas'].max_row,21)
         self.assertFalse(any('Ajeno' in str(c.value) for row in wb['Cuotas'] for c in row))
         r=self.browser.get(f'/gestion/reportes/pdf?prestamo_id={self.loan}&vista=1')
@@ -145,7 +145,7 @@ class StaffWebTests(unittest.TestCase):
         self.assertEqual(self.post(f'/gestion/bajas/empleado/{new["id"]}',dict(confirmacion='SI')).status_code,302)
     def test_simulator_does_not_issue_and_invalid_forms_do_not_mutate(self):
         self.login()
-        r=self.post('/gestion/simulador',dict(monto='10000',tasa='2',frecuencia='MENSUAL',meses='12',fecha_primera_cuota='2026-11-22'))
+        r=self.post('/gestion/simulador',dict(tipo_credito='ASALARIADO',monto='10000',tasa='12',frecuencia='MENSUAL',meses='12',fecha_primera_cuota='2026-11-22'))
         self.assertEqual(r.status_code,200);self.assertIn('Plan de cuotas',r.get_data(as_text=True))
         r=self.post('/gestion/clientes/nuevo',dict(cedula='001-170892-0003C',nombres='<script>alert(1)</script>',apellidos='X',telefono='x',correo='incorrecto'))
         self.assertEqual(r.status_code,400);self.assertNotIn(b'<script>alert(1)</script>',r.data)
@@ -164,7 +164,7 @@ class StaffWebTests(unittest.TestCase):
 
     def test_frequency_selection_is_persisted_and_duplicate_loan_warns(self):
         self.login('asesor_web')
-        datos=dict(cliente_id=self.cid,monto='1000',tasa='2',meses='4',frecuencia='SEMANAL',fecha_desembolso='2026-10-22',fecha_primera_cuota='2026-11-01')
+        datos=dict(cliente_id=self.cid,tipo_credito='ASALARIADO',monto='1000',tasa='12',meses='4',frecuencia='SEMANAL',fecha_desembolso='2026-10-22',fecha_primera_cuota='2026-11-10')
         respuesta=self.post('/gestion/prestamos/nuevo',datos)
         self.assertEqual(respuesta.status_code,400)
         self.assertIn('ya tiene asignado',respuesta.get_data(as_text=True))
@@ -175,7 +175,7 @@ class StaffWebTests(unittest.TestCase):
         with transaccion() as s:
             p=s.scalar(select(Prestamo).where(Prestamo.cliente_id==nuevo))
             self.assertEqual(p.frecuencia,'SEMANAL');self.assertEqual(p.numero_cuotas,4)
-            self.assertEqual(p.cuotas[1].fecha_vencimiento,date(2026,11,8))
+            self.assertEqual(p.cuotas[1].fecha_vencimiento,date(2026,11,17))
             self.assertEqual(p.recargo_porcentaje,1)
         detalle=self.browser.get(respuesta.location).get_data(as_text=True)
         self.assertIn('Tasa del período',detalle);self.assertIn('Recargo total',detalle)
@@ -184,10 +184,10 @@ class StaffWebTests(unittest.TestCase):
     def test_simulator_all_four_frequencies_require_valid_selection(self):
         self.login()
         for frecuencia in ('MENSUAL','QUINCENAL','SEMANAL','DIARIO'):
-            respuesta=self.post('/gestion/simulador',dict(monto='1000',tasa='2',meses='4',frecuencia=frecuencia,fecha_primera_cuota='2026-11-01'))
+            respuesta=self.post('/gestion/simulador',dict(tipo_credito='ASALARIADO',monto='1000',tasa='12',meses='4',frecuencia=frecuencia,fecha_primera_cuota='2026-11-10'))
             self.assertEqual(respuesta.status_code,200)
-            self.assertIn('Tasa del período',respuesta.get_data(as_text=True))
-        self.assertEqual(self.post('/gestion/simulador',dict(monto='1000',tasa='2',meses='4',frecuencia='OTRA',fecha_primera_cuota='2026-11-01')).status_code,400)
+            self.assertIn('Tasa del periodo',respuesta.get_data(as_text=True))
+        self.assertEqual(self.post('/gestion/simulador',dict(tipo_credito='ASALARIADO',monto='1000',tasa='12',meses='4',frecuencia='OTRA',fecha_primera_cuota='2026-11-10')).status_code,400)
 
 if __name__=='__main__':unittest.main()
 

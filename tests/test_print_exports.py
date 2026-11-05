@@ -47,11 +47,11 @@ class PrintExportTests(unittest.TestCase):
             self.assertEqual(sheet['A9'].fill.fgColor.rgb,'00003366')
             self.assertTrue(sheet.print_title_rows)
         quotas=book['Cuotas']
-        self.assertEqual(quotas['F10'].value,.02)
+        self.assertEqual(quotas['F10'].value,float(self.report['prestamos'][0]['cuotas'][0]['interes']))
         self.assertTrue(quotas['D10'].is_date)
         self.assertEqual(quotas['E10'].value,10000)
         self.assertEqual(quotas.max_row,21)
-        self.assertEqual(quotas.auto_filter.ref,'A9:Q21')
+        self.assertEqual(quotas.auto_filter.ref,'A9:P21')
         self.assertEqual(quotas.freeze_panes,'C10')
         self.assertEqual(book['Resumen']['D14'].value,float(self.report['totales']['saldo']))
         self.assertEqual(self.report,before)

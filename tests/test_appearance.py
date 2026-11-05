@@ -21,7 +21,8 @@ class AppearanceTests(unittest.TestCase):
         cls.app=QApplication.instance() or QApplication([])
 
     def setUp(self):
-        self.temp_root=Path(__file__).resolve().parents[2]/'tmp'
+        self.temp_root=Path(__file__).resolve().parent/'tmp'
+        self.temp_root.mkdir(parents=True,exist_ok=True)
         self.temp=TemporaryDirectory(prefix='appearance-test-',dir=self.temp_root)
         self.settings=QSettings(self.temp.name+'/appearance.ini',QSettings.IniFormat)
         self.controller=appearance()
@@ -74,12 +75,15 @@ class AppearanceTests(unittest.TestCase):
         field.setText('usuario sin enviar')
         first.add_field('Usuario',field)
         second=AccessDialog(first)
-        for theme in ['light','dark']:
-            self.controller.set_theme(theme)
-            self.assertEqual(first.scene.theme,theme)
-            self.assertEqual(second.scene.theme,theme)
-            self.assertEqual(field.text(),'usuario sin enviar')
-            self.assertEqual(field.echoMode(),QLineEdit.Normal)
+        # Avoid the expensive blurred wallpaper render; this test targets theme
+        # propagation and preservation of the in-progress input only.
+        with patch.object(first.scene,'refresh_background'), patch.object(second.scene,'refresh_background'):
+            for theme in ['light','dark']:
+                self.controller.set_theme(theme)
+                self.assertEqual(first.scene.theme,theme)
+                self.assertEqual(second.scene.theme,theme)
+                self.assertEqual(field.text(),'usuario sin enviar')
+                self.assertEqual(field.echoMode(),QLineEdit.Normal)
         first.close()
         second.close()
         second.deleteLater()

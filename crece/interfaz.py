@@ -22,7 +22,7 @@ from ui.workspace_shell import sidebar as workspace_sidebar, header as workspace
 from ui.widgets.premium import symbol, load_fonts
 
 from crece.nucleo.amortizacion import calcular_tabla_francesa, calcular_tabla_mensual, calcular_tabla_credito, tasa_por_periodo, FRECUENCIAS, TASAS_TIPO_CREDITO, TIPOS_CREDITO
-from crece.servicios.permisos import establecer_actor
+from crece.servicios.permisos import establecer_actor, restablecer_actor
 from crece.servicios.gestion import obtener_cliente, actualizar_cliente, eliminar_cliente, actualizar_prestamo, eliminar_prestamo
 from crece.servicios.cuentas_orm import actualizar_usuario, eliminar_usuario
 from crece.servicios.reportes import obtener_reporte
@@ -312,7 +312,7 @@ class PaginaListado(QWidget):
 
 
 class PaginaClientes(PaginaListado):
-    def __init__(self) -> None:
+    def __init__(self, actor_id=None, version_sesion=1) -> None:
         super().__init__(
             "Clientes",
             "Administra la información y el historial de cada cliente.",
@@ -321,6 +321,8 @@ class PaginaClientes(PaginaListado):
             "Todavía no hay clientes. Registra el primero para iniciar la cartera.",
             self.abrir_formulario_cliente,
         )
+        self.actor_id=actor_id
+        self.version_sesion=version_sesion
         self.tabla.cellDoubleClicked.connect(self.abrir_ficha_cliente)
         actions=QHBoxLayout()
         actions.addWidget(workspace_button('Editar cliente',self.editar_seleccionado,False))
@@ -330,6 +332,14 @@ class PaginaClientes(PaginaListado):
         actions.addWidget(workspace_button('Préstamos / reporte del cliente',self.reporte_seleccionado,False))
         actions.addStretch()
         self.layout().insertLayout(1,actions)
+
+    def _con_actor(self, operacion, *args, **kwargs):
+        """Ejecuta la operaci?n con el usuario que inici? sesi?n en esta GUI."""
+        token=establecer_actor(self.actor_id,self.version_sesion)
+        try:
+            return operacion(*args,**kwargs)
+        finally:
+            restablecer_actor(token)
 
     def cliente_seleccionado(self):
         row=self.tabla.currentRow()
@@ -344,19 +354,19 @@ class PaginaClientes(PaginaListado):
         try:
             id=self.cliente_seleccionado()
             if QMessageBox.question(self,'Eliminar cliente','Se eliminará si no tiene préstamos; si tiene historial quedará inactivo. ¿Continuar?')!=QMessageBox.Yes: return
-            result=eliminar_cliente(id)
+            result=self._con_actor(eliminar_cliente,id)
             self.cargar_clientes()
             QMessageBox.information(self,'Cliente actualizado',result.capitalize())
         except (ValueError,ErrorConexionBaseDatos) as error: QMessageBox.warning(self,'Cliente',str(error))
 
     def reporte_seleccionado(self):
-        try: ReportDialog(obtener_reporte(cliente_id=self.cliente_seleccionado()),self).exec()
+        try: ReportDialog(self._con_actor(lambda:obtener_reporte(cliente_id=self.cliente_seleccionado())),self).exec()
         except (ValueError,ErrorConexionBaseDatos) as error: QMessageBox.warning(self,'Reporte',str(error))
 
 
     def cargar_clientes(self) -> None:
         try:
-            clientes = listar_clientes()
+            clientes = self._con_actor(listar_clientes)
         except (ValueError, ErrorConexionBaseDatos) as error:
             QMessageBox.warning(self, "Sin conexión", str(error))
             return
@@ -375,7 +385,11 @@ class PaginaClientes(PaginaListado):
     def abrir_ficha_cliente(self, fila: int, columna: int) -> None:
         if columna != 5:
             return
-        cliente = obtener_cliente_para_cuenta(self.tabla.item(fila, 5).data(Qt.UserRole))
+        try:
+            cliente = self._con_actor(obtener_cliente_para_cuenta,self.tabla.item(fila, 5).data(Qt.UserRole))
+        except (ValueError, ErrorConexionBaseDatos) as error:
+            QMessageBox.warning(self, "No se pudo abrir la ficha", str(error))
+            return
         dialogo = QDialog(self); dialogo.setWindowTitle("Cuenta de cliente | CRECE + PRÉSTAMOS"); dialogo.setMinimumWidth(420)
         distribucion = QVBoxLayout(dialogo)
         distribucion.addWidget(etiqueta(cliente["nombre"], "font-size: 21px; font-weight: 800;"))
@@ -386,7 +400,7 @@ class PaginaClientes(PaginaListado):
             formulario.addRow("Correo electrónico", correo_existente); distribucion.addLayout(formulario)
             guardar_correo = QPushButton("Guardar correo de acceso"); distribucion.addWidget(guardar_correo)
             def actualizar_correo() -> None:
-                try: actualizar_correo_cliente_portal(cliente["id"], correo_existente.text())
+                try: self._con_actor(actualizar_correo_cliente_portal,cliente["id"], correo_existente.text())
                 except (ValueError, ErrorConexionBaseDatos) as error: QMessageBox.warning(dialogo, "No se pudo actualizar", str(error)); return
                 dialogo.accept(); self.cargar_clientes(); QMessageBox.information(self, "Correo actualizado", "El cliente ya puede acceder al portal web con su correo y contraseña.")
             guardar_correo.clicked.connect(actualizar_correo)
@@ -397,7 +411,7 @@ class PaginaClientes(PaginaListado):
         formulario.addRow("Correo electrónico", correo); formulario.addRow("Contraseña", contrasena); distribucion.addLayout(formulario)
         crear = QPushButton("Crear cuenta de cliente"); distribucion.addWidget(crear)
         def guardar() -> None:
-            try: crear_cuenta_cliente(cliente["id"], correo.text(), contrasena.text())
+            try: self._con_actor(crear_cuenta_cliente,cliente["id"], correo.text(), contrasena.text())
             except (ValueError, ErrorConexionBaseDatos) as error: QMessageBox.warning(dialogo, "No se pudo crear", str(error)); return
             dialogo.accept(); self.cargar_clientes(); QMessageBox.information(self, "Cuenta creada", "El cliente ya puede iniciar sesión en su portal.")
         crear.clicked.connect(guardar); dialogo.exec()
@@ -421,7 +435,7 @@ class PaginaClientes(PaginaListado):
         estado=QComboBox()
         estado.addItems(['ACTIVO','INACTIVO','BLOQUEADO'])
         if cliente_id is not None:
-            data=obtener_cliente(cliente_id)
+            data=self._con_actor(obtener_cliente,cliente_id)
             for key,field in [('cedula',cedula),('nombres',nombres),('apellidos',apellidos),('telefono',telefono),('correo',correo),('direccion',direccion)]: field.setText(data[key] or '')
             estado.setCurrentText(data['estado'])
             formulario.addRow('Estado',estado)
@@ -440,8 +454,8 @@ class PaginaClientes(PaginaListado):
         def guardar_cliente() -> None:
             try:
                 values=(cedula.text(), nombres.text(), apellidos.text(), telefono.text(), correo.text(), direccion.text())
-                if cliente_id is None: registrar_cliente(*values)
-                else: actualizar_cliente(cliente_id,*values,estado.currentText())
+                if cliente_id is None: self._con_actor(registrar_cliente,*values)
+                else: self._con_actor(actualizar_cliente,cliente_id,*values,estado.currentText())
             except (ValueError, ErrorConexionBaseDatos) as error:
                 enfocar_error(dialogo,error)
                 QMessageBox.warning(dialogo, "No se pudo guardar", str(error))
@@ -883,7 +897,7 @@ class PanelPrincipal(QMainWindow):
         area.addWidget(self.contenedor_paginas,1)
         distribucion.addWidget(contenedor,1)
         self.pagina_inicio = PaginaInicio(lambda:self.mostrar_pagina(2),lambda:self.mostrar_pagina(1),lambda:self.mostrar_pagina(4))
-        self.pagina_clientes = PaginaClientes()
+        self.pagina_clientes = PaginaClientes(self.usuario.get('id'),self.usuario.get('version_sesion',1))
         self.pagina_clientes.boton_eliminar.setVisible(self.usuario['rol']=='ADMINISTRADOR')
         self.pagina_prestamos = PaginaPrestamos()
         self.pagina_cobros = PaginaCobros()

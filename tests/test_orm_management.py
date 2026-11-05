@@ -101,15 +101,17 @@ class OrmManagementTests(unittest.TestCase):
     def test_payments_reconcile_and_annul_without_erasing_history(self):
         loan=self.loan();report=obtener_reporte(prestamo_id=loan)
         q=report['prestamos'][0]['cuotas'][0]
-        with self.assertRaises(ValueError): g.registrar_cobro(q['id'],q['saldo']+1,'EFECTIVO')
-        self.assertEqual(g.listar_pagos(),[])
-        payment=g.registrar_cobro(q['id'],q['saldo'],'EFECTIVO')
+        payment=g.registrar_cobro(q['id'],q['saldo']+1,'EFECTIVO')
+        payments=g.listar_pagos()
+        self.assertEqual(len(payments),2)
+        self.assertEqual(sum((p['monto'] for p in payments),Decimal('0')),q['saldo']+1)
         paid=obtener_reporte(prestamo_id=loan)
         self.assertEqual(paid['totales']['programado'],paid['totales']['cobrado']+paid['totales']['saldo'])
         with self.assertRaises(ValueError): g.eliminar_prestamo(loan,'No permitido')
         g.resolver_pago(payment,'EDITAR_REFERENCIA','Recibo corregido')
-        g.resolver_pago(payment,'ANULAR','Captura duplicada')
-        self.assertEqual(g.listar_pagos()[0]['estado'],'ANULADO')
+        for pago in g.listar_pagos():
+            g.resolver_pago(pago['id'],'ANULAR','Captura duplicada')
+        self.assertTrue(all(p['estado']=='ANULADO' for p in g.listar_pagos()))
         self.assertEqual(obtener_reporte(prestamo_id=loan)['totales']['saldo'],report['totales']['saldo'])
 
     def test_portal_ownership_pending_confirmation_and_revoked_access(self):

@@ -6,7 +6,8 @@ from decimal import Decimal
 from datetime import date
 from unittest.mock import patch
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QTableWidgetItem
+from PySide6.QtWidgets import QApplication, QTableWidgetItem, QLineEdit, QPushButton, QMessageBox
+from PySide6.QtCore import QTimer
 from PySide6.QtTest import QTest
 from crece.interfaz import PaginaClientes, PaginaPrestamos, SimuladorPrestamo, ESTILO_APLICACION
 from ui.workspace import workspace_styles
@@ -52,6 +53,25 @@ class WorkspaceDataTests(unittest.TestCase):
         self.assertEqual(page.total_metric.value.text(),'0')
         page.close()
 
+    def test_employee_client_form_saves_under_authenticated_actor(self):
+        from crece.servicios.permisos import _actor
+        previous_actor=_actor.get()
+        page=PaginaClientes(actor_id=73,version_sesion=4)
+        observed=[]
+        def fill_and_save():
+            dialog=QApplication.activeModalWidget()
+            values={'cedula':'001-150890-0001A','nombres':'Ana','apellidos':'Prueba','telefono':'88881111','correo':'','direccion':''}
+            for key,value in values.items():
+                dialog.findChild(QLineEdit,'dato_'+key).setText(value)
+            next(button for button in dialog.findChildren(QPushButton) if button.text()=='Guardar cliente').click()
+        with patch('crece.interfaz.registrar_cliente',side_effect=lambda *_:observed.append(_actor.get()) or 31), \
+             patch.object(page,'cargar_clientes'), patch.object(QMessageBox,'information'):
+            QTimer.singleShot(30,fill_and_save)
+            page.abrir_formulario_cliente()
+        self.assertEqual(observed,[73])
+        self.assertEqual(_actor.get(),previous_actor)
+        page.close()
+
     def test_financial_totals_are_computed_from_loaded_rows(self):
         page = PaginaPrestamos()
         records = [dict(id=1,cliente='Cliente de prueba',monto_principal=Decimal('10000'),cuota_mensual=Decimal('945.60'),plazo_meses=12,estado='ACTIVO')]
@@ -68,8 +88,8 @@ class WorkspaceDataTests(unittest.TestCase):
         page = SimuladorPrestamo()
         page.calcular_plan()
         self.assertEqual(page.tabla_cuotas.rowCount(),12)
-        self.assertEqual(page.tabla_cuotas.item(11,5).text(),'C$ 0.00')
-        self.assertIn('945.60',page.payment_metric.value.text())
+        self.assertEqual(page.tabla_cuotas.item(11,4).text(),'C$ 0.00')
+        self.assertEqual(page.payment_metric.value.text(),'C$ 2,033.33')
         self.assertTrue(page.tabla_cuotas.empty.isHidden())
         page.monto_principal.setText('20000')
         self.assertIn('Vuelve a calcular',page.resumen.text())
@@ -81,13 +101,15 @@ class WorkspaceDataTests(unittest.TestCase):
         page.frecuencia.setCurrentIndex(page.frecuencia.findData('DIARIO'))
         page.calcular_plan()
         self.assertEqual(page.tabla_cuotas.rowCount(),4)
-        self.assertEqual(page.tabla_cuotas.item(0,3).text(),'C$ 6.67')
-        self.assertIn('0.066667',page.tabla_cuotas.item(0,6).text())
+        self.assertEqual(page.tabla_cuotas.item(0,3).text(),'C$ 2,500.00')
+        self.assertIn('0.400000',page.tabla_cuotas.horizontalHeaderItem(5).text())
+        self.assertEqual(page.tabla_cuotas.item(0,5).text(),'C$ 40.00')
         self.assertIn('Diario',page.resumen.text())
         page.frecuencia.setCurrentIndex(page.frecuencia.findData('QUINCENAL'))
         self.assertIn('Vuelve a calcular',page.resumen.text())
         page.calcular_plan()
-        self.assertEqual(page.tabla_cuotas.item(0,3).text(),'C$ 100.00')
+        self.assertEqual(page.tabla_cuotas.item(0,3).text(),'C$ 2,500.00')
+        self.assertEqual(page.tabla_cuotas.item(0,5).text(),'C$ 600.00')
         page.close()
 
 
