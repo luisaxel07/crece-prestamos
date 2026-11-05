@@ -60,6 +60,7 @@ class WorkspaceDataTests(unittest.TestCase):
         observed=[]
         def fill_and_save():
             dialog=QApplication.activeModalWidget()
+            self.assertEqual(dialog.windowTitle(),'Registrar cliente | CRECE + PRÉSTAMOS')
             values={'cedula':'001-150890-0001A','nombres':'Ana','apellidos':'Prueba','telefono':'88881111','correo':'','direccion':''}
             for key,value in values.items():
                 dialog.findChild(QLineEdit,'dato_'+key).setText(value)
@@ -67,7 +68,7 @@ class WorkspaceDataTests(unittest.TestCase):
         with patch('crece.interfaz.registrar_cliente',side_effect=lambda *_:observed.append(_actor.get()) or 31), \
              patch.object(page,'cargar_clientes'), patch.object(QMessageBox,'information'):
             QTimer.singleShot(30,fill_and_save)
-            page.abrir_formulario_cliente()
+            next(button for button in page.findChildren(QPushButton) if button.text()=='Nuevo cliente').click()
         self.assertEqual(observed,[73])
         self.assertEqual(_actor.get(),previous_actor)
         page.close()

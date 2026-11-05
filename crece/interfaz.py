@@ -199,7 +199,9 @@ class PaginaListado(QWidget):
         titles.addWidget(workspace_label(titulo,'workspaceTitle'))
         titles.addWidget(workspace_label(descripcion,wrap=True))
         heading.addLayout(titles,1)
-        action = workspace_button(accion.lstrip('+ '),al_accionar)
+        # QPushButton.clicked emits a bool; do not let it become an optional
+        # argument such as PaginaClientes.abrir_formulario_cliente(cliente_id).
+        action = workspace_button(accion.lstrip('+ '),lambda: al_accionar())
         heading.addWidget(action)
         layout.addLayout(heading)
         summary = QHBoxLayout()
