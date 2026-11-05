@@ -30,6 +30,7 @@ class AuthWebTests(unittest.TestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertIn(b'window.CRECE_AUTH', response.data)
                 self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertNotIn('Regístrate aquí',self.client.get('/acceso').get_data(as_text=True))
 
     def test_csrf_required_before_credentials_are_checked(self):
         with patch('portal_web.app_web.iniciar_sesion_web') as authenticate:

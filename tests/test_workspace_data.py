@@ -9,7 +9,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QTableWidgetItem, QLineEdit, QPushButton, QMessageBox
 from PySide6.QtCore import QTimer
 from PySide6.QtTest import QTest
-from crece.interfaz import PaginaClientes, PaginaPrestamos, SimuladorPrestamo, ESTILO_APLICACION
+from crece.interfaz import PaginaClientes, PaginaCobros, PaginaPrestamos, SimuladorPrestamo, ESTILO_APLICACION
 from ui.workspace import workspace_styles
 from ui.widgets.premium import load_fonts
 
@@ -83,6 +83,28 @@ class WorkspaceDataTests(unittest.TestCase):
         self.assertEqual(page.tabla.item(0,2).textAlignment(),Qt.AlignRight|Qt.AlignVCenter)
         self.assertTrue(page.tabla.empty.isHidden())
         self.assertEqual(page.tabla.item(0,2).toolTip(),'C$10,000.00')
+        page.close()
+
+    def test_collection_page_filters_charges_by_selected_client(self):
+        page=PaginaCobros()
+        clients=[
+            dict(id=1,cedula='001-A',nombre_completo='Ana Pérez'),
+            dict(id=2,cedula='002-B',nombre_completo='Luis Ruiz')]
+        charges=[
+            dict(cliente='Ana Pérez',cliente_id=1,cedula='001-A',prestamo_id=11,numero_cuota=1,fecha_vencimiento=date(2026,11,10),saldo_cuota=Decimal('100'),interes=Decimal('12'),estado='PENDIENTE',recargo_pendiente=Decimal('0')),
+            dict(cliente='Luis Ruiz',cliente_id=2,cedula='002-B',prestamo_id=12,numero_cuota=1,fecha_vencimiento=date(2026,11,11),saldo_cuota=Decimal('200'),interes=Decimal('24'),estado='PENDIENTE',recargo_pendiente=Decimal('0'))]
+        with patch('crece.interfaz.listar_clientes',return_value=clients), patch('crece.interfaz.listar_cuotas_cobro',return_value=charges):
+            page.cargar_cobros()
+        page.filtro_cliente.setCurrentIndex(page.filtro_cliente.findData(1))
+        self.assertFalse(page.tabla.isRowHidden(0))
+        self.assertTrue(page.tabla.isRowHidden(1))
+        self.assertEqual(page.contador.text(),'1 de 2 registros')
+        page.filtro_cliente.setEditText('Luis')
+        self.assertTrue(page.tabla.isRowHidden(0))
+        self.assertFalse(page.tabla.isRowHidden(1))
+        page.filtro_cliente.setEditText('cliente inexistente')
+        self.assertTrue(all(page.tabla.isRowHidden(row) for row in range(page.tabla.rowCount())))
+        self.assertIn('No se encontraron cobros para ese cliente',page.tabla.empty.text())
         page.close()
 
     def test_simulator_keeps_the_financial_engine_and_marks_stale_results(self):

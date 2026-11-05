@@ -10,7 +10,7 @@ from PySide6.QtGui import QColor, QFont, QPixmap
 from PySide6.QtWidgets import (
     QApplication, QButtonGroup, QComboBox, QDateEdit, QDialog, QFormLayout, QFrame,
     QGraphicsDropShadowEffect, QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMainWindow, QFileDialog,
-    QMessageBox, QPushButton, QGraphicsOpacityEffect, QSizePolicy, QStackedWidget, QTableWidget,
+    QMessageBox, QPushButton, QGraphicsOpacityEffect, QSizePolicy, QStackedWidget, QTableWidget, QCompleter,
     QTableWidgetItem, QVBoxLayout, QWidget, QScrollArea, QInputDialog,
 )
 
@@ -634,9 +634,88 @@ class PaginaCobros(PaginaListado):
         )
 
         actions=QHBoxLayout()
+        actions.addWidget(workspace_label('Buscar por cliente','workspaceCount'))
+        self.filtro_cliente=QComboBox()
+        self.filtro_cliente.setObjectName('workspaceClientFilter')
+        self.filtro_cliente.setAccessibleName('Buscar cobros por cliente')
+        self.filtro_cliente.setEditable(True)
+        self.filtro_cliente.setInsertPolicy(QComboBox.NoInsert)
+        self.filtro_cliente.lineEdit().setPlaceholderText('Todos los clientes')
+        self.filtro_cliente.setMinimumWidth(260)
+        completer=QCompleter(self.filtro_cliente.model(),self.filtro_cliente)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setFilterMode(Qt.MatchContains)
+        self.filtro_cliente.setCompleter(completer)
+        self.filtro_cliente.addItem('Todos los clientes',None)
+        self.filtro_cliente.currentIndexChanged.connect(self.aplicar_filtros)
+        self.filtro_cliente.editTextChanged.connect(self.aplicar_filtros)
+        actions.addWidget(self.filtro_cliente,1)
         actions.addWidget(workspace_button('Historial / solicitudes de pago',self.historial_pagos,False))
         actions.addStretch()
         self.layout().insertLayout(1,actions)
+
+    def aplicar_filtros(self,*_):
+        if not hasattr(self,'filtro_cliente'):
+            return super().aplicar_filtros()
+        query=normalized(self.buscar.text().strip())
+        client_text=self.filtro_cliente.currentText().strip()
+        selected_id=self.filtro_cliente.currentData()
+        if selected_id is not None and self.filtro_cliente.currentIndex()>0 and client_text!=self.filtro_cliente.itemText(self.filtro_cliente.currentIndex()):
+            selected_id=None
+        if client_text=='Todos los clientes': client_text=''
+        client_query=normalized(client_text) if selected_id is None else ''
+        state=self.filtro_estado.currentText()
+        count=0
+        for row in range(self.tabla.rowCount()):
+            texts=[self.tabla.item(row,col).text() if self.tabla.item(row,col) else '' for col in range(self.tabla.columnCount())]
+            name_item=self.tabla.item(row,0)
+            row_client_id=name_item.data(Qt.UserRole) if name_item else None
+            cedula=name_item.data(Qt.UserRole+1) if name_item else ''
+            client_matches=(selected_id is None or row_client_id==selected_id) and (not client_query or client_query in normalized(texts[0]+' '+str(cedula or '')))
+            match=query in normalized(' '.join(texts)) and client_matches and (state in ('','Todos los estados') or (self.estado_col is not None and texts[self.estado_col]==state))
+            self.tabla.setRowHidden(row,not match)
+            count+=int(match)
+        self.contador.setText(f'{count} de {self.tabla.rowCount()} registros')
+        if count:
+            empty_message=''
+        elif client_text:
+            empty_message='No se encontraron cobros para ese cliente.'
+        elif self.buscar.text().strip() or state not in ('','Todos los estados'):
+            empty_message='No se encontraron coincidencias. Prueba otros filtros o límpialos.'
+        else:
+            empty_message=self.mensaje_vacio
+        self.tabla.show_empty(empty_message)
+        QTimer.singleShot(0,self.ajustar_altura_tabla)
+
+    def limpiar_filtros(self):
+        super().limpiar_filtros()
+        self.filtro_cliente.blockSignals(True)
+        self.filtro_cliente.setCurrentIndex(0)
+        self.filtro_cliente.setEditText('Todos los clientes')
+        self.filtro_cliente.blockSignals(False)
+        self.aplicar_filtros()
+
+    def _cargar_clientes_filtro(self,clientes):
+        selected_id=self.filtro_cliente.currentData()
+        current_text=self.filtro_cliente.currentText().strip()
+        if current_text=='Todos los clientes': current_text=''
+        opciones={cliente['id']:cliente for cliente in clientes}
+        self.filtro_cliente.blockSignals(True)
+        self.filtro_cliente.clear()
+        self.filtro_cliente.addItem('Todos los clientes',None)
+        for cliente in sorted(clientes,key=lambda c:c['nombre_completo'].casefold()):
+            label=f"{cliente['nombre_completo']} | {cliente['cedula']}"
+            self.filtro_cliente.addItem(label,cliente['id'])
+        if selected_id in opciones:
+            self.filtro_cliente.setCurrentIndex(self.filtro_cliente.findData(selected_id))
+        elif selected_id is not None:
+            self.filtro_cliente.addItem(current_text or 'Cliente seleccionado',selected_id)
+            self.filtro_cliente.setCurrentIndex(self.filtro_cliente.count()-1)
+        elif current_text:
+            self.filtro_cliente.setEditText(current_text)
+        else:
+            self.filtro_cliente.setCurrentIndex(0)
+        self.filtro_cliente.blockSignals(False)
 
     def historial_pagos(self):
         from ui.payments import PaymentsDialog
@@ -646,9 +725,11 @@ class PaginaCobros(PaginaListado):
     def cargar_cobros(self) -> None:
         try:
             cuotas = listar_cuotas_cobro()
+            clientes = listar_clientes()
         except (ValueError, ErrorConexionBaseDatos) as error:
             QMessageBox.warning(self, "Sin conexión", str(error))
             return
+        self._cargar_clientes_filtro(clientes)
         self.tabla.setRowCount(len(cuotas))
         for fila, cuota in enumerate(cuotas):
             valores = (
@@ -659,6 +740,8 @@ class PaginaCobros(PaginaListado):
                 celda = QTableWidgetItem(str(valor))
                 celda.setTextAlignment(Qt.AlignCenter if columna > 0 else Qt.AlignLeft | Qt.AlignVCenter)
                 self.tabla.setItem(fila, columna, celda)
+            self.tabla.item(fila,0).setData(Qt.UserRole,cuota.get('cliente_id'))
+            self.tabla.item(fila,0).setData(Qt.UserRole+1,cuota.get('cedula',''))
 
     def abrir_formulario_cobro(self) -> None:
         try:
